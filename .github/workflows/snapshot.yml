@@ -36,4 +36,4 @@ jobs:
           CHAT_ID: ${{ secrets.CHAT_ID || '1936436999' }}
           CAM_ID: ${{ github.event.inputs.cam_id || github.event.client_payload.cam_id || '4' }}
         run: |
-          node capture.js
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" node capture.js
