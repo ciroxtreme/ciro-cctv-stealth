@@ -1,0 +1,40 @@
+name: CCTV Stealth Snapshot Runner
+
+on:
+  workflow_dispatch:
+    inputs:
+      cam_id:
+        description: 'Nomor ID Kamera Banyuasin (contoh: 4)'
+        required: true
+        default: '4'
+  repository_dispatch:
+    types: [cctv_snapshot]
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm ci || npm install
+
+      - name: Install Google Chrome & Dependencies
+        run: |
+          npx puppeteer browsers install chrome
+
+      - name: Run Stealth Snapshot Capture
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN || '8899978543:AAHlrCjXZbiJwcI_OZIzXrGdpKC5_BCGCEs' }}
+          CHAT_ID: ${{ secrets.CHAT_ID || '1936436999' }}
+          CAM_ID: ${{ github.event.inputs.cam_id || github.event.client_payload.cam_id || '4' }}
+        run: |
+          node capture.js
