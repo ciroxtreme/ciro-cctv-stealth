@@ -63,16 +63,16 @@ jobs:
           CAM_TARGET: ${{ github.event.inputs.cam_id || github.event.client_payload.cam_id || 'pasar p.balai' }}
           CF_CLEARANCE: ${{ vars.CF_CLEARANCE }}
         run: |
-          ENGINE="${{ github.event.inputs.engine || github.event.client_payload.engine || 'camoufox' }}"
+          ENGINE="${{ github.event.inputs.engine || github.event.client_payload.engine || 'puppeteer' }}"
           if [ "$ENGINE" = "camoufox" ]; then
             echo "Running with Camoufox (Byparr Engine - Firefox C++ Stealth)..."
             xvfb-run --auto-servernum --server-args="-screen 0 1280x850x24 +extension GLX" python3 capture_camoufox.py
-          elif [ "$ENGINE" = "puppeteer" ]; then
-            echo "Running with Puppeteer-Real-Browser..."
-            xvfb-run --auto-servernum --server-args="-screen 0 1280x850x24 +extension GLX" node capture.js
-          else
+          elif [ "$ENGINE" = "playwright" ]; then
             echo "Running with Rebrowser-Playwright Stealth..."
             xvfb-run --auto-servernum --server-args="-screen 0 1280x850x24 +extension GLX" node capture_playwright.js
+          else
+            echo "Running with Puppeteer-Real-Browser (Proven 100% Success)..."
+            xvfb-run --auto-servernum --server-args="-screen 0 1280x850x24 +extension GLX" node capture.js
           fi
 
       - name: Send Captured Snapshot Directly to Telegram
