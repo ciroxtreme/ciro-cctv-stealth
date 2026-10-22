@@ -169,7 +169,7 @@ async function sendPhotoToTelegram(photoPath, caption) {
     await page.waitForSelector('#exampleModal, .modal.show, .leaflet-popup-content, video, canvas, iframe', { timeout: 15000 }).catch(() => null);
     await new Promise(r => setTimeout(r, 6000));
 
-    // Pastikan modal #exampleModal aktif dan terisi stream video
+    // Pastikan modal #exampleModal aktif dan panggil fungsi stream video asli Banyuasin
     await page.evaluate((targetName) => {
       // 1. Cek modal tunggal portal Banyuasin: #exampleModal
       const exampleModal = document.querySelector('#exampleModal');
@@ -186,6 +186,16 @@ async function sendPhotoToTelegram(photoPath, caption) {
         if (titleEl && !titleEl.innerText) {
           titleEl.innerText = targetName.toUpperCase();
         }
+
+        // Cek apakah ada onclick di menu yang memanggil fungsi JS load video
+        const clickable = Array.from(document.querySelectorAll('a, button, li, .list-group-item'));
+        const item = clickable.find(el => (el.innerText || '').toLowerCase().includes(targetName));
+        if (item) {
+          const onclickAttr = item.getAttribute('onclick');
+          if (onclickAttr) {
+            try { eval(onclickAttr); } catch (e) {}
+          }
+        }
       }
 
       // 2. Play video jika ada
@@ -195,10 +205,14 @@ async function sendPhotoToTelegram(photoPath, caption) {
       });
     }, requestedTarget);
 
+    // Beri jeda 8 detik agar stream HLS/WebRTC termuat sempurna di modal-body
+    await new Promise(r => setTimeout(r, 8000));
+
     // Debug isi HTML dan frame yang ada di halaman
     let debugInfo = {};
     try {
       debugInfo = await page.evaluate(() => {
+        const modalBody = document.querySelector('#exampleModal .modal-body');
         const visibleModals = Array.from(document.querySelectorAll('.modal.show, .modal[style*="display: block"], .leaflet-popup')).map(m => m.innerText ? m.innerText.substring(0, 50) : '');
         const modalDetails = Array.from(document.querySelectorAll('.modal, [class*="modal"]')).map(m => ({
           id: m.id,
@@ -213,6 +227,7 @@ async function sendPhotoToTelegram(photoPath, caption) {
           markerCount: document.querySelectorAll('.leaflet-marker-icon').length,
           popupCount: document.querySelectorAll('.leaflet-popup').length,
           modalCount: document.querySelectorAll('.modal, [class*="modal"], [id*="modal"]').length,
+          modalBodyHtml: modalBody ? modalBody.innerHTML.substring(0, 150) : 'none',
           visibleModals,
           modalDetails,
           hasVideo: document.querySelectorAll('video, canvas, iframe').length
