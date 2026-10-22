@@ -50,6 +50,7 @@ jobs:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN || '8899978543:AAHlrCjXZbiJwcI_OZIzXrGdpKC5_BCGCEs' }}
           CHAT_ID: ${{ github.event.client_payload.chat_id || secrets.CHAT_ID || '1936436999' }}
           CAM_TARGET: ${{ github.event.inputs.cam_id || github.event.client_payload.cam_id || 'pasar p.balai' }}
+          CF_CLEARANCE: ${{ vars.CF_CLEARANCE }}
         run: |
           xvfb-run --auto-servernum --server-args="-screen 0 1280x850x24 +extension GLX" node capture.js
 

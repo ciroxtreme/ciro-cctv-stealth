@@ -1,0 +1,73 @@
+﻿2026-10-22T02:41:46.7973117Z ##[group]Run actions/checkout@v4
+2026-10-22T02:41:46.7974006Z with:
+2026-10-22T02:41:46.7974478Z   repository: ciroxtreme/ciro-cctv-stealth
+2026-10-22T02:41:46.7978524Z   token: ***
+2026-10-22T02:41:46.7978955Z   ssh-strict: true
+2026-10-22T02:41:46.7979387Z   ssh-user: git
+2026-10-22T02:41:46.7979831Z   persist-credentials: true
+2026-10-22T02:41:46.7980326Z   clean: true
+2026-10-22T02:41:46.7980775Z   sparse-checkout-cone-mode: true
+2026-10-22T02:41:46.7981498Z   fetch-depth: 1
+2026-10-22T02:41:46.7981938Z   fetch-tags: false
+2026-10-22T02:41:46.7982381Z   show-progress: true
+2026-10-22T02:41:46.7982831Z   lfs: false
+2026-10-22T02:41:46.7983242Z   submodules: false
+2026-10-22T02:41:46.7983683Z   set-safe-directory: true
+2026-10-22T02:41:46.7984193Z   allow-unsafe-pr-checkout: false
+2026-10-22T02:41:46.7985093Z ##[endgroup]
+2026-10-22T02:41:46.9022385Z Syncing repository: ciroxtreme/ciro-cctv-stealth
+2026-10-22T02:41:46.9025281Z ##[group]Getting Git version info
+2026-10-22T02:41:46.9026616Z Working directory is '/home/runner/work/ciro-cctv-stealth/ciro-cctv-stealth'
+2026-10-22T02:41:46.9028521Z [command]/usr/bin/git version
+2026-10-22T02:41:46.9089483Z git version 2.55.0
+2026-10-22T02:41:46.9112837Z ##[endgroup]
+2026-10-22T02:41:46.9128097Z Temporarily overriding HOME='/home/runner/work/_temp/6244e89e-002a-4a7a-a791-5526b1a495ae' before making global git config changes
+2026-10-22T02:41:46.9130726Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-22T02:41:46.9134318Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ciro-cctv-stealth/ciro-cctv-stealth
+2026-10-22T02:41:46.9185744Z Deleting the contents of '/home/runner/work/ciro-cctv-stealth/ciro-cctv-stealth'
+2026-10-22T02:41:46.9190504Z ##[group]Initializing the repository
+2026-10-22T02:41:46.9195374Z [command]/usr/bin/git init /home/runner/work/ciro-cctv-stealth/ciro-cctv-stealth
+2026-10-22T02:41:46.9297669Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-22T02:41:46.9300424Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-22T02:41:46.9302561Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-22T02:41:46.9303861Z hint: call:
+2026-10-22T02:41:46.9304540Z hint:
+2026-10-22T02:41:46.9305390Z hint: 	git config --global init.defaultBranch <name>
+2026-10-22T02:41:46.9306282Z hint:
+2026-10-22T02:41:46.9307282Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-22T02:41:46.9308858Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-22T02:41:46.9310093Z hint:
+2026-10-22T02:41:46.9310747Z hint: 	git branch -m <name>
+2026-10-22T02:41:46.9311786Z hint:
+2026-10-22T02:41:46.9312942Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-22T02:41:46.9314715Z Initialized empty Git repository in /home/runner/work/ciro-cctv-stealth/ciro-cctv-stealth/.git/
+2026-10-22T02:41:46.9317733Z [command]/usr/bin/git remote add origin https://github.com/ciroxtreme/ciro-cctv-stealth
+2026-10-22T02:41:46.9370919Z ##[endgroup]
+2026-10-22T02:41:46.9372482Z ##[group]Disabling automatic garbage collection
+2026-10-22T02:41:46.9375998Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-22T02:41:46.9413150Z ##[endgroup]
+2026-10-22T02:41:46.9414180Z ##[group]Setting up auth
+2026-10-22T02:41:46.9422119Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-22T02:41:46.9459976Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-22T02:41:46.9867229Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-22T02:41:46.9913462Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-22T02:41:47.0195806Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-22T02:41:47.0241670Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-22T02:41:47.0489598Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-22T02:41:47.0542410Z ##[endgroup]
+2026-10-22T02:41:47.0543945Z ##[group]Fetching the repository
+2026-10-22T02:41:47.0554277Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0bcd80f7cfc167ea4e2640dbedcad23467f51870:refs/remotes/origin/main
+2026-10-22T02:41:47.2460713Z From https://github.com/ciroxtreme/ciro-cctv-stealth
+2026-10-22T02:41:47.2462401Z  * [new ref]         0bcd80f7cfc167ea4e2640dbedcad23467f51870 -> origin/main
+2026-10-22T02:41:47.2467057Z ##[endgroup]
+2026-10-22T02:41:47.2468094Z ##[group]Determining the checkout info
+2026-10-22T02:41:47.2469871Z ##[endgroup]
+2026-10-22T02:41:47.2475886Z [command]/usr/bin/git sparse-checkout disable
+2026-10-22T02:41:47.2547054Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-22T02:41:47.2593454Z ##[group]Checking out the ref
+2026-10-22T02:41:47.2603219Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-22T02:41:47.2667576Z Switched to a new branch 'main'
+2026-10-22T02:41:47.2673333Z branch 'main' set up to track 'origin/main'.
+2026-10-22T02:41:47.2679555Z ##[endgroup]
+2026-10-22T02:41:47.2730976Z [command]/usr/bin/git log -1 --format=%H
+2026-10-22T02:41:47.2773803Z 0bcd80f7cfc167ea4e2640dbedcad23467f51870

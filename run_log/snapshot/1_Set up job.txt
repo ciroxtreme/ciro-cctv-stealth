@@ -1,0 +1,34 @@
+﻿2026-10-22T02:53:23.7125484Z Current runner version: '2.338.0'
+2026-10-22T02:53:23.7144256Z ##[group]Runner Image Provisioner
+2026-10-22T02:53:23.7144864Z Hosted Compute Agent
+2026-10-22T02:53:23.7145200Z Version: 20261012.601
+2026-10-22T02:53:23.7145619Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-22T02:53:23.7146064Z Build Date: 2026-10-12T17:48:21Z
+2026-10-22T02:53:23.7146669Z Worker ID: {3f71a048-5d99-4daa-b40c-b2961e08688e}
+2026-10-22T02:53:23.7147074Z Region: westus3
+2026-10-22T02:53:23.7147386Z Cloud: Azure
+2026-10-22T02:53:23.7147755Z ##[endgroup]
+2026-10-22T02:53:23.7148512Z ##[group]Operating System
+2026-10-22T02:53:23.7148893Z Ubuntu
+2026-10-22T02:53:23.7149239Z 24.04.5
+2026-10-22T02:53:23.7149539Z LTS
+2026-10-22T02:53:23.7149874Z ##[endgroup]
+2026-10-22T02:53:23.7150219Z ##[group]Runner Image
+2026-10-22T02:53:23.7150585Z Image: ubuntu-24.04
+2026-10-22T02:53:23.7150951Z Version: 20261012.334.1
+2026-10-22T02:53:23.7151547Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-22T02:53:23.7152593Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-22T02:53:23.7153183Z ##[endgroup]
+2026-10-22T02:53:23.7153863Z ##[group]GITHUB_TOKEN Permissions
+2026-10-22T02:53:23.7155075Z Contents: read
+2026-10-22T02:53:23.7155424Z Metadata: read
+2026-10-22T02:53:23.7155750Z Packages: read
+2026-10-22T02:53:23.7156437Z ##[endgroup]
+2026-10-22T02:53:23.7157879Z Secret source: Actions
+2026-10-22T02:53:23.7158463Z Cache mode: write
+2026-10-22T02:53:23.7158868Z Prepare workflow directory
+2026-10-22T02:53:23.7419432Z Prepare all required actions
+2026-10-22T02:53:23.7450896Z Getting action download info
+2026-10-22T02:53:24.0758193Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-22T02:53:24.4212476Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-22T02:53:25.0743106Z Complete job name: snapshot

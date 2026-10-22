@@ -1,0 +1,284 @@
+﻿2026-10-22T02:41:46.1876788Z Current runner version: '2.338.0'
+2026-10-22T02:41:46.1912522Z ##[group]Runner Image Provisioner
+2026-10-22T02:41:46.1913885Z Hosted Compute Agent
+2026-10-22T02:41:46.1914897Z Version: 20261015.610
+2026-10-22T02:41:46.1916134Z Commit: 267fdb4e8bbec4ab5ea31367f3a00d5c480c7656
+2026-10-22T02:41:46.1917358Z Build Date: 2026-10-14T17:06:54Z
+2026-10-22T02:41:46.1918501Z Worker ID: {46cb66b2-422a-4009-a9e1-951cdf771685}
+2026-10-22T02:41:46.1919840Z Region: eastus
+2026-10-22T02:41:46.1920709Z Cloud: Azure
+2026-10-22T02:41:46.1922021Z ##[endgroup]
+2026-10-22T02:41:46.1924299Z ##[group]Operating System
+2026-10-22T02:41:46.1925414Z Ubuntu
+2026-10-22T02:41:46.1926378Z 24.04.5
+2026-10-22T02:41:46.1927231Z LTS
+2026-10-22T02:41:46.1928141Z ##[endgroup]
+2026-10-22T02:41:46.1929170Z ##[group]Runner Image
+2026-10-22T02:41:46.1930163Z Image: ubuntu-24.04
+2026-10-22T02:41:46.1931465Z Version: 20261018.339.1
+2026-10-22T02:41:46.1934335Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261018.339/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-22T02:41:46.1937851Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261018.339
+2026-10-22T02:41:46.1939608Z ##[endgroup]
+2026-10-22T02:41:46.1942163Z ##[group]GITHUB_TOKEN Permissions
+2026-10-22T02:41:46.1945102Z Contents: read
+2026-10-22T02:41:46.1946251Z Metadata: read
+2026-10-22T02:41:46.1947177Z Packages: read
+2026-10-22T02:41:46.1948089Z ##[endgroup]
+2026-10-22T02:41:46.1951519Z Secret source: Actions
+2026-10-22T02:41:46.1953061Z Cache mode: write
+2026-10-22T02:41:46.1954609Z Prepare workflow directory
+2026-10-22T02:41:46.2399937Z Prepare all required actions
+2026-10-22T02:41:46.2447216Z Getting action download info
+2026-10-22T02:41:46.4321271Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-22T02:41:46.5210779Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-22T02:41:46.7206548Z Complete job name: snapshot
+2026-10-22T02:41:46.7973143Z ##[group]Run actions/checkout@v4
+2026-10-22T02:41:46.7974014Z with:
+2026-10-22T02:41:46.7974482Z   repository: ciroxtreme/ciro-cctv-stealth
+2026-10-22T02:41:46.7978534Z   token: ***
+2026-10-22T02:41:46.7978958Z   ssh-strict: true
+2026-10-22T02:41:46.7979391Z   ssh-user: git
+2026-10-22T02:41:46.7979834Z   persist-credentials: true
+2026-10-22T02:41:46.7980329Z   clean: true
+2026-10-22T02:41:46.7980778Z   sparse-checkout-cone-mode: true
+2026-10-22T02:41:46.7981502Z   fetch-depth: 1
+2026-10-22T02:41:46.7981941Z   fetch-tags: false
+2026-10-22T02:41:46.7982384Z   show-progress: true
+2026-10-22T02:41:46.7982834Z   lfs: false
+2026-10-22T02:41:46.7983245Z   submodules: false
+2026-10-22T02:41:46.7983686Z   set-safe-directory: true
+2026-10-22T02:41:46.7984196Z   allow-unsafe-pr-checkout: false
+2026-10-22T02:41:46.7985104Z ##[endgroup]
+2026-10-22T02:41:46.9022454Z Syncing repository: ciroxtreme/ciro-cctv-stealth
+2026-10-22T02:41:46.9025302Z ##[group]Getting Git version info
+2026-10-22T02:41:46.9026703Z Working directory is '/home/runner/work/ciro-cctv-stealth/ciro-cctv-stealth'
+2026-10-22T02:41:46.9028529Z [command]/usr/bin/git version
+2026-10-22T02:41:46.9089506Z git version 2.55.0
+2026-10-22T02:41:46.9112858Z ##[endgroup]
+2026-10-22T02:41:46.9128122Z Temporarily overriding HOME='/home/runner/work/_temp/6244e89e-002a-4a7a-a791-5526b1a495ae' before making global git config changes
+2026-10-22T02:41:46.9130737Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-22T02:41:46.9134328Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ciro-cctv-stealth/ciro-cctv-stealth
+2026-10-22T02:41:46.9185780Z Deleting the contents of '/home/runner/work/ciro-cctv-stealth/ciro-cctv-stealth'
+2026-10-22T02:41:46.9190513Z ##[group]Initializing the repository
+2026-10-22T02:41:46.9195384Z [command]/usr/bin/git init /home/runner/work/ciro-cctv-stealth/ciro-cctv-stealth
+2026-10-22T02:41:46.9297805Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-22T02:41:46.9300453Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-22T02:41:46.9302585Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-22T02:41:46.9303868Z hint: call:
+2026-10-22T02:41:46.9304546Z hint:
+2026-10-22T02:41:46.9305396Z hint: 	git config --global init.defaultBranch <name>
+2026-10-22T02:41:46.9306288Z hint:
+2026-10-22T02:41:46.9307295Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-22T02:41:46.9308866Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-22T02:41:46.9310099Z hint:
+2026-10-22T02:41:46.9310753Z hint: 	git branch -m <name>
+2026-10-22T02:41:46.9311800Z hint:
+2026-10-22T02:41:46.9312954Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-22T02:41:46.9314731Z Initialized empty Git repository in /home/runner/work/ciro-cctv-stealth/ciro-cctv-stealth/.git/
+2026-10-22T02:41:46.9317773Z [command]/usr/bin/git remote add origin https://github.com/ciroxtreme/ciro-cctv-stealth
+2026-10-22T02:41:46.9370957Z ##[endgroup]
+2026-10-22T02:41:46.9372492Z ##[group]Disabling automatic garbage collection
+2026-10-22T02:41:46.9376017Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-22T02:41:46.9413175Z ##[endgroup]
+2026-10-22T02:41:46.9414191Z ##[group]Setting up auth
+2026-10-22T02:41:46.9422145Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-22T02:41:46.9460038Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-22T02:41:46.9867327Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-22T02:41:46.9914048Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-22T02:41:47.0195883Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-22T02:41:47.0241728Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-22T02:41:47.0489661Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-22T02:41:47.0542465Z ##[endgroup]
+2026-10-22T02:41:47.0543968Z ##[group]Fetching the repository
+2026-10-22T02:41:47.0554313Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0bcd80f7cfc167ea4e2640dbedcad23467f51870:refs/remotes/origin/main
+2026-10-22T02:41:47.2460790Z From https://github.com/ciroxtreme/ciro-cctv-stealth
+2026-10-22T02:41:47.2462429Z  * [new ref]         0bcd80f7cfc167ea4e2640dbedcad23467f51870 -> origin/main
+2026-10-22T02:41:47.2467081Z ##[endgroup]
+2026-10-22T02:41:47.2468155Z ##[group]Determining the checkout info
+2026-10-22T02:41:47.2469885Z ##[endgroup]
+2026-10-22T02:41:47.2475911Z [command]/usr/bin/git sparse-checkout disable
+2026-10-22T02:41:47.2547130Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-22T02:41:47.2593531Z ##[group]Checking out the ref
+2026-10-22T02:41:47.2603267Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-22T02:41:47.2667623Z Switched to a new branch 'main'
+2026-10-22T02:41:47.2673382Z branch 'main' set up to track 'origin/main'.
+2026-10-22T02:41:47.2679577Z ##[endgroup]
+2026-10-22T02:41:47.2731007Z [command]/usr/bin/git log -1 --format=%H
+2026-10-22T02:41:47.2773838Z 0bcd80f7cfc167ea4e2640dbedcad23467f51870
+2026-10-22T02:41:47.3100804Z ##[group]Run actions/setup-node@v4
+2026-10-22T02:41:47.3101667Z with:
+2026-10-22T02:41:47.3102113Z   node-version: 20
+2026-10-22T02:41:47.3102578Z   always-auth: false
+2026-10-22T02:41:47.3103065Z   check-latest: false
+2026-10-22T02:41:47.3108153Z   token: ***
+2026-10-22T02:41:47.3108911Z ##[endgroup]
+2026-10-22T02:41:47.4608949Z Attempting to download 20...
+2026-10-22T02:41:47.4720193Z (node:2330) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-22T02:41:47.4722074Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-22T02:41:47.8560553Z Acquiring 20.20.2 - x64 from https://github.com/actions/node-versions/releases/download/20.20.2-23521894959/node-20.20.2-linux-x64.tar.gz
+2026-10-22T02:41:48.1493045Z Extracting ...
+2026-10-22T02:41:48.1643017Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/bd37134f-8a75-483a-87d1-e450972a6c20 -f /home/runner/work/_temp/8d62d8ac-aa0a-4b72-b7a8-edab59f04dc1
+2026-10-22T02:41:49.2250784Z Adding to the cache ...
+2026-10-22T02:41:50.7553069Z ##[group]Environment details
+2026-10-22T02:41:50.9988598Z node: v20.20.2
+2026-10-22T02:41:50.9989539Z npm: 10.8.2
+2026-10-22T02:41:50.9990074Z yarn: 1.22.22
+2026-10-22T02:41:50.9990966Z ##[endgroup]
+2026-10-22T02:41:51.0226555Z ##[group]Run sudo apt-get update
+2026-10-22T02:41:51.0226980Z [36;1msudo apt-get update[0m
+2026-10-22T02:41:51.0227501Z [36;1msudo apt-get install -y xvfb libgbm-dev libgl1-mesa-dri libglx-mesa0 libgl1 mesa-utils[0m
+2026-10-22T02:41:51.0228021Z [36;1mnpm install[0m
+2026-10-22T02:41:51.0407277Z shell: /usr/bin/bash -e {0}
+2026-10-22T02:41:51.0407643Z ##[endgroup]
+2026-10-22T02:41:51.1215882Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-22T02:41:51.1515970Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-22T02:41:51.1529067Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-22T02:41:51.1548514Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-22T02:41:51.1610952Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-22T02:41:51.1639735Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-22T02:41:51.2682762Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [567 kB]
+2026-10-22T02:41:51.2838073Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [630 kB]
+2026-10-22T02:41:51.3282865Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1400 kB]
+2026-10-22T02:41:51.3359284Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [310 kB]
+2026-10-22T02:41:51.3389542Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1706 kB]
+2026-10-22T02:41:51.3482728Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [342 kB]
+2026-10-22T02:41:51.4412142Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1146 kB]
+2026-10-22T02:41:51.4475831Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [231 kB]
+2026-10-22T02:41:51.4501882Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1222 kB]
+2026-10-22T02:41:54.2741336Z Fetched 7936 kB in 1s (9464 kB/s)
+2026-10-22T02:41:55.3160348Z Reading package lists...
+2026-10-22T02:41:55.3547500Z Reading package lists...
+2026-10-22T02:41:55.5716622Z Building dependency tree...
+2026-10-22T02:41:55.5724144Z Reading state information...
+2026-10-22T02:41:55.7257872Z libgl1-mesa-dri is already the newest version (25.2.8-0ubuntu0.24.04.4).
+2026-10-22T02:41:55.7259106Z libgl1-mesa-dri set to manually installed.
+2026-10-22T02:41:55.7260249Z libglx-mesa0 is already the newest version (25.2.8-0ubuntu0.24.04.4).
+2026-10-22T02:41:55.7261641Z libglx-mesa0 set to manually installed.
+2026-10-22T02:41:55.7262620Z libgl1 is already the newest version (1.7.0-1build1).
+2026-10-22T02:41:55.7263529Z libgl1 set to manually installed.
+2026-10-22T02:41:55.7264525Z The following additional packages will be installed:
+2026-10-22T02:41:55.7265786Z   libdecor-0-0 libdecor-0-plugin-1-gtk libegl-mesa0 libegl1 libgles2
+2026-10-22T02:41:55.7267745Z   libxcb-xkb1 libxkbcommon-x11-0 mesa-utils-bin xserver-common
+2026-10-22T02:41:55.7269662Z Recommended packages:
+2026-10-22T02:41:55.7270102Z   xfonts-base
+2026-10-22T02:41:55.7485738Z The following NEW packages will be installed:
+2026-10-22T02:41:55.7493477Z   libdecor-0-0 libdecor-0-plugin-1-gtk libegl-mesa0 libegl1 libgbm-dev
+2026-10-22T02:41:55.7494325Z   libgles2 libxcb-xkb1 libxkbcommon-x11-0 mesa-utils mesa-utils-bin
+2026-10-22T02:41:55.7505566Z The following packages will be upgraded:
+2026-10-22T02:41:55.7506101Z   xserver-common xvfb
+2026-10-22T02:41:55.7712055Z 2 upgraded, 10 newly installed, 0 to remove and 53 not upgraded.
+2026-10-22T02:41:55.7712634Z Need to get 2389 kB of archives.
+2026-10-22T02:41:55.7713121Z After this operation, 4137 kB of additional disk space will be used.
+2026-10-22T02:41:55.7713655Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-22T02:41:55.8083279Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libdecor-0-0 amd64 0.2.2-1build2 [16.5 kB]
+2026-10-22T02:41:55.8234944Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libdecor-0-plugin-1-gtk amd64 0.2.2-1build2 [22.2 kB]
+2026-10-22T02:41:55.8377932Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libegl-mesa0 amd64 25.2.8-0ubuntu0.24.04.4 [117 kB]
+2026-10-22T02:41:55.8543109Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgbm-dev amd64 25.2.8-0ubuntu0.24.04.4 [12.7 kB]
+2026-10-22T02:41:55.8683206Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxcb-xkb1 amd64 1.15-1ubuntu2 [32.3 kB]
+2026-10-22T02:41:55.8827458Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxkbcommon-x11-0 amd64 1.6.0-1build1 [14.5 kB]
+2026-10-22T02:41:55.8965492Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libegl1 amd64 1.7.0-1build1 [28.7 kB]
+2026-10-22T02:41:55.9104592Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libgles2 amd64 1.7.0-1build1 [17.1 kB]
+2026-10-22T02:41:55.9242009Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 mesa-utils-bin amd64 9.0.0-2 [164 kB]
+2026-10-22T02:41:55.9395541Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 xserver-common all 2:21.1.12-1ubuntu1.9 [35.0 kB]
+2026-10-22T02:41:55.9539457Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 xvfb amd64 2:21.1.12-1ubuntu1.9 [877 kB]
+2026-10-22T02:41:55.9748986Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 mesa-utils amd64 9.0.0-2 [1051 kB]
+2026-10-22T02:41:56.2562205Z Fetched 2389 kB in 0s (10.7 MB/s)
+2026-10-22T02:41:56.2802204Z Selecting previously unselected package libdecor-0-0:amd64.
+2026-10-22T02:41:56.3036373Z (Reading database ... 
+2026-10-22T02:41:56.3037280Z (Reading database ... 5%
+2026-10-22T02:41:56.3038016Z (Reading database ... 10%
+2026-10-22T02:41:56.3038869Z (Reading database ... 15%
+2026-10-22T02:41:56.3039368Z (Reading database ... 20%
+2026-10-22T02:41:56.3039848Z (Reading database ... 25%
+2026-10-22T02:41:56.3040297Z (Reading database ... 30%
+2026-10-22T02:41:56.3040724Z (Reading database ... 35%
+2026-10-22T02:41:56.3041387Z (Reading database ... 40%
+2026-10-22T02:41:56.3041717Z (Reading database ... 45%
+2026-10-22T02:41:56.3042011Z (Reading database ... 50%
+2026-10-22T02:41:56.3077865Z (Reading database ... 55%
+2026-10-22T02:41:56.3477704Z (Reading database ... 60%
+2026-10-22T02:41:56.4049468Z (Reading database ... 65%
+2026-10-22T02:41:56.4718244Z (Reading database ... 70%
+2026-10-22T02:41:56.5267012Z (Reading database ... 75%
+2026-10-22T02:41:56.6102782Z (Reading database ... 80%
+2026-10-22T02:41:56.7683376Z (Reading database ... 85%
+2026-10-22T02:41:56.9106823Z (Reading database ... 90%
+2026-10-22T02:41:57.0564689Z (Reading database ... 95%
+2026-10-22T02:41:57.0565092Z (Reading database ... 100%
+2026-10-22T02:41:57.0565630Z (Reading database ... 214410 files and directories currently installed.)
+2026-10-22T02:41:57.0610223Z Preparing to unpack .../00-libdecor-0-0_0.2.2-1build2_amd64.deb ...
+2026-10-22T02:41:57.0645996Z Unpacking libdecor-0-0:amd64 (0.2.2-1build2) ...
+2026-10-22T02:41:57.0877194Z Selecting previously unselected package libdecor-0-plugin-1-gtk:amd64.
+2026-10-22T02:41:57.1018445Z Preparing to unpack .../01-libdecor-0-plugin-1-gtk_0.2.2-1build2_amd64.deb ...
+2026-10-22T02:41:57.1027675Z Unpacking libdecor-0-plugin-1-gtk:amd64 (0.2.2-1build2) ...
+2026-10-22T02:41:57.1273204Z Selecting previously unselected package libegl-mesa0:amd64.
+2026-10-22T02:41:57.1414497Z Preparing to unpack .../02-libegl-mesa0_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-22T02:41:57.1423266Z Unpacking libegl-mesa0:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-22T02:41:57.1678453Z Selecting previously unselected package libgbm-dev:amd64.
+2026-10-22T02:41:57.1820173Z Preparing to unpack .../03-libgbm-dev_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-22T02:41:57.1827978Z Unpacking libgbm-dev:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-22T02:41:57.2086347Z Selecting previously unselected package libxcb-xkb1:amd64.
+2026-10-22T02:41:57.2225906Z Preparing to unpack .../04-libxcb-xkb1_1.15-1ubuntu2_amd64.deb ...
+2026-10-22T02:41:57.2233708Z Unpacking libxcb-xkb1:amd64 (1.15-1ubuntu2) ...
+2026-10-22T02:41:57.2516233Z Selecting previously unselected package libxkbcommon-x11-0:amd64.
+2026-10-22T02:41:57.2659147Z Preparing to unpack .../05-libxkbcommon-x11-0_1.6.0-1build1_amd64.deb ...
+2026-10-22T02:41:57.2667386Z Unpacking libxkbcommon-x11-0:amd64 (1.6.0-1build1) ...
+2026-10-22T02:41:57.2900772Z Selecting previously unselected package libegl1:amd64.
+2026-10-22T02:41:57.3040819Z Preparing to unpack .../06-libegl1_1.7.0-1build1_amd64.deb ...
+2026-10-22T02:41:57.3049389Z Unpacking libegl1:amd64 (1.7.0-1build1) ...
+2026-10-22T02:41:57.3296436Z Selecting previously unselected package libgles2:amd64.
+2026-10-22T02:41:57.3438639Z Preparing to unpack .../07-libgles2_1.7.0-1build1_amd64.deb ...
+2026-10-22T02:41:57.3455568Z Unpacking libgles2:amd64 (1.7.0-1build1) ...
+2026-10-22T02:41:57.3691278Z Selecting previously unselected package mesa-utils-bin:amd64.
+2026-10-22T02:41:57.3832005Z Preparing to unpack .../08-mesa-utils-bin_9.0.0-2_amd64.deb ...
+2026-10-22T02:41:57.3838692Z Unpacking mesa-utils-bin:amd64 (9.0.0-2) ...
+2026-10-22T02:41:57.4252867Z Preparing to unpack .../09-xserver-common_2%3a21.1.12-1ubuntu1.9_all.deb ...
+2026-10-22T02:41:57.4273769Z Unpacking xserver-common (2:21.1.12-1ubuntu1.9) over (2:21.1.12-1ubuntu1.8) ...
+2026-10-22T02:41:57.4670783Z Preparing to unpack .../10-xvfb_2%3a21.1.12-1ubuntu1.9_amd64.deb ...
+2026-10-22T02:41:57.4694753Z Unpacking xvfb (2:21.1.12-1ubuntu1.9) over (2:21.1.12-1ubuntu1.8) ...
+2026-10-22T02:41:57.5075207Z Selecting previously unselected package mesa-utils.
+2026-10-22T02:41:57.5225977Z Preparing to unpack .../11-mesa-utils_9.0.0-2_amd64.deb ...
+2026-10-22T02:41:57.5233157Z Unpacking mesa-utils (9.0.0-2) ...
+2026-10-22T02:41:57.5827853Z Setting up libgbm-dev:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-22T02:41:57.5849028Z Setting up libxcb-xkb1:amd64 (1.15-1ubuntu2) ...
+2026-10-22T02:41:57.5865894Z Setting up libegl-mesa0:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-22T02:41:57.5881539Z Setting up libgles2:amd64 (1.7.0-1build1) ...
+2026-10-22T02:41:57.5898472Z Setting up libxkbcommon-x11-0:amd64 (1.6.0-1build1) ...
+2026-10-22T02:41:57.5913704Z Setting up libegl1:amd64 (1.7.0-1build1) ...
+2026-10-22T02:41:57.5929652Z Setting up libdecor-0-0:amd64 (0.2.2-1build2) ...
+2026-10-22T02:41:57.5945918Z Setting up xserver-common (2:21.1.12-1ubuntu1.9) ...
+2026-10-22T02:41:57.5964494Z Setting up libdecor-0-plugin-1-gtk:amd64 (0.2.2-1build2) ...
+2026-10-22T02:41:57.5981386Z Setting up xvfb (2:21.1.12-1ubuntu1.9) ...
+2026-10-22T02:41:57.5996743Z Setting up mesa-utils-bin:amd64 (9.0.0-2) ...
+2026-10-22T02:41:57.6013525Z Setting up mesa-utils (9.0.0-2) ...
+2026-10-22T02:41:57.6034000Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-22T02:41:57.6052942Z Not building database; man-db/auto-update is not 'true'.
+2026-10-22T02:41:57.6064924Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-10-22T02:41:58.2863796Z 
+2026-10-22T02:41:58.2864425Z Running kernel seems to be up-to-date.
+2026-10-22T02:41:58.2864853Z 
+2026-10-22T02:41:58.2865107Z No services need to be restarted.
+2026-10-22T02:41:58.2865375Z 
+2026-10-22T02:41:58.2865540Z No containers need to be restarted.
+2026-10-22T02:41:58.2865759Z 
+2026-10-22T02:41:58.2865972Z No user sessions are running outdated binaries.
+2026-10-22T02:41:58.2866213Z 
+2026-10-22T02:41:58.2866541Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-22T02:46:58.3057634Z ##[error]The operation was canceled.
+2026-10-22T02:46:58.3210239Z Post job cleanup.
+2026-10-22T02:46:58.4100655Z [command]/usr/bin/git version
+2026-10-22T02:46:58.4146056Z git version 2.55.0
+2026-10-22T02:46:58.4187528Z Temporarily overriding HOME='/home/runner/work/_temp/0e0924f2-7c00-4e8e-963c-4521fcd4e07d' before making global git config changes
+2026-10-22T02:46:58.4189118Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-22T02:46:58.4195712Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ciro-cctv-stealth/ciro-cctv-stealth
+2026-10-22T02:46:58.4235621Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-22T02:46:58.4275989Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-22T02:46:58.4546703Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-22T02:46:58.4578056Z http.https://github.com/.extraheader
+2026-10-22T02:46:58.4590018Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-22T02:46:58.4695037Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-22T02:46:58.4910465Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-22T02:46:58.4956592Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-22T02:46:58.5472444Z Cleaning up orphan processes
+2026-10-22T02:46:58.5809719Z Terminate orphan process: pid (2883) (npm install)
+2026-10-22T02:46:58.5883514Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

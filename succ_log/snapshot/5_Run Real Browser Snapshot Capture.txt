@@ -1,0 +1,43 @@
+﻿2026-10-22T02:49:09.9652764Z ##[group]Run xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 +extension GLX" node capture.js
+2026-10-22T02:49:09.9653600Z [36;1mxvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 +extension GLX" node capture.js[0m
+2026-10-22T02:49:09.9721430Z shell: /usr/bin/bash -e {0}
+2026-10-22T02:49:09.9721942Z env:
+2026-10-22T02:49:09.9722325Z   BOT_TOKEN: 8899978543:AAHlrCjXZbiJwcI_OZIzXrGdpKC5_BCGCEs
+2026-10-22T02:49:09.9722681Z   CHAT_ID: 1936436999
+2026-10-22T02:49:09.9722915Z   CAM_ID: 4
+2026-10-22T02:49:09.9723112Z ##[endgroup]
+2026-10-22T02:49:10.5656659Z [INFO] Launching Real Browser (Turnstile Auto-Solve) for CCTV Banyuasin Cam 4...
+2026-10-22T02:49:18.7865567Z [1] Visiting portal to acquire Cloudflare session: https://cctv.banyuasinkab.go.id/
+2026-10-22T02:49:19.0446435Z [2] Waiting 6 seconds for Cloudflare Turnstile auto-solve...
+2026-10-22T02:49:25.0447206Z [3] Navigating to stream target: https://cctv.banyuasinkab.go.id/stream/4
+2026-10-22T02:49:27.1007548Z [4] Stabilizing video stream frame...
+2026-10-22T02:49:32.1294377Z [*] Capturing full page screenshot...
+2026-10-22T02:49:32.3083307Z [5] Screenshot saved to cctv_banyuasin_4.jpg
+2026-10-22T02:49:34.0846818Z Telegram sendPhoto response: {
+2026-10-22T02:49:34.0847950Z   ok: true,
+2026-10-22T02:49:34.0848976Z   result: {
+2026-10-22T02:49:34.0849354Z     message_id: 175,
+2026-10-22T02:49:34.0849673Z     from: {
+2026-10-22T02:49:34.0850022Z       id: 8899978543,
+2026-10-22T02:49:34.0850521Z       is_bot: true,
+2026-10-22T02:49:34.0851077Z       first_name: 'Ciro CCTV',
+2026-10-22T02:49:34.0851658Z       username: 'Dicopi_bot'
+2026-10-22T02:49:34.0852413Z     },
+2026-10-22T02:49:34.0852675Z     chat: {
+2026-10-22T02:49:34.0853099Z       id: 1936436999,
+2026-10-22T02:49:34.0853585Z       first_name: 'Wakizaka',
+2026-10-22T02:49:34.0853943Z       last_name: 'Yaichiro',
+2026-10-22T02:49:34.0854505Z       username: 'Amadeusciro',
+2026-10-22T02:49:34.0855287Z       type: 'private'
+2026-10-22T02:49:34.0855929Z     },
+2026-10-22T02:49:34.0856273Z     date: 1792637373,
+2026-10-22T02:49:34.0856746Z     photo: [ [Object], [Object], [Object], [Object] ],
+2026-10-22T02:49:34.0859281Z     caption: '📸 Snapshot Live Realtime [CCTV Banyuasin Cam 4] 🚦\n' +
+2026-10-22T02:49:34.0860087Z       '\n' +
+2026-10-22T02:49:34.0860836Z       '🏢 Wilayah: Kab. Banyuasin (Bypass Cloudflare Real-Browser)\n' +
+2026-10-22T02:49:34.0861941Z       '🕒 Waktu: 22/10/2026, 09.49.32 WIB\n' +
+2026-10-22T02:49:34.0864132Z       '🔗 Endpoint: https://cctv.banyuasinkab.go.id/stream/4',
+2026-10-22T02:49:34.0887813Z     caption_entities: [ [Object], [Object], [Object], [Object], [Object] ]
+2026-10-22T02:49:34.0888453Z   }
+2026-10-22T02:49:34.0888759Z }
+2026-10-22T02:49:34.0889229Z [6] Successfully sent snapshot to Telegram!

@@ -1,0 +1,151 @@
+﻿2026-10-22T02:48:49.5246488Z ##[group]Run sudo apt-get update
+2026-10-22T02:48:49.5246975Z [36;1msudo apt-get update[0m
+2026-10-22T02:48:49.5247525Z [36;1msudo apt-get install -y xvfb libgbm-dev libgl1-mesa-dri libglx-mesa0 libgl1 mesa-utils[0m
+2026-10-22T02:48:49.5248130Z [36;1mnpm install --no-audit --prefer-offline[0m
+2026-10-22T02:48:49.5539902Z shell: /usr/bin/bash -e {0}
+2026-10-22T02:48:49.5540320Z ##[endgroup]
+2026-10-22T02:48:49.6445639Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-22T02:48:49.6708748Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-22T02:48:49.6808738Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-22T02:48:49.6826797Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-22T02:48:49.6903494Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-22T02:48:49.6914613Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-22T02:48:49.7492031Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.4 kB]
+2026-10-22T02:48:49.7612480Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [630 kB]
+2026-10-22T02:48:49.7738711Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [567 kB]
+2026-10-22T02:48:49.8586214Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1400 kB]
+2026-10-22T02:48:49.8666759Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [310 kB]
+2026-10-22T02:48:49.8693368Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1706 kB]
+2026-10-22T02:48:49.8777457Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [342 kB]
+2026-10-22T02:48:49.8806994Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1805 kB]
+2026-10-22T02:48:49.8901153Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [411 kB]
+2026-10-22T02:48:49.9723194Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1146 kB]
+2026-10-22T02:48:49.9782593Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [231 kB]
+2026-10-22T02:48:49.9806218Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1222 kB]
+2026-10-22T02:48:49.9867111Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [246 kB]
+2026-10-22T02:48:50.0350202Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1713 kB]
+2026-10-22T02:48:50.0520723Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [392 kB]
+2026-10-22T02:48:53.0349667Z Fetched 12.5 MB in 1s (9879 kB/s)
+2026-10-22T02:48:53.9375558Z Reading package lists...
+2026-10-22T02:48:53.9699752Z Reading package lists...
+2026-10-22T02:48:54.1553479Z Building dependency tree...
+2026-10-22T02:48:54.1559997Z Reading state information...
+2026-10-22T02:48:54.2910917Z libgl1-mesa-dri is already the newest version (25.2.8-0ubuntu0.24.04.4).
+2026-10-22T02:48:54.2912345Z libgl1-mesa-dri set to manually installed.
+2026-10-22T02:48:54.2913175Z libglx-mesa0 is already the newest version (25.2.8-0ubuntu0.24.04.4).
+2026-10-22T02:48:54.2913871Z libglx-mesa0 set to manually installed.
+2026-10-22T02:48:54.2914476Z libgl1 is already the newest version (1.7.0-1build1).
+2026-10-22T02:48:54.2915014Z libgl1 set to manually installed.
+2026-10-22T02:48:54.2915578Z The following additional packages will be installed:
+2026-10-22T02:48:54.2916769Z   libdecor-0-0 libdecor-0-plugin-1-gtk libegl-mesa0 libegl1 libgles2
+2026-10-22T02:48:54.2918032Z   libxcb-xkb1 libxkbcommon-x11-0 mesa-utils-bin xserver-common
+2026-10-22T02:48:54.2922633Z Recommended packages:
+2026-10-22T02:48:54.2923342Z   xfonts-base
+2026-10-22T02:48:54.3146099Z The following NEW packages will be installed:
+2026-10-22T02:48:54.3146936Z   libdecor-0-0 libdecor-0-plugin-1-gtk libegl-mesa0 libegl1 libgbm-dev
+2026-10-22T02:48:54.3151198Z   libgles2 libxcb-xkb1 libxkbcommon-x11-0 mesa-utils mesa-utils-bin
+2026-10-22T02:48:54.3160118Z The following packages will be upgraded:
+2026-10-22T02:48:54.3160643Z   xserver-common xvfb
+2026-10-22T02:48:54.3325492Z 2 upgraded, 10 newly installed, 0 to remove and 95 not upgraded.
+2026-10-22T02:48:54.3326468Z Need to get 2389 kB of archives.
+2026-10-22T02:48:54.3327393Z After this operation, 4137 kB of additional disk space will be used.
+2026-10-22T02:48:54.3328257Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-22T02:48:54.4208057Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libdecor-0-0 amd64 0.2.2-1build2 [16.5 kB]
+2026-10-22T02:48:54.4915052Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libdecor-0-plugin-1-gtk amd64 0.2.2-1build2 [22.2 kB]
+2026-10-22T02:48:54.5613234Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libegl-mesa0 amd64 25.2.8-0ubuntu0.24.04.4 [117 kB]
+2026-10-22T02:48:54.6327870Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgbm-dev amd64 25.2.8-0ubuntu0.24.04.4 [12.7 kB]
+2026-10-22T02:48:54.7025581Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxcb-xkb1 amd64 1.15-1ubuntu2 [32.3 kB]
+2026-10-22T02:48:54.7721088Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxkbcommon-x11-0 amd64 1.6.0-1build1 [14.5 kB]
+2026-10-22T02:48:54.8421201Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libegl1 amd64 1.7.0-1build1 [28.7 kB]
+2026-10-22T02:48:54.9123610Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libgles2 amd64 1.7.0-1build1 [17.1 kB]
+2026-10-22T02:48:55.0503713Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 mesa-utils-bin amd64 9.0.0-2 [164 kB]
+2026-10-22T02:48:55.3159561Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 xserver-common all 2:21.1.12-1ubuntu1.9 [35.0 kB]
+2026-10-22T02:48:55.3945145Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 xvfb amd64 2:21.1.12-1ubuntu1.9 [877 kB]
+2026-10-22T02:48:55.6397774Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 mesa-utils amd64 9.0.0-2 [1051 kB]
+2026-10-22T02:48:55.9709621Z Fetched 2389 kB in 1s (1723 kB/s)
+2026-10-22T02:48:55.9952049Z Selecting previously unselected package libdecor-0-0:amd64.
+2026-10-22T02:48:56.0299543Z (Reading database ... 
+2026-10-22T02:48:56.0300277Z (Reading database ... 5%
+2026-10-22T02:48:56.0300883Z (Reading database ... 10%
+2026-10-22T02:48:56.0301473Z (Reading database ... 15%
+2026-10-22T02:48:56.0302312Z (Reading database ... 20%
+2026-10-22T02:48:56.0302874Z (Reading database ... 25%
+2026-10-22T02:48:56.0303503Z (Reading database ... 30%
+2026-10-22T02:48:56.0304015Z (Reading database ... 35%
+2026-10-22T02:48:56.0304540Z (Reading database ... 40%
+2026-10-22T02:48:56.0304923Z (Reading database ... 45%
+2026-10-22T02:48:56.0305487Z (Reading database ... 50%
+2026-10-22T02:48:56.0364308Z (Reading database ... 55%
+2026-10-22T02:48:56.1284677Z (Reading database ... 60%
+2026-10-22T02:48:56.2956098Z (Reading database ... 65%
+2026-10-22T02:48:56.4807125Z (Reading database ... 70%
+2026-10-22T02:48:56.6796230Z (Reading database ... 75%
+2026-10-22T02:48:56.8268473Z (Reading database ... 80%
+2026-10-22T02:48:57.0275585Z (Reading database ... 85%
+2026-10-22T02:48:57.2006684Z (Reading database ... 90%
+2026-10-22T02:48:57.3809472Z (Reading database ... 95%
+2026-10-22T02:48:57.3809908Z (Reading database ... 100%
+2026-10-22T02:48:57.3810447Z (Reading database ... 203540 files and directories currently installed.)
+2026-10-22T02:48:57.3854707Z Preparing to unpack .../00-libdecor-0-0_0.2.2-1build2_amd64.deb ...
+2026-10-22T02:48:57.3930250Z Unpacking libdecor-0-0:amd64 (0.2.2-1build2) ...
+2026-10-22T02:48:57.4139366Z Selecting previously unselected package libdecor-0-plugin-1-gtk:amd64.
+2026-10-22T02:48:57.4265305Z Preparing to unpack .../01-libdecor-0-plugin-1-gtk_0.2.2-1build2_amd64.deb ...
+2026-10-22T02:48:57.4273342Z Unpacking libdecor-0-plugin-1-gtk:amd64 (0.2.2-1build2) ...
+2026-10-22T02:48:57.4484400Z Selecting previously unselected package libegl-mesa0:amd64.
+2026-10-22T02:48:57.4609421Z Preparing to unpack .../02-libegl-mesa0_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-22T02:48:57.4619409Z Unpacking libegl-mesa0:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-22T02:48:57.4836487Z Selecting previously unselected package libgbm-dev:amd64.
+2026-10-22T02:48:57.4961534Z Preparing to unpack .../03-libgbm-dev_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-22T02:48:57.4968692Z Unpacking libgbm-dev:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-22T02:48:57.5191634Z Selecting previously unselected package libxcb-xkb1:amd64.
+2026-10-22T02:48:57.5321624Z Preparing to unpack .../04-libxcb-xkb1_1.15-1ubuntu2_amd64.deb ...
+2026-10-22T02:48:57.5331301Z Unpacking libxcb-xkb1:amd64 (1.15-1ubuntu2) ...
+2026-10-22T02:48:57.5544061Z Selecting previously unselected package libxkbcommon-x11-0:amd64.
+2026-10-22T02:48:57.5669705Z Preparing to unpack .../05-libxkbcommon-x11-0_1.6.0-1build1_amd64.deb ...
+2026-10-22T02:48:57.5678588Z Unpacking libxkbcommon-x11-0:amd64 (1.6.0-1build1) ...
+2026-10-22T02:48:57.5876401Z Selecting previously unselected package libegl1:amd64.
+2026-10-22T02:48:57.6008206Z Preparing to unpack .../06-libegl1_1.7.0-1build1_amd64.deb ...
+2026-10-22T02:48:57.6021115Z Unpacking libegl1:amd64 (1.7.0-1build1) ...
+2026-10-22T02:48:57.6274361Z Selecting previously unselected package libgles2:amd64.
+2026-10-22T02:48:57.6414505Z Preparing to unpack .../07-libgles2_1.7.0-1build1_amd64.deb ...
+2026-10-22T02:48:57.6424375Z Unpacking libgles2:amd64 (1.7.0-1build1) ...
+2026-10-22T02:48:57.6666722Z Selecting previously unselected package mesa-utils-bin:amd64.
+2026-10-22T02:48:57.6808618Z Preparing to unpack .../08-mesa-utils-bin_9.0.0-2_amd64.deb ...
+2026-10-22T02:48:57.6818290Z Unpacking mesa-utils-bin:amd64 (9.0.0-2) ...
+2026-10-22T02:48:57.7251262Z Preparing to unpack .../09-xserver-common_2%3a21.1.12-1ubuntu1.9_all.deb ...
+2026-10-22T02:48:57.7274664Z Unpacking xserver-common (2:21.1.12-1ubuntu1.9) over (2:21.1.12-1ubuntu1.8) ...
+2026-10-22T02:48:57.7704677Z Preparing to unpack .../10-xvfb_2%3a21.1.12-1ubuntu1.9_amd64.deb ...
+2026-10-22T02:48:57.7727047Z Unpacking xvfb (2:21.1.12-1ubuntu1.9) over (2:21.1.12-1ubuntu1.8) ...
+2026-10-22T02:48:57.8064543Z Selecting previously unselected package mesa-utils.
+2026-10-22T02:48:57.8195723Z Preparing to unpack .../11-mesa-utils_9.0.0-2_amd64.deb ...
+2026-10-22T02:48:57.8202692Z Unpacking mesa-utils (9.0.0-2) ...
+2026-10-22T02:48:57.8762862Z Setting up libgbm-dev:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-22T02:48:57.8785710Z Setting up libxcb-xkb1:amd64 (1.15-1ubuntu2) ...
+2026-10-22T02:48:57.8802023Z Setting up libegl-mesa0:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-22T02:48:57.8818287Z Setting up libgles2:amd64 (1.7.0-1build1) ...
+2026-10-22T02:48:57.8835045Z Setting up libxkbcommon-x11-0:amd64 (1.6.0-1build1) ...
+2026-10-22T02:48:57.8852582Z Setting up libegl1:amd64 (1.7.0-1build1) ...
+2026-10-22T02:48:57.8870575Z Setting up libdecor-0-0:amd64 (0.2.2-1build2) ...
+2026-10-22T02:48:57.8888864Z Setting up xserver-common (2:21.1.12-1ubuntu1.9) ...
+2026-10-22T02:48:57.8906731Z Setting up libdecor-0-plugin-1-gtk:amd64 (0.2.2-1build2) ...
+2026-10-22T02:48:57.8926192Z Setting up xvfb (2:21.1.12-1ubuntu1.9) ...
+2026-10-22T02:48:57.8943283Z Setting up mesa-utils-bin:amd64 (9.0.0-2) ...
+2026-10-22T02:48:57.8963401Z Setting up mesa-utils (9.0.0-2) ...
+2026-10-22T02:48:57.8985126Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-22T02:48:57.9008071Z Not building database; man-db/auto-update is not 'true'.
+2026-10-22T02:48:57.9018789Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-10-22T02:48:58.5960187Z 
+2026-10-22T02:48:58.5961128Z Running kernel seems to be up-to-date.
+2026-10-22T02:48:58.5961619Z 
+2026-10-22T02:48:58.5962201Z No services need to be restarted.
+2026-10-22T02:48:58.5962594Z 
+2026-10-22T02:48:58.5962946Z No containers need to be restarted.
+2026-10-22T02:48:58.5963330Z 
+2026-10-22T02:48:58.5964143Z No user sessions are running outdated binaries.
+2026-10-22T02:48:58.5964607Z 
+2026-10-22T02:48:58.5965269Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-22T02:49:09.9442499Z 
+2026-10-22T02:49:09.9443095Z added 127 packages in 10s
+2026-10-22T02:49:09.9443444Z 
+2026-10-22T02:49:09.9443735Z 15 packages are looking for funding
+2026-10-22T02:49:09.9444267Z   run `npm fund` for details
