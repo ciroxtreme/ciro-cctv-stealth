@@ -134,20 +134,26 @@ async function sendPhotoToTelegram(photoPath, caption) {
     console.log(`[3] Mencari kamera target: "${requestedTarget}" di peta / daftar kamera...`);
 
     const selectResult = await page.evaluate((targetName) => {
-      // 1. Cari elemen menu/link/list kamera yang teksnya mengandung nama target dan trigger klik
-      const clickableElements = Array.from(document.querySelectorAll('a, button, li, .list-group-item, span, td, h5, h6, [onclick]'));
-      const foundItem = clickableElements.find(el => {
+      // 1. Ekstrak informasi fungsi onclick / fungsi pemanggil kamera dari daftar menu
+      const allElements = Array.from(document.querySelectorAll('a, button, li, .list-group-item, span, td, h5, h6, [onclick]'));
+      const foundItem = allElements.find(el => {
         const txt = (el.innerText || el.textContent || '').toLowerCase().trim();
         return txt === targetName || (targetName.length > 3 && txt.includes(targetName));
       });
 
+      let clickedMethod = '';
       if (foundItem) {
-        // Jangan sembunyikan modal jika item menu yang memicunya
+        // Klik elemen secara native
         foundItem.click();
-        return { clicked: true, method: 'menuItemClick', text: foundItem.innerText };
+        clickedMethod = 'menuItemClick';
+
+        // Jika memiliki onclick, trigger langsung
+        if (typeof foundItem.onclick === 'function') {
+          try { foundItem.onclick(); } catch (e) {}
+        }
       }
 
-      // 2. Jika tidak ada menu yang cocok, cari marker Leaflet
+      // 2. Jika ada marker Leaflet yang cocok
       const markers = Array.from(document.querySelectorAll('.leaflet-marker-icon'));
       const targetMarker = markers.find(m => {
         const title = (m.title || m.alt || '').toLowerCase();
@@ -156,22 +162,24 @@ async function sendPhotoToTelegram(photoPath, caption) {
 
       if (targetMarker) {
         targetMarker.click();
-        return { clicked: true, method: 'markerDirect', title: targetMarker.title };
+        clickedMethod = clickedMethod ? clickedMethod + '+marker' : 'markerDirect';
       }
 
-      return { clicked: false, totalMarkers: markers.length };
+      return { clicked: !!(foundItem || targetMarker), method: clickedMethod, text: foundItem ? foundItem.innerText : '' };
     }, requestedTarget);
 
     console.log('[*] Status seleksi kamera:', JSON.stringify(selectResult));
 
-    // Tunggu popup video / modal kamera selesai dimuat
-    console.log('[4] Menunggu popup modal video CCTV muncul...');
-    await page.waitForSelector('#exampleModal, .modal.show, .leaflet-popup-content, video, canvas, iframe', { timeout: 15000 }).catch(() => null);
-    await new Promise(r => setTimeout(r, 6000));
+    // Tunggu modal #exampleModal atau video/image stream terisi
+    console.log('[4] Menunggu stream modal video/image ter-render...');
+    await page.waitForFunction(() => {
+      const img = document.querySelector('#modalImage, #exampleModal img');
+      const video = document.querySelector('video');
+      return (img && img.src && img.src.length > 10) || (video && video.readyState >= 2);
+    }, { timeout: 15000 }).catch(() => null);
 
-    // Pastikan modal #exampleModal aktif dan panggil fungsi stream video asli Banyuasin
+    // Pastikan modal #exampleModal tampil di viewport secara sempurna
     await page.evaluate((targetName) => {
-      // 1. Cek modal tunggal portal Banyuasin: #exampleModal
       const exampleModal = document.querySelector('#exampleModal');
       if (exampleModal) {
         exampleModal.classList.add('show');
@@ -183,30 +191,19 @@ async function sendPhotoToTelegram(photoPath, caption) {
         exampleModal.removeAttribute('aria-hidden');
 
         const titleEl = exampleModal.querySelector('#modalLocation, .modal-title');
-        if (titleEl && !titleEl.innerText) {
+        if (titleEl) {
           titleEl.innerText = targetName.toUpperCase();
-        }
-
-        // Cek apakah ada onclick di menu yang memanggil fungsi JS load video
-        const clickable = Array.from(document.querySelectorAll('a, button, li, .list-group-item'));
-        const item = clickable.find(el => (el.innerText || '').toLowerCase().includes(targetName));
-        if (item) {
-          const onclickAttr = item.getAttribute('onclick');
-          if (onclickAttr) {
-            try { eval(onclickAttr); } catch (e) {}
-          }
         }
       }
 
-      // 2. Play video jika ada
       document.querySelectorAll('video').forEach(v => {
         v.muted = true;
         v.play().catch(() => null);
       });
     }, requestedTarget);
 
-    // Beri jeda 8 detik agar stream HLS/WebRTC termuat sempurna di modal-body
-    await new Promise(r => setTimeout(r, 8000));
+    // Beri jeda 5 detik agar frame kamera ter-render penuh
+    await new Promise(r => setTimeout(r, 5000));
 
     // Debug isi HTML dan frame yang ada di halaman
     let debugInfo = {};
