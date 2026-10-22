@@ -125,6 +125,12 @@ async function sendPhotoToTelegram(photoPath, caption) {
     console.log(`[3] Mencari kamera target: "${requestedTarget}" di peta / daftar kamera...`);
 
     const selectResult = await page.evaluate((targetName) => {
+      // Sembunyikan semua modal lain terlebih dahulu agar tidak menimpa kamera yang dipilih
+      document.querySelectorAll('.modal, [class*="modal"]').forEach(m => {
+        m.classList.remove('show');
+        m.style.display = 'none';
+      });
+
       // 1. Cek apakah ada elemen list/menu/link kamera dengan teks nama target
       const allElements = Array.from(document.querySelectorAll('a, button, li, .list-group-item, span, td, h5, h6'));
       const foundLink = allElements.find(el => el.innerText && el.innerText.toLowerCase().trim() === targetName.trim());
@@ -132,7 +138,7 @@ async function sendPhotoToTelegram(photoPath, caption) {
         foundLink.click();
       }
 
-      // 2. Cek apakah ada modal yang sesuai dengan target dan pastikan tampil (hilangkan efek animasi transisi)
+      // 2. Cek apakah ada modal yang sesuai dengan target dan tampilkan secara eksklusif
       const modals = Array.from(document.querySelectorAll('.modal, [class*="modal"]'));
       const matchingModal = modals.find(m => m.innerText && m.innerText.toLowerCase().includes(targetName));
       if (matchingModal) {
@@ -144,7 +150,7 @@ async function sendPhotoToTelegram(photoPath, caption) {
         matchingModal.style.zIndex = '99999';
         const v = matchingModal.querySelector('video');
         if (v) v.play().catch(() => null);
-        return { clicked: true, method: 'modalDirect', id: matchingModal.id };
+        return { clicked: true, method: 'modalDirect', id: matchingModal.id, name: targetName };
       }
 
       if (foundLink) {
