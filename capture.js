@@ -140,9 +140,23 @@ async function sendPhotoToTelegram(photoPath, caption) {
 
     console.log('[*] Status klik marker CCTV:', clicked);
 
+    // Debug isi HTML dan frame yang ada di halaman
+    const debugInfo = await page.evaluate(() => {
+      return {
+        url: window.location.href,
+        bodyText: document.body.innerText.substring(0, 300),
+        hasLeaflet: typeof window.L !== 'undefined',
+        markerCount: document.querySelectorAll('.leaflet-marker-icon').length,
+        popupCount: document.querySelectorAll('.leaflet-popup').length,
+        modalCount: document.querySelectorAll('.modal, [class*="modal"], [id*="modal"]').length
+      };
+    });
+    console.log('[DEBUG] Info Halaman:', JSON.stringify(debugInfo));
+
     // Tunggu popup modal video ("Pasar P.Balai 2") muncul
     console.log('[4] Menunggu popup video CCTV muncul...');
     await new Promise(r => setTimeout(r, 6000));
+
 
     // Cari elemen popup dialog / video player di dalam modal
     const modalSelector = '.leaflet-popup-content, .modal-content, video, canvas, iframe';
