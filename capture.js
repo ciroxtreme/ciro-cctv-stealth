@@ -140,18 +140,29 @@ async function sendPhotoToTelegram(photoPath, caption) {
 
     console.log('[*] Status klik marker CCTV:', clicked);
 
+    // Tunggu transisi atau navigasi jika marker membuka URL baru/modal
+    await new Promise(r => setTimeout(r, 4000));
+    console.log('[*] URL setelah klik marker:', page.url());
+
     // Debug isi HTML dan frame yang ada di halaman
-    const debugInfo = await page.evaluate(() => {
-      return {
-        url: window.location.href,
-        bodyText: document.body.innerText.substring(0, 300),
-        hasLeaflet: typeof window.L !== 'undefined',
-        markerCount: document.querySelectorAll('.leaflet-marker-icon').length,
-        popupCount: document.querySelectorAll('.leaflet-popup').length,
-        modalCount: document.querySelectorAll('.modal, [class*="modal"], [id*="modal"]').length
-      };
-    });
-    console.log('[DEBUG] Info Halaman:', JSON.stringify(debugInfo));
+    let debugInfo = {};
+    try {
+      debugInfo = await page.evaluate(() => {
+        return {
+          url: window.location.href,
+          title: document.title,
+          hasLeaflet: typeof window.L !== 'undefined',
+          markerCount: document.querySelectorAll('.leaflet-marker-icon').length,
+          popupCount: document.querySelectorAll('.leaflet-popup').length,
+          modalCount: document.querySelectorAll('.modal, [class*="modal"], [id*="modal"]').length,
+          hasVideo: document.querySelectorAll('video, canvas, iframe').length
+        };
+      });
+      console.log('[DEBUG] Info Halaman:', JSON.stringify(debugInfo));
+    } catch (e) {
+      console.log('[!] Error evaluate debug info:', e.message);
+    }
+
 
     // Tunggu popup modal video ("Pasar P.Balai 2") muncul
     console.log('[4] Menunggu popup video CCTV muncul...');
