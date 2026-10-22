@@ -98,8 +98,8 @@ async function sendPhotoToTelegram(photoPath, caption) {
 
     console.log('[2] Menunggu Cloudflare Turnstile & Peta Leaflet memuat...');
     
-    // Auto-solver loop Turnstile
-    for (let i = 0; i < 25; i++) {
+    // Tunggu Turnstile & Peta Leaflet memuat (puppeteer-real-browser turnstile: true otomatis menangani solving di background)
+    for (let i = 0; i < 40; i++) {
       await new Promise(r => setTimeout(r, 2000));
       let currentTitle = '';
       try {
@@ -114,37 +114,6 @@ async function sendPhotoToTelegram(photoPath, caption) {
       if (!currentTitle.toLowerCase().includes('just a moment') && !currentTitle.toLowerCase().includes('security verification')) {
         console.log('[+] Lolos Turnstile Cloudflare! Masuk ke halaman peta!');
         break;
-      }
-
-      // Jika dalam 8 detik pertama belum lolos, beri jeda interaksi natural (jangan klik berulang-ulang di koordinat yang sama)
-      if (i >= 4 && i % 3 === 0) {
-        try {
-          const frames = page.frames();
-          for (const frame of frames) {
-            if (frame.url().includes('challenges.cloudflare.com')) {
-              const el = await frame.$('body, #challenge-stage, input[type="checkbox"], .ctp-checkbox-label, .ctp-label');
-              if (el) {
-                const box = await el.boundingBox();
-                if (box) {
-                  const targetX = box.x + 25 + (Math.random() * 6 - 3);
-                  const targetY = box.y + 25 + (Math.random() * 6 - 3);
-                  console.log(`[*] Natural mouse move & click Turnstile di (${Math.round(targetX)}, ${Math.round(targetY)})`);
-                  
-                  // Gerakan mouse bertahap
-                  await page.mouse.move(targetX - 40, targetY - 40);
-                  await new Promise(r => setTimeout(r, 150));
-                  await page.mouse.move(targetX, targetY);
-                  await new Promise(r => setTimeout(r, 100));
-                  await page.mouse.click(targetX, targetY);
-                } else {
-                  await el.click().catch(() => null);
-                }
-              }
-            }
-          }
-        } catch (e) {
-          console.log('[!] Auto-click attempt:', e.message);
-        }
       }
     }
 
