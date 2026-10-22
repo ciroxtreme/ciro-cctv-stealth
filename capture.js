@@ -88,29 +88,49 @@ async function sendPhotoToTelegram(photoPath, caption) {
 
     console.log('[2] Menunggu Cloudflare Turnstile & Peta Leaflet memuat...');
     
-    // Tunggu Turnstile otomatis selesai / redirect
-    for (let i = 0; i < 20; i++) {
+    // Auto-solver loop Turnstile
+    for (let i = 0; i < 25; i++) {
       await new Promise(r => setTimeout(r, 2000));
       const currentTitle = await page.title();
       console.log(`[*] Detik ke-${(i + 1) * 2} | Judul: "${currentTitle}" | URL: ${page.url()}`);
-      if (!currentTitle.toLowerCase().includes('just a moment')) {
+      
+      if (!currentTitle.toLowerCase().includes('just a moment') && !currentTitle.toLowerCase().includes('security verification')) {
         console.log('[+] Lolos Turnstile Cloudflare! Masuk ke halaman peta!');
         break;
       }
-      // Coba klik Turnstile jika ada
+
+      // Deteksi dan klik Turnstile widget
       try {
         const frames = page.frames();
         for (const frame of frames) {
           if (frame.url().includes('challenges.cloudflare.com')) {
-            const cb = await frame.$('input[type="checkbox"], #challenge-stage, .ctp-checkbox-label');
-            if (cb) {
-              console.log('[*] Menemukan checkbox Turnstile di iframe, klik!');
-              await cb.click();
+            const el = await frame.$('body, #challenge-stage, input[type="checkbox"], .ctp-checkbox-label, .ctp-label');
+            if (el) {
+              const box = await el.boundingBox();
+              if (box) {
+                console.log(`[*] Klik checkbox Turnstile di koordinat (${box.x + 25}, ${box.y + 25})`);
+                await page.mouse.click(box.x + 25, box.y + 25);
+              } else {
+                await el.click().catch(() => null);
+              }
             }
           }
         }
-      } catch (e) {}
+
+        // Coba klik container challenge jika di main frame
+        const cfContainer = await page.$('#cf-turnstile, #challenge-stage, iframe[src*="challenges.cloudflare.com"]');
+        if (cfContainer) {
+          const cBox = await cfContainer.boundingBox();
+          if (cBox) {
+            console.log(`[*] Klik challenge container di koordinat (${cBox.x + 30}, ${cBox.y + cBox.height / 2})`);
+            await page.mouse.click(cBox.x + 30, cBox.y + cBox.height / 2);
+          }
+        }
+      } catch (e) {
+        console.log('[!] Auto-click attempt:', e.message);
+      }
     }
+
 
 
     // Cari marker CCTV di peta atau trigger modal kamera berdasarkan nama/target
