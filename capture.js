@@ -113,34 +113,46 @@ async function sendPhotoToTelegram(photoPath, caption) {
     }
 
 
-    // Cari marker CCTV di peta (Leaflet marker)
-    console.log('[3] Mencari ikon marker kamera di peta Leaflet...');
-    await page.waitForSelector('.leaflet-marker-icon', { timeout: 20000 });
-    console.log('[+] Marker Leaflet ditemukan di peta!');
+    // Cari marker CCTV di peta atau trigger modal kamera berdasarkan nama/target
+    const requestedTarget = (process.env.CAM_TARGET || 'sembawa').toLowerCase();
+    console.log(`[3] Mencari kamera target: "${requestedTarget}" di peta / daftar kamera...`);
 
-    // Cari marker yang benar (ikon CCTV kamera / marker cluster)
-    const markerTarget = await page.evaluate(() => {
+    const selectResult = await page.evaluate((targetName) => {
+      // 1. Cek apakah ada elemen list/menu/link kamera dengan teks nama target
+      const allElements = Array.from(document.querySelectorAll('a, button, li, .list-group-item, span, td, h5, h6'));
+      const foundLink = allElements.find(el => el.innerText && el.innerText.toLowerCase().trim() === targetName.trim());
+      if (foundLink) {
+        foundLink.click();
+        return { clicked: true, method: 'menuItem', name: foundLink.innerText };
+      }
+
+      // 2. Cek apakah ada modal yang sesuai dengan target
+      const modals = Array.from(document.querySelectorAll('.modal, [class*="modal"]'));
+      const matchingModal = modals.find(m => m.innerText && m.innerText.toLowerCase().includes(targetName));
+      if (matchingModal) {
+        matchingModal.classList.add('show');
+        matchingModal.style.display = 'block';
+        return { clicked: true, method: 'modalDirect', id: matchingModal.id };
+      }
+
+      // 3. Fallback: Cari marker CCTV kamera di peta
       const markers = Array.from(document.querySelectorAll('.leaflet-marker-icon'));
-      console.log('Semua marker di peta:', markers.map(m => m.outerHTML));
-      // Prioritaskan marker dengan class atau src kamera
-      const camMarker = markers.find(m => m.src && (m.src.includes('cctv') || m.src.includes('cam') || m.src.includes('marker')));
+      const camMarker = markers.find(m => m.src && (m.src.includes('cctv') || m.src.includes('RED') || m.src.includes('cam')));
       if (camMarker) {
         camMarker.click();
-        return { clicked: true, type: 'camMarker', src: camMarker.src };
+        return { clicked: true, method: 'camMarker', src: camMarker.src };
       }
-      if (markers.length > 0) {
-        // Ambil marker terakhir atau pertama yang bukan logo/navigasi
-        markers[markers.length - 1].click();
-        return { clicked: true, type: 'lastMarker' };
-      }
-      return { clicked: false };
-    });
-    console.log('[*] Status klik marker CCTV:', JSON.stringify(markerTarget));
 
-    // Tunggu popup modal video ("Pasar P.Balai 2") muncul di Leaflet
+      return { clicked: false, totalMarkers: markers.length };
+    }, requestedTarget);
+
+    console.log('[*] Status seleksi kamera:', JSON.stringify(selectResult));
+
+    // Tunggu popup modal video muncul di Leaflet
     console.log('[4] Menunggu popup modal video CCTV muncul...');
-    await page.waitForSelector('.leaflet-popup-content, .modal-content, video, canvas', { timeout: 15000 }).catch(() => null);
-    await new Promise(r => setTimeout(r, 4000));
+    await page.waitForSelector('.modal.show, .leaflet-popup-content, .modal-content, video, canvas', { timeout: 15000 }).catch(() => null);
+    await new Promise(r => setTimeout(r, 5000));
+
 
 
     // Debug isi HTML dan frame yang ada di halaman
