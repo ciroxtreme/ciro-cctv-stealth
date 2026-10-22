@@ -76,6 +76,14 @@ with Camoufox(
 
     time.sleep(5)
     out_path = "cctv_banyuasin_live.jpg"
+
+    # Verifikasi ketat sebelum menyimpan foto hasil
+    if not passed or "just a moment" in page.title().lower():
+        print("[!] Gagal lolos Turnstile: Layar masih security verification. Jangan kirim!")
+        if os.path.exists(out_path):
+            os.remove(out_path)
+        sys.exit(1)
+
     page.screenshot(path=out_path, quality=90, type="jpeg")
     print(f"[4] Screenshot berhasil disimpan di: {out_path}")
 
