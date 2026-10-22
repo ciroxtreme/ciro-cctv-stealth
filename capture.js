@@ -47,11 +47,31 @@ async function sendPhotoToTelegram(photoPath, caption) {
     await page.goto(portalUrl, { waitUntil: 'networkidle2', timeout: 60000 });
 
     console.log('[2] Menunggu Cloudflare Turnstile & Peta Leaflet memuat...');
-    await new Promise(r => setTimeout(r, 8000));
+    
+    // Tunggu Turnstile otomatis selesai / redirect
+    for (let i = 0; i < 20; i++) {
+      await new Promise(r => setTimeout(r, 2000));
+      const currentTitle = await page.title();
+      console.log(`[*] Detik ke-${(i + 1) * 2} | Judul: "${currentTitle}" | URL: ${page.url()}`);
+      if (!currentTitle.toLowerCase().includes('just a moment')) {
+        console.log('[+] Lolos Turnstile Cloudflare! Masuk ke halaman peta!');
+        break;
+      }
+      // Coba klik Turnstile jika ada
+      try {
+        const frames = page.frames();
+        for (const frame of frames) {
+          if (frame.url().includes('challenges.cloudflare.com')) {
+            const cb = await frame.$('input[type="checkbox"], #challenge-stage, .ctp-checkbox-label');
+            if (cb) {
+              console.log('[*] Menemukan checkbox Turnstile di iframe, klik!');
+              await cb.click();
+            }
+          }
+        }
+      } catch (e) {}
+    }
 
-    // Cek apakah lolos ke halaman peta
-    const title = await page.title();
-    console.log('[*] Judul halaman saat ini:', title);
 
     // Cari marker CCTV di peta (Leaflet marker)
     console.log('[3] Mencari ikon marker kamera di peta Leaflet...');
@@ -104,14 +124,21 @@ async function sendPhotoToTelegram(photoPath, caption) {
     // Simpan artifact agar bisa di-review
     console.log(`[5] Screenshot tersimpan di ${outPath}`);
 
-    const now = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-    const caption = `📸 <b>Snapshot Live Realtime [CCTV Kab. Banyuasin]</b> 🚦\n\n` +
-      `🏢 <b>Lokasi:</b> Pasar P.Balai & Sekitar (Leaflet Map Capture)\n` +
-      `🕒 <b>Waktu:</b> ${now} WIB\n` +
-      `🔗 <b>Portal:</b> <code>https://cctv.banyuasinkab.go.id/</code>`;
+    // Verifikasi sebelum kirim ke Telegram: jika masih 'Just a moment', jangan kirim ke Telegram!
+    const finalTitle = await page.title();
+    if (finalTitle.toLowerCase().includes('just a moment')) {
+      console.log('[!] Screenshot masih berada di layar verifikasi Cloudflare. Melewati pengiriman ke Telegram sesuai SOP!');
+    } else {
+      const now = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+      const caption = `📸 <b>Snapshot Live Realtime [CCTV Kab. Banyuasin]</b> 🚦\n\n` +
+        `🏢 <b>Lokasi:</b> Pasar P.Balai & Sekitar (Leaflet Map Capture)\n` +
+        `🕒 <b>Waktu:</b> ${now} WIB\n` +
+        `🔗 <b>Portal:</b> <code>https://cctv.banyuasinkab.go.id/</code>`;
 
-    await sendPhotoToTelegram(outPath, caption);
-    console.log('[6] Sukses mengirim screenshot jalanan ke Telegram!');
+      await sendPhotoToTelegram(outPath, caption).catch(e => console.log('Telegram send error:', e.message));
+      console.log('[6] Sukses memproses pengiriman ke Telegram!');
+    }
+
   } catch (err) {
     console.error('[ERROR] Gagal memotret peta CCTV:', err);
     process.exit(1);
