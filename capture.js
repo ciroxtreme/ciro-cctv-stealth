@@ -125,7 +125,14 @@ async function sendPhotoToTelegram(photoPath, caption) {
     console.log(`[3] Mencari kamera target: "${requestedTarget}" di peta / daftar kamera...`);
 
     const selectResult = await page.evaluate((targetName) => {
-      // 1. Cari elemen menu/link/list kamera yang teksnya mengandung nama target
+      // 1. Sembunyikan semua modal yang sedang terbuka terlebih dahulu
+      document.querySelectorAll('.modal, [class*="modal"]').forEach(m => {
+        m.classList.remove('show');
+        m.style.display = 'none';
+        m.setAttribute('aria-hidden', 'true');
+      });
+
+      // 2. Cari elemen menu/link/list kamera yang teksnya mengandung nama target
       const clickableElements = Array.from(document.querySelectorAll('a, button, li, .list-group-item, span, td, h5, h6, [onclick]'));
       const foundItem = clickableElements.find(el => {
         const txt = (el.innerText || el.textContent || '').toLowerCase().trim();
@@ -134,10 +141,32 @@ async function sendPhotoToTelegram(photoPath, caption) {
 
       if (foundItem) {
         foundItem.click();
+        console.log('Clicked menu item:', foundItem.innerText);
+      }
+
+      // 3. Cari modal spesifik yang berisi target kamera dan paksa buka
+      const allModals = Array.from(document.querySelectorAll('.modal, [class*="modal"]'));
+      const matchingModal = allModals.find(m => {
+        const txt = (m.innerText || m.textContent || '').toLowerCase();
+        return txt.includes(targetName);
+      });
+
+      if (matchingModal) {
+        matchingModal.classList.add('show');
+        matchingModal.classList.remove('fade');
+        matchingModal.style.display = 'block';
+        matchingModal.style.opacity = '1';
+        matchingModal.style.visibility = 'visible';
+        matchingModal.style.zIndex = '99999';
+        matchingModal.removeAttribute('aria-hidden');
+        return { clicked: true, method: 'modalDirectForce', id: matchingModal.id || matchingModal.className, text: targetName };
+      }
+
+      if (foundItem) {
         return { clicked: true, method: 'menuItemClick', text: foundItem.innerText };
       }
 
-      // 2. Jika tidak ada di menu, cari marker Leaflet
+      // 4. Jika tidak ada di menu, cari marker Leaflet
       const markers = Array.from(document.querySelectorAll('.leaflet-marker-icon'));
       const targetMarker = markers.find(m => {
         const title = (m.title || m.alt || '').toLowerCase();
@@ -147,12 +176,6 @@ async function sendPhotoToTelegram(photoPath, caption) {
       if (targetMarker) {
         targetMarker.click();
         return { clicked: true, method: 'markerDirect', title: targetMarker.title };
-      }
-
-      // Fallback klik sembarang marker jika ada
-      if (markers.length > 0) {
-        markers[0].click();
-        return { clicked: true, method: 'fallbackFirstMarker' };
       }
 
       return { clicked: false, totalMarkers: markers.length };
@@ -173,12 +196,11 @@ async function sendPhotoToTelegram(photoPath, caption) {
       });
     });
 
-
-
     // Debug isi HTML dan frame yang ada di halaman
     let debugInfo = {};
     try {
       debugInfo = await page.evaluate(() => {
+        const visibleModals = Array.from(document.querySelectorAll('.modal.show, .modal[style*="display: block"]')).map(m => m.innerText ? m.innerText.substring(0, 50) : '');
         return {
           url: window.location.href,
           title: document.title,
@@ -186,6 +208,7 @@ async function sendPhotoToTelegram(photoPath, caption) {
           markerCount: document.querySelectorAll('.leaflet-marker-icon').length,
           popupCount: document.querySelectorAll('.leaflet-popup').length,
           modalCount: document.querySelectorAll('.modal, [class*="modal"], [id*="modal"]').length,
+          visibleModals,
           hasVideo: document.querySelectorAll('video, canvas, iframe').length
         };
       });
@@ -194,33 +217,43 @@ async function sendPhotoToTelegram(photoPath, caption) {
       console.log('[!] Error evaluate debug info:', e.message);
     }
 
-
-    // Tunggu popup modal video ("Pasar P.Balai 2") muncul
-    console.log('[4] Menunggu popup video CCTV muncul...');
-    await new Promise(r => setTimeout(r, 6000));
-
-
-    // Cari elemen popup dialog / video player di dalam modal
-    const modalSelector = '.leaflet-popup-content, .modal-content, video, canvas, iframe';
-    let targetElement = null;
-    try {
-      targetElement = await page.$(modalSelector);
-    } catch (e) {}
-
     const outPath = 'cctv_banyuasin_live.jpg';
 
-    // Ambil screenshot aman (hindari crash jika modal/elemen belum siap)
+    // Cari elemen modal yang sedang tampil (visible) atau popup Leaflet
+    const captureResult = await page.evaluate(() => {
+      // Cari modal yang berstatus show / display block
+      const activeModal = document.querySelector('.modal.show, .modal[style*="display: block"], .leaflet-popup-content');
+      if (activeModal) {
+        const rect = activeModal.getBoundingClientRect();
+        if (rect.width > 50 && rect.height > 50) {
+          return { found: true, x: rect.x, y: rect.y, width: rect.width, height: rect.height };
+        }
+      }
+      return { found: false };
+    });
+
+    console.log('[*] Modal rect check:', JSON.stringify(captureResult));
+
+    // Validasi ketat: Jika modal/video TIDAK ditemukan atau tidak visible, jangan fallback ke peta!
+    if (!captureResult.found) {
+      console.log('[!] Modal video kamera target tidak terbuka/visible di layar! Tolak screenshot peta.');
+      if (fs.existsSync(outPath)) fs.unlinkSync(outPath);
+      throw new Error(`Kamera "${requestedTarget}" belum terbuka di modal video. Menghentikan proses agar peta tidak terkirim!`);
+    }
+
+    // Ambil screenshot tepat pada modal kamera target (bukan peta dasar)
     try {
-      if (targetElement) {
-        console.log('[+] Popup video CCTV ditemukan! Mengambil screenshot frame video...');
-        await targetElement.screenshot({ path: outPath, type: 'jpeg', quality: 90 });
+      const modalEl = await page.$('.modal.show, .modal[style*="display: block"], .leaflet-popup-content');
+      if (modalEl) {
+        console.log('[+] Mengambil screenshot modal frame video target...');
+        await modalEl.screenshot({ path: outPath, type: 'jpeg', quality: 90 });
       } else {
-        console.log('[*] Popup modal spesifik tidak terisolasi, mengambil screenshot area peta live...');
-        await page.screenshot({ path: outPath, type: 'jpeg', quality: 90 });
+        throw new Error('Element modal target tidak dapat di-binding.');
       }
     } catch (e) {
-      console.log('[!] Element screenshot gagal, fallback ke page.screenshot():', e.message);
-      await page.screenshot({ path: outPath, type: 'jpeg', quality: 90 });
+      console.log('[!] Gagal memotret elemen modal:', e.message);
+      if (fs.existsSync(outPath)) fs.unlinkSync(outPath);
+      throw new Error(`Gagal memotret modal: ${e.message}`);
     }
 
     // Simpan artifact agar bisa di-review
