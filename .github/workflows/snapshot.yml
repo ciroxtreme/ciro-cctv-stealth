@@ -7,6 +7,10 @@ on:
         description: 'Nomor ID Kamera Banyuasin (contoh: 4)'
         required: false
         default: '4'
+      engine:
+        description: 'Engine browser (puppeteer atau playwright)'
+        required: false
+        default: 'playwright'
   repository_dispatch:
     types: [cctv_snapshot]
 
@@ -52,7 +56,13 @@ jobs:
           CAM_TARGET: ${{ github.event.inputs.cam_id || github.event.client_payload.cam_id || 'pasar p.balai' }}
           CF_CLEARANCE: ${{ vars.CF_CLEARANCE }}
         run: |
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x850x24 +extension GLX" node capture.js
+          if [ "${{ github.event.inputs.engine || github.event.client_payload.engine }}" = "puppeteer" ]; then
+            echo "Running with Puppeteer-Real-Browser..."
+            xvfb-run --auto-servernum --server-args="-screen 0 1280x850x24 +extension GLX" node capture.js
+          else
+            echo "Running with Rebrowser-Playwright Stealth..."
+            xvfb-run --auto-servernum --server-args="-screen 0 1280x850x24 +extension GLX" node capture_playwright.js
+          fi
 
       - name: Send Captured Snapshot Directly to Telegram
         if: success()

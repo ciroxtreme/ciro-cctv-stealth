@@ -9,6 +9,8 @@
   "dependencies": {
     "form-data": "^4.0.0",
     "node-fetch": "^2.7.0",
-    "puppeteer-real-browser": "^1.3.14"
+    "puppeteer-real-browser": "^1.3.14",
+    "playwright": "npm:rebrowser-playwright@latest",
+    "playwright-core": "npm:rebrowser-playwright-core@latest"
   }
 }
