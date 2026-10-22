@@ -125,44 +125,34 @@ async function sendPhotoToTelegram(photoPath, caption) {
     console.log(`[3] Mencari kamera target: "${requestedTarget}" di peta / daftar kamera...`);
 
     const selectResult = await page.evaluate((targetName) => {
-      // Sembunyikan semua modal lain terlebih dahulu agar tidak menimpa kamera yang dipilih
-      document.querySelectorAll('.modal, [class*="modal"]').forEach(m => {
-        m.classList.remove('show');
-        m.style.display = 'none';
+      // 1. Cari elemen menu/link/list kamera yang teksnya mengandung nama target
+      const clickableElements = Array.from(document.querySelectorAll('a, button, li, .list-group-item, span, td, h5, h6, [onclick]'));
+      const foundItem = clickableElements.find(el => {
+        const txt = (el.innerText || el.textContent || '').toLowerCase().trim();
+        return txt === targetName || (targetName.length > 3 && txt.includes(targetName));
       });
 
-      // 1. Cek apakah ada elemen list/menu/link kamera dengan teks nama target
-      const allElements = Array.from(document.querySelectorAll('a, button, li, .list-group-item, span, td, h5, h6'));
-      const foundLink = allElements.find(el => el.innerText && el.innerText.toLowerCase().trim() === targetName.trim());
-      if (foundLink) {
-        foundLink.click();
+      if (foundItem) {
+        foundItem.click();
+        return { clicked: true, method: 'menuItemClick', text: foundItem.innerText };
       }
 
-      // 2. Cek apakah ada modal yang sesuai dengan target dan tampilkan secara eksklusif
-      const modals = Array.from(document.querySelectorAll('.modal, [class*="modal"]'));
-      const matchingModal = modals.find(m => m.innerText && m.innerText.toLowerCase().includes(targetName));
-      if (matchingModal) {
-        matchingModal.classList.add('show');
-        matchingModal.classList.remove('fade');
-        matchingModal.style.display = 'block';
-        matchingModal.style.opacity = '1';
-        matchingModal.style.visibility = 'visible';
-        matchingModal.style.zIndex = '99999';
-        const v = matchingModal.querySelector('video');
-        if (v) v.play().catch(() => null);
-        return { clicked: true, method: 'modalDirect', id: matchingModal.id, name: targetName };
-      }
-
-      if (foundLink) {
-        return { clicked: true, method: 'menuItem', name: foundLink.innerText };
-      }
-
-      // 3. Fallback: Cari marker CCTV kamera di peta
+      // 2. Jika tidak ada di menu, cari marker Leaflet
       const markers = Array.from(document.querySelectorAll('.leaflet-marker-icon'));
-      const camMarker = markers.find(m => m.src && (m.src.includes('cctv') || m.src.includes('RED') || m.src.includes('cam')));
-      if (camMarker) {
-        camMarker.click();
-        return { clicked: true, method: 'camMarker', src: camMarker.src };
+      const targetMarker = markers.find(m => {
+        const title = (m.title || m.alt || '').toLowerCase();
+        return title.includes(targetName);
+      });
+
+      if (targetMarker) {
+        targetMarker.click();
+        return { clicked: true, method: 'markerDirect', title: targetMarker.title };
+      }
+
+      // Fallback klik sembarang marker jika ada
+      if (markers.length > 0) {
+        markers[0].click();
+        return { clicked: true, method: 'fallbackFirstMarker' };
       }
 
       return { clicked: false, totalMarkers: markers.length };
@@ -170,10 +160,18 @@ async function sendPhotoToTelegram(photoPath, caption) {
 
     console.log('[*] Status seleksi kamera:', JSON.stringify(selectResult));
 
-    // Tunggu popup modal video muncul di Leaflet
+    // Tunggu popup video / modal kamera selesai dimuat
     console.log('[4] Menunggu popup modal video CCTV muncul...');
-    await page.waitForSelector('.modal.show, .leaflet-popup-content, .modal-content, video, canvas', { timeout: 15000 }).catch(() => null);
-    await new Promise(r => setTimeout(r, 5000));
+    await page.waitForSelector('.modal.show, .leaflet-popup-content, video, canvas, iframe', { timeout: 15000 }).catch(() => null);
+    await new Promise(r => setTimeout(r, 6000));
+
+    // Pastikan video di dalam modal/popup otomatis play
+    await page.evaluate(() => {
+      document.querySelectorAll('video').forEach(v => {
+        v.muted = true;
+        v.play().catch(() => null);
+      });
+    });
 
 
 
