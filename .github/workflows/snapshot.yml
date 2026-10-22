@@ -27,7 +27,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y xvfb libgbm-dev libgl1-mesa-dri libglx-mesa0 libgl1 mesa-utils
-          npm install
+          npm install --no-audit --prefer-offline
 
       - name: Run Real Browser Snapshot Capture
         env:
@@ -35,4 +35,4 @@ jobs:
           CHAT_ID: ${{ github.event.client_payload.chat_id || secrets.CHAT_ID || '1936436999' }}
           CAM_ID: ${{ github.event.inputs.cam_id || github.event.client_payload.cam_id || '4' }}
         run: |
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" node capture.js
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24 +extension GLX" node capture.js
