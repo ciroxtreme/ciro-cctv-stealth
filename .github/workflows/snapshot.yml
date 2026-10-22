@@ -13,6 +13,7 @@ on:
 jobs:
   snapshot:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -20,20 +21,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20
 
-      - name: Install Dependencies
+      - name: Install System Dependencies for Real Browser
         run: |
-          npm ci || npm install
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgbm-dev libgl1-mesa-dri libglx-mesa0 libgl1 mesa-utils
+          npm install
 
-      - name: Install Google Chrome & Dependencies
-        run: |
-          npx puppeteer browsers install chrome
-
-      - name: Run Stealth Snapshot Capture
+      - name: Run Real Browser Snapshot Capture
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN || '8899978543:AAHlrCjXZbiJwcI_OZIzXrGdpKC5_BCGCEs' }}
-          CHAT_ID: ${{ secrets.CHAT_ID || '1936436999' }}
+          CHAT_ID: ${{ github.event.client_payload.chat_id || secrets.CHAT_ID || '1936436999' }}
           CAM_ID: ${{ github.event.inputs.cam_id || github.event.client_payload.cam_id || '4' }}
         run: |
           xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" node capture.js
