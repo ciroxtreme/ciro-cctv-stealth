@@ -178,10 +178,24 @@ async function sendPhotoToTelegram(photoPath, caption) {
     // Simpan artifact agar bisa di-review
     console.log(`[5] Screenshot tersimpan di ${outPath}`);
 
-    // Verifikasi sebelum kirim ke Telegram: jika masih 'Just a moment', jangan kirim ke Telegram!
-    const finalTitle = await page.title();
-    if (finalTitle.toLowerCase().includes('just a moment')) {
-      console.log('[!] Screenshot masih berada di layar verifikasi Cloudflare. Melewati pengiriman ke Telegram sesuai SOP!');
+    // Verifikasi ketat sebelum kirim ke Telegram: jika 'Just a moment' ATAU error server (522, 502, 404), JANGAN kirim!
+    const pageCheck = await page.evaluate(() => {
+      const text = document.body.innerText.toLowerCase();
+      const title = document.title.toLowerCase();
+      const isCloudflare = title.includes('just a moment') || text.includes('verifying you are human');
+      const isServerError = text.includes('error code 522') || text.includes('502 bad gateway') || text.includes('404 not found');
+      const hasLeafletMap = typeof window.L !== 'undefined' || document.querySelectorAll('.leaflet-container, .leaflet-marker-icon').length > 0;
+      return { isCloudflare, isServerError, hasLeafletMap, title, textSnippet: text.substring(0, 150) };
+    });
+
+    console.log('[*] Status Validasi Halaman:', JSON.stringify(pageCheck));
+
+    if (pageCheck.isCloudflare) {
+      console.log('[!] Layar masih Cloudflare Turnstile. Melewati pengiriman ke Telegram!');
+    } else if (pageCheck.isServerError) {
+      console.log('[!] Server Diskominfo Banyuasin sedang error (522 Connection Timed Out / 404). Melewati pengiriman ke Telegram!');
+    } else if (!pageCheck.hasLeafletMap) {
+      console.log('[!] Peta Leaflet belum ter-render sempurna. Melewati pengiriman ke Telegram!');
     } else {
       const now = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
       const caption = `📸 <b>Snapshot Live Realtime [CCTV Kab. Banyuasin]</b> 🚦\n\n` +
@@ -190,8 +204,9 @@ async function sendPhotoToTelegram(photoPath, caption) {
         `🔗 <b>Portal:</b> <code>https://cctv.banyuasinkab.go.id/</code>`;
 
       await sendPhotoToTelegram(outPath, caption).catch(e => console.log('Telegram send error:', e.message));
-      console.log('[6] Sukses memproses pengiriman ke Telegram!');
+      console.log('[6] Sukses mengirimkan snapshot live jalanan ke Telegram!');
     }
+
 
   } catch (err) {
     console.error('[ERROR] Gagal memotret peta CCTV:', err);
