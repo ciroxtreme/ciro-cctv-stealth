@@ -204,7 +204,7 @@ async function sendPhotoToTelegram(photoPath, caption) {
     const pageCheck = await page.evaluate(() => {
       const text = document.body.innerText.toLowerCase();
       const title = document.title.toLowerCase();
-      const isCloudflare = title.includes('just a moment') || text.includes('verifying you are human');
+      const isCloudflare = title.includes('just a moment') || text.includes('verifying you are human') || text.includes('performing security verification');
       const isServerError = text.includes('error code 522') || text.includes('502 bad gateway') || text.includes('404 not found');
       const hasLeafletMap = typeof window.L !== 'undefined' || document.querySelectorAll('.leaflet-container, .leaflet-marker-icon').length > 0;
       return { isCloudflare, isServerError, hasLeafletMap, title, textSnippet: text.substring(0, 150) };
@@ -213,21 +213,21 @@ async function sendPhotoToTelegram(photoPath, caption) {
     console.log('[*] Status Validasi Halaman:', JSON.stringify(pageCheck));
 
     if (pageCheck.isCloudflare) {
-      console.log('[!] Layar masih Cloudflare Turnstile. Melewati pengiriman ke Telegram!');
+      console.log('[!] Layar masih Cloudflare Turnstile. Hapus file screenshot dan lempar error agar tidak terkirim!');
+      if (fs.existsSync(outPath)) fs.unlinkSync(outPath);
+      throw new Error('Gagal: Masih tertahan di verifikasi Cloudflare Turnstile!');
     } else if (pageCheck.isServerError) {
-      console.log('[!] Server Diskominfo Banyuasin sedang error (522 Connection Timed Out / 404). Melewati pengiriman ke Telegram!');
+      console.log('[!] Server Diskominfo Banyuasin sedang error (522 Connection Timed Out / 404).');
+      if (fs.existsSync(outPath)) fs.unlinkSync(outPath);
+      throw new Error('Gagal: Server Diskominfo Banyuasin error (522/404)!');
     } else if (!pageCheck.hasLeafletMap) {
-      console.log('[!] Peta Leaflet belum ter-render sempurna. Melewati pengiriman ke Telegram!');
+      console.log('[!] Peta Leaflet belum ter-render sempurna.');
+      if (fs.existsSync(outPath)) fs.unlinkSync(outPath);
+      throw new Error('Gagal: Peta Leaflet CCTV belum ter-render!');
     } else {
-      const now = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-      const caption = `📸 <b>Snapshot Live Realtime [CCTV Kab. Banyuasin]</b> 🚦\n\n` +
-        `🏢 <b>Lokasi:</b> Pasar P.Balai & Sekitar (Leaflet Map Capture)\n` +
-        `🕒 <b>Waktu:</b> ${now} WIB\n` +
-        `🔗 <b>Portal:</b> <code>https://cctv.banyuasinkab.go.id/</code>`;
-
-      await sendPhotoToTelegram(outPath, caption).catch(e => console.log('Telegram send error:', e.message));
-      console.log('[6] Sukses mengirimkan snapshot live jalanan ke Telegram!');
+      console.log('[6] Sukses validasi live peta/kamera CCTV!');
     }
+
 
 
   } catch (err) {

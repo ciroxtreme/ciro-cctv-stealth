@@ -54,7 +54,7 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x850x24 +extension GLX" node capture.js
 
       - name: Send Captured Snapshot Directly to Telegram
-        if: always()
+        if: success()
         run: |
           if [ -f "cctv_banyuasin_live.jpg" ]; then
             echo "Sending verified snapshot to Telegram..."
@@ -64,6 +64,7 @@ jobs:
               -F "caption=📸 <b>Snapshot Live Realtime [CCTV Kab. Banyuasin]</b> 🚦%0A%0A🏢 <b>Wilayah:</b> Kab. Banyuasin (Diskominfo)%0A🕒 <b>Waktu:</b> $(date '+%d/%m/%Y %H:%M:%S') WIB%0A🛡️ <b>Status:</b> Cloudflare Turnstile 100% Bypass (Mobile Gateway)%0A🔗 <b>Portal:</b> https://cctv.banyuasinkab.go.id/" \
               -F "parse_mode=HTML" || true
           fi
+
 
 
       - name: Upload Snapshot Artifact
