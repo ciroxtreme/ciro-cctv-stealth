@@ -13,7 +13,7 @@ on:
 jobs:
   snapshot:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -22,6 +22,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Install System Dependencies for Real Browser
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgbm-dev libgl1-mesa-dri libglx-mesa0 libgl1 mesa-utils
+          npm install --no-audit
 
       - name: Connect Tailscale to HP Exit Node
         uses: tailscale/github-action@v3
@@ -36,15 +42,8 @@ jobs:
           echo "=== Testing Direct Tailscale Ping to HP ==="
           tailscale ping -c 3 100.71.31.19 || true
           echo "=== Outgoing Public IP (Testing DNS & Connection) ==="
-          curl -s --max-time 15 http://1.1.1.1 || curl -s --max-time 15 https://api.ipify.org || echo "curl exit-node timeout, continuing..."
+          curl -s --max-time 15 https://api.ipify.org || echo "curl exit-node timeout, continuing..."
           echo ""
-
-
-      - name: Install System Dependencies for Real Browser
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb libgbm-dev libgl1-mesa-dri libglx-mesa0 libgl1 mesa-utils
-          npm install --no-audit --prefer-offline
 
       - name: Run Real Browser Snapshot Capture
         env:
@@ -60,4 +59,3 @@ jobs:
           name: cctv-banyuasin-screenshot
           path: cctv_banyuasin_live.jpg
           if-no-files-found: ignore
-
