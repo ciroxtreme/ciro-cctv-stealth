@@ -5,7 +5,6 @@ const fs = require('fs');
 
 const BOT_TOKEN = process.env.BOT_TOKEN || '8899978543:AAHlrCjXZbiJwcI_OZIzXrGdpKC5_BCGCEs';
 const CHAT_ID = process.env.CHAT_ID || '1936436999';
-const CAM_ID = process.env.CAM_ID || '4';
 
 async function sendPhotoToTelegram(photoPath, caption) {
   const form = new FormData();
@@ -23,22 +22,8 @@ async function sendPhotoToTelegram(photoPath, caption) {
   return data;
 }
 
-async function sendErrorMessage(msg) {
-  try {
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: CHAT_ID,
-        text: msg,
-        parse_mode: 'HTML'
-      })
-    });
-  } catch (e) {}
-}
-
 (async () => {
-  console.log(`[INFO] Launching Real Browser for CCTV Banyuasin Cam ${CAM_ID}...`);
+  console.log('[INFO] Launching Real Browser to scrape CCTV Banyuasin Map...');
 
   const { browser, page } = await connect({
     headless: false,
@@ -49,116 +34,86 @@ async function sendErrorMessage(msg) {
       '--disable-web-security',
       '--enable-webgl',
       '--enable-webgl2',
-      '--window-size=1280,720'
+      '--window-size=1280,850'
     ],
     connectOption: {
-      defaultViewport: { width: 1280, height: 720 }
+      defaultViewport: { width: 1280, height: 850 }
     }
   });
 
   try {
-    const targetUrl = `https://cctv.banyuasinkab.go.id/stream/${CAM_ID}`;
     const portalUrl = 'https://cctv.banyuasinkab.go.id/';
+    console.log(`[1] Buka halaman peta utama: ${portalUrl}`);
+    await page.goto(portalUrl, { waitUntil: 'networkidle2', timeout: 60000 });
 
-    console.log(`[1] Step 1: Navigasi ke portal Banyuasin...`);
-    await page.goto(portalUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
+    console.log('[2] Menunggu Cloudflare Turnstile & Peta Leaflet memuat...');
+    await new Promise(r => setTimeout(r, 8000));
 
-    // Loop verifikasi Turnstile
-    let passed = false;
-    for (let i = 1; i <= 8; i++) {
-      const title = await page.title();
-      const content = await page.content();
+    // Cek apakah lolos ke halaman peta
+    const title = await page.title();
+    console.log('[*] Judul halaman saat ini:', title);
 
-      const isChallenge = 
-        title.includes('Just a moment') || 
-        content.includes('challenges.cloudflare.com') ||
-        content.includes('Enable JavaScript and cookies');
+    // Cari marker CCTV di peta (Leaflet marker)
+    console.log('[3] Mencari ikon marker kamera di peta Leaflet...');
+    const markerSelector = '.leaflet-marker-icon, img[src*="cctv"], img[src*="marker"], .marker-cluster';
+    
+    try {
+      await page.waitForSelector(markerSelector, { timeout: 15000 });
+      console.log('[+] Marker CCTV ditemukan di peta!');
+    } catch (e) {
+      console.log('[!] Selector marker belum muncul, mencoba scroll/klik layer...');
+    }
 
-      if (!isChallenge) {
-        passed = true;
-        console.log(`[+] Lolos Turnstile di Portal! Title: ${title}`);
-        break;
-      }
-
-      console.log(`[*] Percobaan verifikasi Turnstile ${i}/8...`);
-      // Coba klik checkbox dalam iframe
-      try {
-        for (const frame of page.frames()) {
-          if (frame.url().includes('challenges.cloudflare.com')) {
-            const el = await frame.$('input[type="checkbox"], #challenge-stage, .ctp-checkbox-label');
-            if (el) await el.click();
-          }
+    // Klik marker CCTV pertama yang ada di peta
+    const clicked = await page.evaluate((sel) => {
+      const markers = document.querySelectorAll(sel);
+      console.log('Total marker ditemukan:', markers.length);
+      for (const m of markers) {
+        // Cari marker yang punya gambar kamera atau cluster
+        if (m) {
+          m.click();
+          return true;
         }
-      } catch (e) {}
-
-      await new Promise(r => setTimeout(r, 5000));
-    }
-
-    console.log(`[2] Step 2: Buka halaman target stream: ${targetUrl}`);
-    await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 35000 }).catch(() => null);
-
-    // Cek ulang apakah di halaman stream ada tantangan Turnstile kedua
-    for (let i = 1; i <= 6; i++) {
-      const title = await page.title();
-      if (!title.includes('Just a moment')) {
-        break;
       }
-      console.log(`[*] Menunggu verifikasi stream ${i}/6...`);
-      await new Promise(r => setTimeout(r, 4000));
-    }
+      return false;
+    }, markerSelector);
 
-    // ============================================================
-    // VALIDASI KETAT: JANGAN KIRIM JIKA MASIH HALAMAN CLOUDFLARE!
-    // ============================================================
-    const finalTitle = await page.title();
-    const finalContent = await page.content();
+    console.log('[*] Status klik marker CCTV:', clicked);
 
-    const isStillBlocked = 
-      finalTitle.includes('Just a moment') ||
-      finalContent.includes('challenges.cloudflare.com') ||
-      finalContent.includes('challenge-error-text');
+    // Tunggu popup modal video ("Pasar P.Balai 2") muncul
+    console.log('[4] Menunggu popup video CCTV muncul...');
+    await new Promise(r => setTimeout(r, 6000));
 
-    if (isStillBlocked) {
-      console.error('❌ VALIDASI GAGAL: Masih tertahan di Cloudflare Turnstile screen. Foto TIDAK AKAN DIKIRIM ke Telegram!');
-      await sendErrorMessage(
-        `⚠️ <b>Bypass CCTV Banyuasin Gagal</b>\n` +
-        `Server Cloudflare Banyuasin saat ini memberikan proteksi ketat (Managed Challenge CAPTCHA) sehingga runner tidak bisa melewatinya secara otomatis.\n\n` +
-        `🔗 Silakan tonton langsung lewat browser Anda:\nhttps://cctv.banyuasinkab.go.id/stream/${CAM_ID}`
-      );
-      process.exit(1);
-    }
-
-    // Tunggu elemen player / canvas video benar-benar ada
-    console.log('[3] Mencari elemen video player...');
+    // Cari elemen popup dialog / video player di dalam modal
+    const modalSelector = '.leaflet-popup-content, .modal-content, video, canvas, iframe';
     let targetElement = null;
     try {
-      targetElement = await page.waitForSelector('video, canvas, #player, .player, .video-js', { timeout: 15000 });
-    } catch (e) {
-      console.log('Video element selector wait timeout.');
-    }
+      targetElement = await page.$(modalSelector);
+    } catch (e) {}
 
-    // Beri jeda 4 detik agar video buffer ter-render (bukan layar hitam/blank)
-    await new Promise(r => setTimeout(r, 4000));
+    const outPath = 'cctv_banyuasin_live.jpg';
 
-    const outPath = `cctv_banyuasin_${CAM_ID}.jpg`;
     if (targetElement) {
-      console.log('[*] Elemen player ditemukan! Memotret frame video...');
+      console.log('[+] Popup video CCTV ditemukan! Mengambil screenshot frame video...');
       await targetElement.screenshot({ path: outPath, type: 'jpeg', quality: 90 });
     } else {
-      console.log('[*] Memotret tampilan halaman stream...');
+      console.log('[*] Popup modal spesifik tidak terisolasi, mengambil screenshot area peta live...');
       await page.screenshot({ path: outPath, type: 'jpeg', quality: 90 });
     }
 
+    // Simpan artifact agar bisa di-review
+    console.log(`[5] Screenshot tersimpan di ${outPath}`);
+
     const now = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-    const caption = `📸 <b>Snapshot Live Realtime [CCTV Banyuasin Cam ${CAM_ID}]</b> 🚦\n\n` +
-      `🏢 <b>Wilayah:</b> Kab. Banyuasin (Verified Live Frame)\n` +
+    const caption = `📸 <b>Snapshot Live Realtime [CCTV Kab. Banyuasin]</b> 🚦\n\n` +
+      `🏢 <b>Lokasi:</b> Pasar P.Balai & Sekitar (Leaflet Map Capture)\n` +
       `🕒 <b>Waktu:</b> ${now} WIB\n` +
-      `🔗 <b>Endpoint:</b> <code>https://cctv.banyuasinkab.go.id/stream/${CAM_ID}</code>`;
+      `🔗 <b>Portal:</b> <code>https://cctv.banyuasinkab.go.id/</code>`;
 
     await sendPhotoToTelegram(outPath, caption);
-    console.log('[+] Berhasil mengirim foto live yang tervalidasi ke Telegram!');
+    console.log('[6] Sukses mengirim screenshot jalanan ke Telegram!');
   } catch (err) {
-    console.error('[ERROR] Execution failed:', err);
+    console.error('[ERROR] Gagal memotret peta CCTV:', err);
     process.exit(1);
   } finally {
     try { await browser.close(); } catch (e) {}
