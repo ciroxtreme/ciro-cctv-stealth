@@ -37,13 +37,15 @@ async function sendPhotoToTelegram(photoPath, caption) {
       '--window-size=1280,850'
     ],
     connectOption: {
-      defaultViewport: { width: 1280, height: 850 }
+      defaultViewport: { width: 412, height: 915, isMobile: true, hasTouch: true }
     }
   });
 
   try {
     const userAgent = 'Mozilla/5.0 (Linux; Android 15; Infinix X6880 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/155.0.8059.43 Mobile Safari/537.36';
     await page.setUserAgent(userAgent);
+    await page.setViewport({ width: 412, height: 915, isMobile: true, hasTouch: true });
+
 
     const sessionVal = 'eyJpdiI6InJ0U1ZrcFlRUy9LVlZjMG5USzh3aFE9PSIsInZhbHVlIjoiVHlPUTJqTERFVWVkOUREd1ZOWnpwYXlMVTJBREdBa3dkaUdJdHNMSGhZZGN6RkZjMU9HNFlaVjlFbk9tdlFnYVNFSWI4RThOMXYwQ1BVZlRqakJLN2JxSnpMVEJLNUNwQnpXVmcwYnk0TUxiUnROYkxIek8vTG9DcUs2Vm5IRm8iLCJtYWMiOiIxOTgzMDViYjMzNjQ2YmU3YzkzNWFlOTdmODQzNzEyNTdmZTY5NjRjZDkxNDZjNTM5M2Y1N2RhZmNlMjEzMDgxIiwidGFnIjoiIn0=';
     const xsrfVal = 'eyJpdiI6Ii9WK1FWbU9OM0ZNQyszVjZQeHJxenc9PSIsInZhbHVlIjoiem5OckRWbWJ3MU5mRndqbHFnZWdFenE3VzZWd3RySk5XNllJalkvL1hRKzNNNG9XSmkyMzc2YWNLQk9LblBNdG54WDNGak1mNVFVaGt3bHdZcGQ1aFlEaGtLR3VHaC9QVWIwUUlYMWpKVjh1K295akRCUFpXdk52OTFHZ29WaCsiLCJtYWMiOiI2OWQ2MTM1YmYzMjczNmYxNDcwNmRkOWRhY2E3YzIxZmQ1OWI5MTFhZWZjNDJkYmNkMDhjOWVjYzUxMjU2YTRlIiwidGFnIjoiIn0=';
