@@ -42,9 +42,38 @@ async function sendPhotoToTelegram(photoPath, caption) {
   });
 
   try {
+    const userAgent = 'Mozilla/5.0 (Linux; Android 15; Infinix X6880 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/155.0.8059.43 Mobile Safari/537.36';
+    await page.setUserAgent(userAgent);
+
+    const sessionVal = 'eyJpdiI6InJ0U1ZrcFlRUy9LVlZjMG5USzh3aFE9PSIsInZhbHVlIjoiVHlPUTJqTERFVWVkOUREd1ZOWnpwYXlMVTJBREdBa3dkaUdJdHNMSGhZZGN6RkZjMU9HNFlaVjlFbk9tdlFnYVNFSWI4RThOMXYwQ1BVZlRqakJLN2JxSnpMVEJLNUNwQnpXVmcwYnk0TUxiUnROYkxIek8vTG9DcUs2Vm5IRm8iLCJtYWMiOiIxOTgzMDViYjMzNjQ2YmU3YzkzNWFlOTdmODQzNzEyNTdmZTY5NjRjZDkxNDZjNTM5M2Y1N2RhZmNlMjEzMDgxIiwidGFnIjoiIn0=';
+    const xsrfVal = 'eyJpdiI6Ii9WK1FWbU9OM0ZNQyszVjZQeHJxenc9PSIsInZhbHVlIjoiem5OckRWbWJ3MU5mRndqbHFnZWdFenE3VzZWd3RySk5XNllJalkvL1hRKzNNNG9XSmkyMzc2YWNLQk9LblBNdG54WDNGak1mNVFVaGt3bHdZcGQ1aFlEaGtLR3VHaC9QVWIwUUlYMWpKVjh1K295akRCUFpXdk52OTFHZ29WaCsiLCJtYWMiOiI2OWQ2MTM1YmYzMjczNmYxNDcwNmRkOWRhY2E3YzIxZmQ1OWI5MTFhZWZjNDJkYmNkMDhjOWVjYzUxMjU2YTRlIiwidGFnIjoiIn0=';
+
+    console.log('[*] Injecting mobile cookies from Infinix device...');
+    await page.setCookie(
+      {
+        name: 'XSRF-TOKEN',
+        value: xsrfVal,
+        domain: 'cctv.banyuasinkab.go.id',
+        path: '/'
+      },
+      {
+        name: 'cctv_banyuasin_session',
+        value: sessionVal,
+        domain: 'cctv.banyuasinkab.go.id',
+        path: '/'
+      },
+      {
+        name: 'laravel_session',
+        value: sessionVal,
+        domain: 'cctv.banyuasinkab.go.id',
+        path: '/'
+      }
+    );
+
     const portalUrl = 'https://cctv.banyuasinkab.go.id/';
     console.log(`[1] Buka halaman peta utama: ${portalUrl}`);
     await page.goto(portalUrl, { waitUntil: 'networkidle2', timeout: 60000 });
+
 
     console.log('[2] Menunggu Cloudflare Turnstile & Peta Leaflet memuat...');
     
