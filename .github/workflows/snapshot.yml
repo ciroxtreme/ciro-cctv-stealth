@@ -8,9 +8,9 @@ on:
         required: false
         default: '4'
       engine:
-        description: 'Engine browser (camoufox, puppeteer, atau playwright)'
+        description: 'Engine browser (puppeteer, camoufox, atau playwright)'
         required: false
-        default: 'camoufox'
+        default: 'puppeteer'
   repository_dispatch:
     types: [cctv_snapshot]
 
