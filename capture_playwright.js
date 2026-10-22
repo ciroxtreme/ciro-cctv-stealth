@@ -9,7 +9,11 @@ const CHAT_ID = process.env.CHAT_ID || '1936436999';
 (async () => {
   console.log('[INFO] Launching Rebrowser/Playwright Stealth Browser...');
 
-  const browser = await chromium.launch({
+  const chromePath = fs.existsSync('/usr/bin/google-chrome-stable') 
+    ? '/usr/bin/google-chrome-stable' 
+    : (fs.existsSync('/usr/bin/google-chrome') ? '/usr/bin/google-chrome' : undefined);
+
+  const launchOptions = {
     headless: false,
     args: [
       '--no-sandbox',
@@ -18,7 +22,14 @@ const CHAT_ID = process.env.CHAT_ID || '1936436999';
       '--disable-web-security',
       '--window-size=1280,850'
     ]
-  });
+  };
+
+  if (chromePath) {
+    console.log(`[*] Using installed Real Google Chrome binary at: ${chromePath}`);
+    launchOptions.executablePath = chromePath;
+  }
+
+  const browser = await chromium.launch(launchOptions);
 
   const context = await browser.newContext({
     userAgent: 'Mozilla/5.0 (Linux; Android 15; Infinix X6880 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/155.0.8059.43 Mobile Safari/537.36',
