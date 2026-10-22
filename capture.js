@@ -134,7 +134,7 @@ async function sendPhotoToTelegram(photoPath, caption) {
     console.log(`[3] Mencari kamera target: "${requestedTarget}" di peta / daftar kamera...`);
 
     const selectResult = await page.evaluate((targetName) => {
-      // 1. Ekstrak informasi fungsi onclick / fungsi pemanggil kamera dari daftar menu
+      // 1. Cari elemen menu/link/list kamera yang teksnya mengandung nama target
       const allElements = Array.from(document.querySelectorAll('a, button, li, .list-group-item, span, td, h5, h6, [onclick]'));
       const foundItem = allElements.find(el => {
         const txt = (el.innerText || el.textContent || '').toLowerCase().trim();
@@ -143,17 +143,17 @@ async function sendPhotoToTelegram(photoPath, caption) {
 
       let clickedMethod = '';
       if (foundItem) {
-        // Klik elemen secara native
-        foundItem.click();
-        clickedMethod = 'menuItemClick';
+        // Trigger klik mouse asli
+        const clickEvent = new MouseEvent('click', { view: window, bubbles: true, cancelable: true });
+        foundItem.dispatchEvent(clickEvent);
+        clickedMethod = 'menuItemDispatch';
 
-        // Jika memiliki onclick, trigger langsung
         if (typeof foundItem.onclick === 'function') {
           try { foundItem.onclick(); } catch (e) {}
         }
       }
 
-      // 2. Jika ada marker Leaflet yang cocok
+      // 2. Cari marker Leaflet yang cocok
       const markers = Array.from(document.querySelectorAll('.leaflet-marker-icon'));
       const targetMarker = markers.find(m => {
         const title = (m.title || m.alt || '').toLowerCase();
@@ -161,11 +161,20 @@ async function sendPhotoToTelegram(photoPath, caption) {
       });
 
       if (targetMarker) {
-        targetMarker.click();
-        clickedMethod = clickedMethod ? clickedMethod + '+marker' : 'markerDirect';
+        const clickEvent = new MouseEvent('click', { view: window, bubbles: true, cancelable: true });
+        targetMarker.dispatchEvent(clickEvent);
+        clickedMethod = clickedMethod ? clickedMethod + '+markerDispatch' : 'markerDirect';
       }
 
-      return { clicked: !!(foundItem || targetMarker), method: clickedMethod, text: foundItem ? foundItem.innerText : '' };
+      // 3. Fallback: Cek fungsi global window seperti showCctv, viewCctv, openModal, setStream dll
+      const winKeys = Object.keys(window).filter(k => typeof window[k] === 'function' && (k.toLowerCase().includes('cctv') || k.toLowerCase().includes('modal') || k.toLowerCase().includes('cam')));
+
+      return {
+        clicked: !!(foundItem || targetMarker),
+        method: clickedMethod,
+        text: foundItem ? foundItem.innerText : '',
+        winFunctions: winKeys.slice(0, 5)
+      };
     }, requestedTarget);
 
     console.log('[*] Status seleksi kamera:', JSON.stringify(selectResult));
