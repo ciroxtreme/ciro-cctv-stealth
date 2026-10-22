@@ -166,28 +166,33 @@ async function sendPhotoToTelegram(photoPath, caption) {
 
     // Tunggu popup video / modal kamera selesai dimuat
     console.log('[4] Menunggu popup modal video CCTV muncul...');
-    await page.waitForSelector('.modal.show, .leaflet-popup-content, video, canvas, iframe', { timeout: 15000 }).catch(() => null);
+    await page.waitForSelector('#exampleModal, .modal.show, .leaflet-popup-content, video, canvas, iframe', { timeout: 15000 }).catch(() => null);
     await new Promise(r => setTimeout(r, 6000));
 
-    // Pastikan modal yang terbuka memiliki video aktif
+    // Pastikan modal #exampleModal aktif dan terisi stream video
     await page.evaluate((targetName) => {
+      // 1. Cek modal tunggal portal Banyuasin: #exampleModal
+      const exampleModal = document.querySelector('#exampleModal');
+      if (exampleModal) {
+        exampleModal.classList.add('show');
+        exampleModal.classList.remove('fade');
+        exampleModal.style.display = 'block';
+        exampleModal.style.opacity = '1';
+        exampleModal.style.visibility = 'visible';
+        exampleModal.style.zIndex = '99999';
+        exampleModal.removeAttribute('aria-hidden');
+
+        const titleEl = exampleModal.querySelector('#modalLocation, .modal-title');
+        if (titleEl && !titleEl.innerText) {
+          titleEl.innerText = targetName.toUpperCase();
+        }
+      }
+
+      // 2. Play video jika ada
       document.querySelectorAll('video').forEach(v => {
         v.muted = true;
         v.play().catch(() => null);
       });
-      // Jika modal belum show tapi ada di DOM, paksa show modal yang cocok
-      const modals = Array.from(document.querySelectorAll('.modal, [class*="modal"]'));
-      const openModal = modals.find(m => m.classList.contains('show') || m.style.display === 'block');
-      if (!openModal) {
-        const matching = modals.find(m => (m.innerText || m.textContent || '').toLowerCase().includes(targetName));
-        if (matching) {
-          matching.classList.add('show');
-          matching.classList.remove('fade');
-          matching.style.display = 'block';
-          matching.style.visibility = 'visible';
-          matching.style.zIndex = '99999';
-        }
-      }
     }, requestedTarget);
 
     // Debug isi HTML dan frame yang ada di halaman
