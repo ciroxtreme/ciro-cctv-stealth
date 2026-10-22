@@ -2,13 +2,18 @@ name: CCTV Stealth Snapshot Runner
 
 on:
   workflow_dispatch:
+    inputs:
+      cam_id:
+        description: 'Nomor ID Kamera Banyuasin (contoh: 4)'
+        required: false
+        default: '4'
   repository_dispatch:
     types: [cctv_snapshot]
 
 jobs:
   snapshot:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -17,6 +22,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Connect Tailscale to HP Exit Node
+        uses: tailscale/github-action@v3
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          args: --exit-node=100.71.31.19 --exit-node-allow-lan-access=true
+
+      - name: Verify Mobile IP Route
+        run: |
+          echo "=== Tailscale Status ==="
+          tailscale status
+          echo "=== Outgoing Public IP (from Telkomsel HP) ==="
+          curl -s https://ipinfo.io || curl -s https://api.ipify.org
+          echo ""
 
       - name: Install System Dependencies for Real Browser
         run: |
@@ -38,3 +57,4 @@ jobs:
           name: cctv-banyuasin-screenshot
           path: cctv_banyuasin_live.jpg
           if-no-files-found: ignore
+
