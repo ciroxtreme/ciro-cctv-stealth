@@ -33,9 +33,12 @@ jobs:
         run: |
           echo "=== Tailscale Status ==="
           tailscale status
-          echo "=== Outgoing Public IP (from Telkomsel HP) ==="
-          curl -s https://ipinfo.io || curl -s https://api.ipify.org
+          echo "=== Testing Direct Tailscale Ping to HP ==="
+          tailscale ping -c 3 100.71.31.19 || true
+          echo "=== Outgoing Public IP (Testing DNS & Connection) ==="
+          curl -s --max-time 15 http://1.1.1.1 || curl -s --max-time 15 https://api.ipify.org || echo "curl exit-node timeout, continuing..."
           echo ""
+
 
       - name: Install System Dependencies for Real Browser
         run: |
