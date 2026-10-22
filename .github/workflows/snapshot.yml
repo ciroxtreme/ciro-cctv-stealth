@@ -35,7 +35,7 @@ jobs:
       - name: Install System Dependencies for Real Browser & Camoufox
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb libgbm-dev libgl1-mesa-dri libglx-mesa0 libgl1 mesa-utils libgtk-3-0 libasound2
+          sudo apt-get install -y xvfb libgbm-dev libgl1-mesa-dri libglx-mesa0 libgl1 mesa-utils libgtk-3-0 libasound2t64 || sudo apt-get install -y xvfb libgbm-dev
           npm install --no-audit
           pip install "camoufox[geoip]"
           python3 -m camoufox fetch
