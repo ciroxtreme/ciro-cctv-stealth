@@ -23,6 +23,20 @@ async function sendPhotoToTelegram(photoPath, caption) {
   return data;
 }
 
+async function sendErrorMessage(msg) {
+  try {
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        text: msg,
+        parse_mode: 'HTML'
+      })
+    });
+  } catch (e) {}
+}
+
 (async () => {
   console.log(`[INFO] Launching Real Browser for CCTV Banyuasin Cam ${CAM_ID}...`);
 
@@ -33,6 +47,8 @@ async function sendPhotoToTelegram(photoPath, caption) {
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-web-security',
+      '--enable-webgl',
+      '--enable-webgl2',
       '--window-size=1280,720'
     ],
     connectOption: {
@@ -42,75 +58,97 @@ async function sendPhotoToTelegram(photoPath, caption) {
 
   try {
     const targetUrl = `https://cctv.banyuasinkab.go.id/stream/${CAM_ID}`;
+    const portalUrl = 'https://cctv.banyuasinkab.go.id/';
 
-    let isSuccess = false;
-    let attempt = 0;
-    const maxAttempts = 6; // Coba verifikasi sampai 6 kali loop (maksimal ~60 detik)
+    console.log(`[1] Step 1: Navigasi ke portal Banyuasin...`);
+    await page.goto(portalUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
 
-    console.log(`[1] Navigating directly to ${targetUrl}...`);
-    await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
-
-    while (!isSuccess && attempt < maxAttempts) {
-      attempt++;
-      console.log(`[*] Checking verification status (Attempt ${attempt}/${maxAttempts})...`);
-
-      // Cek apakah halaman masih berupa Cloudflare Challenge ("Just a moment...")
-      const pageTitle = await page.title();
+    // Loop verifikasi Turnstile
+    let passed = false;
+    for (let i = 1; i <= 8; i++) {
+      const title = await page.title();
       const content = await page.content();
 
-      const isStillChallenge = 
-        pageTitle.includes('Just a moment') || 
+      const isChallenge = 
+        title.includes('Just a moment') || 
         content.includes('challenges.cloudflare.com') ||
-        content.includes('cf-browser-verification') ||
         content.includes('Enable JavaScript and cookies');
 
-      if (isStillChallenge) {
-        console.log(`[!] Still on Cloudflare Turnstile screen ("${pageTitle}"). Waiting 6s for solver...`);
-        
-        // Coba klik koordinat jika Turnstile widget terdeteksi
-        try {
-          const frames = page.frames();
-          for (const f of frames) {
-            if (f.url().includes('challenges.cloudflare.com')) {
-              console.log('[*] Found Turnstile frame! Interacting...');
-              const cb = await f.$('input[type="checkbox"], #challenge-stage, .ctp-checkbox-label, .main-content');
-              if (cb) await cb.click();
-            }
-          }
-        } catch(e) {}
-
-        await new Promise(r => setTimeout(r, 6000));
-        continue;
+      if (!isChallenge) {
+        passed = true;
+        console.log(`[+] Lolos Turnstile di Portal! Title: ${title}`);
+        break;
       }
 
-      console.log(`[+] Cloudflare PASSED! Page title is now: "${pageTitle}"`);
-
-      // Tunggu stream video / canvas / player jalan
-      console.log('[*] Waiting for video element or live stream canvas...');
+      console.log(`[*] Percobaan verifikasi Turnstile ${i}/8...`);
+      // Coba klik checkbox dalam iframe
       try {
-        await page.waitForSelector('video, canvas, #player, .video-js, img', { timeout: 12000 });
-      } catch (e) {
-        console.log('[!] Player selector wait timeout, continuing to inspect page...');
-      }
+        for (const frame of page.frames()) {
+          if (frame.url().includes('challenges.cloudflare.com')) {
+            const el = await frame.$('input[type="checkbox"], #challenge-stage, .ctp-checkbox-label');
+            if (el) await el.click();
+          }
+        }
+      } catch (e) {}
 
-      // Tunggu 5 detik agar gambar frame video benar-benar ter-render (bukan layar hitam)
       await new Promise(r => setTimeout(r, 5000));
-      isSuccess = true;
     }
 
+    console.log(`[2] Step 2: Buka halaman target stream: ${targetUrl}`);
+    await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 35000 }).catch(() => null);
+
+    // Cek ulang apakah di halaman stream ada tantangan Turnstile kedua
+    for (let i = 1; i <= 6; i++) {
+      const title = await page.title();
+      if (!title.includes('Just a moment')) {
+        break;
+      }
+      console.log(`[*] Menunggu verifikasi stream ${i}/6...`);
+      await new Promise(r => setTimeout(r, 4000));
+    }
+
+    // ============================================================
+    // VALIDASI KETAT: JANGAN KIRIM JIKA MASIH HALAMAN CLOUDFLARE!
+    // ============================================================
+    const finalTitle = await page.title();
+    const finalContent = await page.content();
+
+    const isStillBlocked = 
+      finalTitle.includes('Just a moment') ||
+      finalContent.includes('challenges.cloudflare.com') ||
+      finalContent.includes('challenge-error-text');
+
+    if (isStillBlocked) {
+      console.error('❌ VALIDASI GAGAL: Masih tertahan di Cloudflare Turnstile screen. Foto TIDAK AKAN DIKIRIM ke Telegram!');
+      await sendErrorMessage(
+        `⚠️ <b>Bypass CCTV Banyuasin Gagal</b>\n` +
+        `Server Cloudflare Banyuasin saat ini memberikan proteksi ketat (Managed Challenge CAPTCHA) sehingga runner tidak bisa melewatinya secara otomatis.\n\n` +
+        `🔗 Silakan tonton langsung lewat browser Anda:\nhttps://cctv.banyuasinkab.go.id/stream/${CAM_ID}`
+      );
+      process.exit(1);
+    }
+
+    // Tunggu elemen player / canvas video benar-benar ada
+    console.log('[3] Mencari elemen video player...');
+    let targetElement = null;
+    try {
+      targetElement = await page.waitForSelector('video, canvas, #player, .player, .video-js', { timeout: 15000 });
+    } catch (e) {
+      console.log('Video element selector wait timeout.');
+    }
+
+    // Beri jeda 4 detik agar video buffer ter-render (bukan layar hitam/blank)
+    await new Promise(r => setTimeout(r, 4000));
+
     const outPath = `cctv_banyuasin_${CAM_ID}.jpg`;
-    
-    // Prioritaskan screenshot elemen player/video agar gambarnya bersih tanpa border web
-    const playerEl = await page.$('video, #player, .player, canvas, .video-js');
-    if (playerEl) {
-      console.log('[*] Player element found! Capturing crisp camera frame...');
-      await playerEl.screenshot({ path: outPath, type: 'jpeg', quality: 90 });
+    if (targetElement) {
+      console.log('[*] Elemen player ditemukan! Memotret frame video...');
+      await targetElement.screenshot({ path: outPath, type: 'jpeg', quality: 90 });
     } else {
-      console.log('[*] Capturing full screen...');
+      console.log('[*] Memotret tampilan halaman stream...');
       await page.screenshot({ path: outPath, type: 'jpeg', quality: 90 });
     }
 
-    console.log(`[+] Valid photo captured! Sending to Telegram...`);
     const now = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
     const caption = `📸 <b>Snapshot Live Realtime [CCTV Banyuasin Cam ${CAM_ID}]</b> 🚦\n\n` +
       `🏢 <b>Wilayah:</b> Kab. Banyuasin (Verified Live Frame)\n` +
@@ -118,9 +156,9 @@ async function sendPhotoToTelegram(photoPath, caption) {
       `🔗 <b>Endpoint:</b> <code>https://cctv.banyuasinkab.go.id/stream/${CAM_ID}</code>`;
 
     await sendPhotoToTelegram(outPath, caption);
-    console.log('[+] Done!');
+    console.log('[+] Berhasil mengirim foto live yang tervalidasi ke Telegram!');
   } catch (err) {
-    console.error('[ERROR] Failed to capture snapshot:', err);
+    console.error('[ERROR] Execution failed:', err);
     process.exit(1);
   } finally {
     try { await browser.close(); } catch (e) {}
