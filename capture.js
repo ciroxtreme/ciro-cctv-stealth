@@ -48,8 +48,18 @@ async function sendPhotoToTelegram(photoPath, caption) {
     const sessionVal = 'eyJpdiI6InJ0U1ZrcFlRUy9LVlZjMG5USzh3aFE9PSIsInZhbHVlIjoiVHlPUTJqTERFVWVkOUREd1ZOWnpwYXlMVTJBREdBa3dkaUdJdHNMSGhZZGN6RkZjMU9HNFlaVjlFbk9tdlFnYVNFSWI4RThOMXYwQ1BVZlRqakJLN2JxSnpMVEJLNUNwQnpXVmcwYnk0TUxiUnROYkxIek8vTG9DcUs2Vm5IRm8iLCJtYWMiOiIxOTgzMDViYjMzNjQ2YmU3YzkzNWFlOTdmODQzNzEyNTdmZTY5NjRjZDkxNDZjNTM5M2Y1N2RhZmNlMjEzMDgxIiwidGFnIjoiIn0=';
     const xsrfVal = 'eyJpdiI6Ii9WK1FWbU9OM0ZNQyszVjZQeHJxenc9PSIsInZhbHVlIjoiem5OckRWbWJ3MU5mRndqbHFnZWdFenE3VzZWd3RySk5XNllJalkvL1hRKzNNNG9XSmkyMzc2YWNLQk9LblBNdG54WDNGak1mNVFVaGt3bHdZcGQ1aFlEaGtLR3VHaC9QVWIwUUlYMWpKVjh1K295akRCUFpXdk52OTFHZ29WaCsiLCJtYWMiOiI2OWQ2MTM1YmYzMjczNmYxNDcwNmRkOWRhY2E3YzIxZmQ1OWI5MTFhZWZjNDJkYmNkMDhjOWVjYzUxMjU2YTRlIiwidGFnIjoiIn0=';
 
+    const cfClearanceVal = 'OG5Qm03XqUZdztBC4nE8Tq65MYrLAALN5o4oEZztb1E-1792644003-1.2.1.1-NZPSq8lHXA5r1pwx6j2pni.R.2zXA2Pte_74JclsKdjpXKKKURvtHiF_CpEZbGnIg5z.3NGflCtiHzEEz8VVWGeGaQ2wtsBLIUl1A.aAAPYIuSuMdK_2Vm_ISRl9USal50v.uqA2tRJGlGmAjqydqvMWOCpyITDrfB_zKdav0zjC3vy_ovI.4iQXey8lm1P6nLJWZU.XLi5KRomJVln3Ip_OTGaAWUD.1Om3VfApVjWwAMg0l20YPV3RoNp1AW6T2oWFsoFZwVgA9aIifjftVNLmbOfDhhfIqFwmuSvqE9KPz3uy2sE5MiyzcKbs9VlWaA8vxwP_5UFm_p62sPcrys9qPF.Klt1dKd_AopyME6yD_iI16oSFVW4BpequbShWh4xEKaOirt_uEsWGYm3iKiqr6NZNGcQmDXeVbT4KLdwBpJOGPtVRLaxyUl2sHh4Fgxtp1xNPi0yRDXzQLc3OM.XecDCsgKPW8kAurBLeLro2A0PWJEAPG36Bd1bBZhuo1_LWQxDFDAhED0nNi581Bg';
+
     console.log('[*] Injecting mobile cookies from Infinix device...');
     await page.setCookie(
+      {
+        name: 'cf_clearance',
+        value: cfClearanceVal,
+        domain: '.banyuasinkab.go.id',
+        path: '/',
+        secure: true,
+        httpOnly: true
+      },
       {
         name: 'XSRF-TOKEN',
         value: xsrfVal,
@@ -69,6 +79,7 @@ async function sendPhotoToTelegram(photoPath, caption) {
         path: '/'
       }
     );
+
 
     const portalUrl = 'https://cctv.banyuasinkab.go.id/';
     console.log(`[1] Buka halaman peta utama: ${portalUrl}`);
