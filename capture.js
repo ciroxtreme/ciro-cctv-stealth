@@ -42,6 +42,7 @@ async function sendPhotoToTelegram(photoPath, caption) {
   });
 
   try {
+    const outPath = 'cctv_banyuasin_live.jpg';
     const userAgent = 'Mozilla/5.0 (Linux; Android 15; Infinix X6880 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/155.0.8059.43 Mobile Safari/537.36';
     await page.setUserAgent(userAgent);
     await page.setViewport({ width: 412, height: 915, isMobile: true, hasTouch: true });
@@ -98,6 +99,7 @@ async function sendPhotoToTelegram(photoPath, caption) {
 
     console.log('[2] Menunggu Cloudflare Turnstile & Peta Leaflet memuat...');
     
+    let passedTurnstile = false;
     // Tunggu Turnstile & Peta Leaflet memuat (puppeteer-real-browser turnstile: true otomatis menangani solving di background)
     for (let i = 0; i < 40; i++) {
       await new Promise(r => setTimeout(r, 2000));
@@ -113,8 +115,15 @@ async function sendPhotoToTelegram(photoPath, caption) {
       
       if (!currentTitle.toLowerCase().includes('just a moment') && !currentTitle.toLowerCase().includes('security verification')) {
         console.log('[+] Lolos Turnstile Cloudflare! Masuk ke halaman peta!');
+        passedTurnstile = true;
         break;
       }
+    }
+
+    if (!passedTurnstile) {
+      console.log('[!] Gagal lolos Cloudflare Turnstile setelah 80 detik. Batalkan proses!');
+      if (fs.existsSync(outPath)) fs.unlinkSync(outPath);
+      throw new Error('Gagal: Masih tertahan di verifikasi Cloudflare Turnstile (Timeout)!');
     }
 
 
@@ -216,8 +225,6 @@ async function sendPhotoToTelegram(photoPath, caption) {
     } catch (e) {
       console.log('[!] Error evaluate debug info:', e.message);
     }
-
-    const outPath = 'cctv_banyuasin_live.jpg';
 
     // Cari elemen modal yang sedang tampil (visible) atau popup Leaflet
     const captureResult = await page.evaluate(() => {
