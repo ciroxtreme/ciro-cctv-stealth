@@ -47,16 +47,24 @@ async function sendPhotoToTelegram(photoPath, caption) {
     await page.setViewport({ width: 412, height: 915, isMobile: true, hasTouch: true });
 
 
-    const sessionVal = 'eyJpdiI6InJ0U1ZrcFlRUy9LVlZjMG5USzh3aFE9PSIsInZhbHVlIjoiVHlPUTJqTERFVWVkOUREd1ZOWnpwYXlMVTJBREdBa3dkaUdJdHNMSGhZZGN6RkZjMU9HNFlaVjlFbk9tdlFnYVNFSWI4RThOMXYwQ1BVZlRqakJLN2JxSnpMVEJLNUNwQnpXVmcwYnk0TUxiUnROYkxIek8vTG9DcUs2Vm5IRm8iLCJtYWMiOiIxOTgzMDViYjMzNjQ2YmU3YzkzNWFlOTdmODQzNzEyNTdmZTY5NjRjZDkxNDZjNTM5M2Y1N2RhZmNlMjEzMDgxIiwidGFnIjoiIn0=';
-    const xsrfVal = 'eyJpdiI6Ii9WK1FWbU9OM0ZNQyszVjZQeHJxenc9PSIsInZhbHVlIjoiem5OckRWbWJ3MU5mRndqbHFnZWdFenE3VzZWd3RySk5XNllJalkvL1hRKzNNNG9XSmkyMzc2YWNLQk9LblBNdG54WDNGak1mNVFVaGt3bHdZcGQ1aFlEaGtLR3VHaC9QVWIwUUlYMWpKVjh1K295akRCUFpXdk52OTFHZ29WaCsiLCJtYWMiOiI2OWQ2MTM1YmYzMjczNmYxNDcwNmRkOWRhY2E3YzIxZmQ1OWI5MTFhZWZjNDJkYmNkMDhjOWVjYzUxMjU2YTRlIiwidGFnIjoiIn0=';
-
-    const cfClearanceVal = 'OG5Qm03XqUZdztBC4nE8Tq65MYrLAALN5o4oEZztb1E-1792644003-1.2.1.1-NZPSq8lHXA5r1pwx6j2pni.R.2zXA2Pte_74JclsKdjpXKKKURvtHiF_CpEZbGnIg5z.3NGflCtiHzEEz8VVWGeGaQ2wtsBLIUl1A.aAAPYIuSuMdK_2Vm_ISRl9USal50v.uqA2tRJGlGmAjqydqvMWOCpyITDrfB_zKdav0zjC3vy_ovI.4iQXey8lm1P6nLJWZU.XLi5KRomJVln3Ip_OTGaAWUD.1Om3VfApVjWwAMg0l20YPV3RoNp1AW6T2oWFsoFZwVgA9aIifjftVNLmbOfDhhfIqFwmuSvqE9KPz3uy2sE5MiyzcKbs9VlWaA8vxwP_5UFm_p62sPcrys9qPF.Klt1dKd_AopyME6yD_iI16oSFVW4BpequbShWh4xEKaOirt_uEsWGYm3iKiqr6NZNGcQmDXeVbT4KLdwBpJOGPtVRLaxyUl2sHh4Fgxtp1xNPi0yRDXzQLc3OM.XecDCsgKPW8kAurBLeLro2A0PWJEAPG36Bd1bBZhuo1_LWQxDFDAhED0nNi581Bg';
+    const sessionVal = 'eyJpdiI6Imk5cUFFTkltYzQ3TDFTNXFzbmdqcVE9PSIsInZhbHVlIjoiQkZibS9CbEYva05jcnlFOTZtcjhnTk1qd1IxZ1dENk0zWlFiaDJQYU02Y3dtN0ZCc2pOQjVGRWFhUDJyMVQ5amtyUS9YUmlwVTBQQUFQeGN1bkhHQnhiQ09WdWVLUTJqQllHemtuQ1VRTkQ1QlpJOG1taEpLYS9UTEJWSnBOeEQiLCJtYWMiOiI3MDBkYjNkYjNmZTJlNTZkNWJjNjM2Yzc2ODlmN2QwYTE1ZGFmZTVhNzc1ZjQwYWIzODViNjQ4MjdhOTcwZWI0IiwidGFnIjoiIn0=';
+    const xsrfVal = 'eyJpdiI6Ik56V0JkQ0t0QVBCMWU4OVVIWVdDY1E9PSIsInZhbHVlIjoiY1lmbWVibUxRNjRhMFJEdGhzV2xjaTlIdUVhRUxzUHk5NHFXR281b0FyUktTYzJ0bnRBYm14bis0UDBSeW5kSDBValNuMDd5bkZkeklVVXlUZGJRekhXWkNza0hMczNic09HMWFBOVFlZklERmxNVWhVYzBKNWlWcWdVdm51RUgiLCJtYWMiOiI5YjQwYTk4ZDQyOGQ3ZmNhNmU3MDY5NGVhODZmOWIzMzhlZDJiZGZjOWNkMDIyMjYzZjI3ZTllMjdkM2I4NTExIiwidGFnIjoiIn0=';
+    const cfClearanceVal = 'yt6zuk.vMzFaKMlARqmQYcR6MyEeFic5xnU2nWK9xD0-1792647523-1.2.1.1-nfHJwTi2WZ3mzB3K79BLLZ5cXgIguk8xXkgkj_.4fmRM7Ow9HtsoB3bHCXT3cR2n2zg3RUkHER1odkPlrGA.jZwUU5NZMIuUrdUj6qiSXgKSJ0x9E5TIAJsfdwADgRmYVv8lYVoY9RdLbRY1DSltc7M.Sr0hQoUtitibDnvqYaHunANqvGHbpzhF_3C5UD1Myfwz8YXa13SZ.asrUCvExu1dXgxS_ysQOUpMMR7eGohwOiNPAHxrZNsh_wlBRKHKUYJ_HssYNN4AZBeUSVJf_JwfuEVIrz3SMXD6_GtISbi9gGvyTrVuulZGNcr0008gb85Ro6XcP4IQbiXJ90dQNXl5YBT5rb5HC5Sph9065TibFmVbXwqTytHaAiCplOer3pAYcWjeeGYJwFAWUMiNu.2iI_1V2zlrsyo3wZodib.rbHElgU2rmaHEdNYMZxeGyjC3MjJplnr4QuvmMYf9ucD7HgcVI7Fm3Stg4jAF8svI_Zh1qasWyuRi9U01gY.SJeQs_N67.4Npcv4xmThpyA';
+    const cfzAnalyticsVal = '%7B%22_cfa_clientId%22%3A%7B%22v%22%3A%2235698780624225624%22%2C%22e%22%3A1824180005296%7D%2C%22_cfa_sId%22%3A%7B%22v%22%3A%2221386557687092230%22%2C%22e%22%3A1792649324442%7D%7D';
 
     console.log('[*] Injecting mobile cookies from Infinix device...');
     await page.setCookie(
       {
         name: 'cf_clearance',
         value: cfClearanceVal,
+        domain: '.banyuasinkab.go.id',
+        path: '/',
+        secure: true,
+        httpOnly: true
+      },
+      {
+        name: 'cfz_zaraz-analytics',
+        value: cfzAnalyticsVal,
         domain: '.banyuasinkab.go.id',
         path: '/',
         secure: true,
@@ -219,11 +227,17 @@ async function sendPhotoToTelegram(photoPath, caption) {
 
     const outPath = 'cctv_banyuasin_live.jpg';
 
-    if (targetElement) {
-      console.log('[+] Popup video CCTV ditemukan! Mengambil screenshot frame video...');
-      await targetElement.screenshot({ path: outPath, type: 'jpeg', quality: 90 });
-    } else {
-      console.log('[*] Popup modal spesifik tidak terisolasi, mengambil screenshot area peta live...');
+    // Ambil screenshot aman (hindari crash jika modal/elemen belum siap)
+    try {
+      if (targetElement) {
+        console.log('[+] Popup video CCTV ditemukan! Mengambil screenshot frame video...');
+        await targetElement.screenshot({ path: outPath, type: 'jpeg', quality: 90 });
+      } else {
+        console.log('[*] Popup modal spesifik tidak terisolasi, mengambil screenshot area peta live...');
+        await page.screenshot({ path: outPath, type: 'jpeg', quality: 90 });
+      }
+    } catch (e) {
+      console.log('[!] Element screenshot gagal, fallback ke page.screenshot():', e.message);
       await page.screenshot({ path: outPath, type: 'jpeg', quality: 90 });
     }
 
