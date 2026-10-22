@@ -130,16 +130,25 @@ async function sendPhotoToTelegram(photoPath, caption) {
       const foundLink = allElements.find(el => el.innerText && el.innerText.toLowerCase().trim() === targetName.trim());
       if (foundLink) {
         foundLink.click();
-        return { clicked: true, method: 'menuItem', name: foundLink.innerText };
       }
 
-      // 2. Cek apakah ada modal yang sesuai dengan target
+      // 2. Cek apakah ada modal yang sesuai dengan target dan pastikan tampil (hilangkan efek animasi transisi)
       const modals = Array.from(document.querySelectorAll('.modal, [class*="modal"]'));
       const matchingModal = modals.find(m => m.innerText && m.innerText.toLowerCase().includes(targetName));
       if (matchingModal) {
         matchingModal.classList.add('show');
+        matchingModal.classList.remove('fade');
         matchingModal.style.display = 'block';
+        matchingModal.style.opacity = '1';
+        matchingModal.style.visibility = 'visible';
+        matchingModal.style.zIndex = '99999';
+        const v = matchingModal.querySelector('video');
+        if (v) v.play().catch(() => null);
         return { clicked: true, method: 'modalDirect', id: matchingModal.id };
+      }
+
+      if (foundLink) {
+        return { clicked: true, method: 'menuItem', name: foundLink.innerText };
       }
 
       // 3. Fallback: Cari marker CCTV kamera di peta
