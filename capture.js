@@ -116,35 +116,35 @@ async function sendPhotoToTelegram(photoPath, caption) {
         break;
       }
 
-      // Deteksi dan klik Turnstile widget
-      try {
-        const frames = page.frames();
-        for (const frame of frames) {
-          if (frame.url().includes('challenges.cloudflare.com')) {
-            const el = await frame.$('body, #challenge-stage, input[type="checkbox"], .ctp-checkbox-label, .ctp-label');
-            if (el) {
-              const box = await el.boundingBox();
-              if (box) {
-                console.log(`[*] Klik checkbox Turnstile di koordinat (${box.x + 25}, ${box.y + 25})`);
-                await page.mouse.click(box.x + 25, box.y + 25);
-              } else {
-                await el.click().catch(() => null);
+      // Jika dalam 8 detik pertama belum lolos, beri jeda interaksi natural (jangan klik berulang-ulang di koordinat yang sama)
+      if (i >= 4 && i % 3 === 0) {
+        try {
+          const frames = page.frames();
+          for (const frame of frames) {
+            if (frame.url().includes('challenges.cloudflare.com')) {
+              const el = await frame.$('body, #challenge-stage, input[type="checkbox"], .ctp-checkbox-label, .ctp-label');
+              if (el) {
+                const box = await el.boundingBox();
+                if (box) {
+                  const targetX = box.x + 25 + (Math.random() * 6 - 3);
+                  const targetY = box.y + 25 + (Math.random() * 6 - 3);
+                  console.log(`[*] Natural mouse move & click Turnstile di (${Math.round(targetX)}, ${Math.round(targetY)})`);
+                  
+                  // Gerakan mouse bertahap
+                  await page.mouse.move(targetX - 40, targetY - 40);
+                  await new Promise(r => setTimeout(r, 150));
+                  await page.mouse.move(targetX, targetY);
+                  await new Promise(r => setTimeout(r, 100));
+                  await page.mouse.click(targetX, targetY);
+                } else {
+                  await el.click().catch(() => null);
+                }
               }
             }
           }
+        } catch (e) {
+          console.log('[!] Auto-click attempt:', e.message);
         }
-
-        // Coba klik container challenge jika di main frame
-        const cfContainer = await page.$('#cf-turnstile, #challenge-stage, iframe[src*="challenges.cloudflare.com"]');
-        if (cfContainer) {
-          const cBox = await cfContainer.boundingBox();
-          if (cBox) {
-            console.log(`[*] Klik challenge container di koordinat (${cBox.x + 30}, ${cBox.y + cBox.height / 2})`);
-            await page.mouse.click(cBox.x + 30, cBox.y + cBox.height / 2);
-          }
-        }
-      } catch (e) {
-        console.log('[!] Auto-click attempt:', e.message);
       }
     }
 
