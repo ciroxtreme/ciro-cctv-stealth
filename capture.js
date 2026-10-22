@@ -93,8 +93,15 @@ async function sendPhotoToTelegram(photoPath, caption) {
     // Auto-solver loop Turnstile
     for (let i = 0; i < 25; i++) {
       await new Promise(r => setTimeout(r, 2000));
-      const currentTitle = await page.title();
-      console.log(`[*] Detik ke-${(i + 1) * 2} | Judul: "${currentTitle}" | URL: ${page.url()}`);
+      let currentTitle = '';
+      try {
+        currentTitle = await page.title();
+        console.log(`[*] Detik ke-${(i + 1) * 2} | Judul: "${currentTitle}" | URL: ${page.url()}`);
+      } catch (e) {
+        console.log(`[*] Detik ke-${(i + 1) * 2} | Navigasi halaman sedang berlangsung (Turnstile redirecting)...`);
+        await new Promise(r => setTimeout(r, 3000));
+        continue;
+      }
       
       if (!currentTitle.toLowerCase().includes('just a moment') && !currentTitle.toLowerCase().includes('security verification')) {
         console.log('[+] Lolos Turnstile Cloudflare! Masuk ke halaman peta!');
@@ -132,6 +139,7 @@ async function sendPhotoToTelegram(photoPath, caption) {
         console.log('[!] Auto-click attempt:', e.message);
       }
     }
+
 
 
 
