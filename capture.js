@@ -115,34 +115,33 @@ async function sendPhotoToTelegram(photoPath, caption) {
 
     // Cari marker CCTV di peta (Leaflet marker)
     console.log('[3] Mencari ikon marker kamera di peta Leaflet...');
-    const markerSelector = '.leaflet-marker-icon, img[src*="cctv"], img[src*="marker"], .marker-cluster';
-    
-    try {
-      await page.waitForSelector(markerSelector, { timeout: 15000 });
-      console.log('[+] Marker CCTV ditemukan di peta!');
-    } catch (e) {
-      console.log('[!] Selector marker belum muncul, mencoba scroll/klik layer...');
-    }
+    await page.waitForSelector('.leaflet-marker-icon', { timeout: 20000 });
+    console.log('[+] Marker Leaflet ditemukan di peta!');
 
-    // Klik marker CCTV pertama yang ada di peta
-    const clicked = await page.evaluate((sel) => {
-      const markers = document.querySelectorAll(sel);
-      console.log('Total marker ditemukan:', markers.length);
-      for (const m of markers) {
-        // Cari marker yang punya gambar kamera atau cluster
-        if (m) {
-          m.click();
-          return true;
-        }
+    // Cari marker yang benar (ikon CCTV kamera / marker cluster)
+    const markerTarget = await page.evaluate(() => {
+      const markers = Array.from(document.querySelectorAll('.leaflet-marker-icon'));
+      console.log('Semua marker di peta:', markers.map(m => m.outerHTML));
+      // Prioritaskan marker dengan class atau src kamera
+      const camMarker = markers.find(m => m.src && (m.src.includes('cctv') || m.src.includes('cam') || m.src.includes('marker')));
+      if (camMarker) {
+        camMarker.click();
+        return { clicked: true, type: 'camMarker', src: camMarker.src };
       }
-      return false;
-    }, markerSelector);
+      if (markers.length > 0) {
+        // Ambil marker terakhir atau pertama yang bukan logo/navigasi
+        markers[markers.length - 1].click();
+        return { clicked: true, type: 'lastMarker' };
+      }
+      return { clicked: false };
+    });
+    console.log('[*] Status klik marker CCTV:', JSON.stringify(markerTarget));
 
-    console.log('[*] Status klik marker CCTV:', clicked);
-
-    // Tunggu transisi atau navigasi jika marker membuka URL baru/modal
+    // Tunggu popup modal video ("Pasar P.Balai 2") muncul di Leaflet
+    console.log('[4] Menunggu popup modal video CCTV muncul...');
+    await page.waitForSelector('.leaflet-popup-content, .modal-content, video, canvas', { timeout: 15000 }).catch(() => null);
     await new Promise(r => setTimeout(r, 4000));
-    console.log('[*] URL setelah klik marker:', page.url());
+
 
     // Debug isi HTML dan frame yang ada di halaman
     let debugInfo = {};
