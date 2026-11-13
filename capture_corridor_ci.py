@@ -50,6 +50,11 @@ def send_telegram_photo(photo_path, caption):
     body.extend(b'Content-Disposition: form-data; name="chat_id"\r\n\r\n')
     body.extend(f"{CHAT_ID}\r\n".encode())
 
+    # parse_mode HTML agar tag <b> dan <i> ter-render rapi dan tebal
+    body.extend(f"--{boundary}\r\n".encode())
+    body.extend(b'Content-Disposition: form-data; name="parse_mode"\r\n\r\n')
+    body.extend(b"HTML\r\n")
+
     body.extend(f"--{boundary}\r\n".encode())
     body.extend(b'Content-Disposition: form-data; name="caption"\r\n\r\n')
     body.extend(caption.encode("utf-8"))

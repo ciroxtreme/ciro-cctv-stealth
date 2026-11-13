@@ -3,9 +3,8 @@ name: CCTV Corridor Patrol (Palembang - Banyuasin)
 on:
   workflow_dispatch:
   schedule:
-    # Berjalan setiap pagi dan sore hari (WIB: UTC+7)
-    - cron: '0 0 * * *'   # 07:00 WIB
-    - cron: '0 10 * * *'  # 17:00 WIB
+    # Berjalan otomatis setiap 1 jam sekali (24/7)
+    - cron: '0 * * * *'
 
 jobs:
   patrol:
@@ -47,8 +46,6 @@ jobs:
           CHAT_ID: ${{ secrets.CHAT_ID || '1936436999' }}
         run: |
           mkdir -p output
-          cp cfsolve/target/release/capture_cctv target_release_capture_cctv || true
-          # Jalankan runner patrol koridor
           python3 capture_corridor_ci.py
 
       - name: Upload Snapshot Artifacts

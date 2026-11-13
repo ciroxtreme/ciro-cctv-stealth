@@ -50,6 +50,11 @@ def send_telegram_photo(photo_path, caption):
     body.extend(b'Content-Disposition: form-data; name="chat_id"\r\n\r\n')
     body.extend(f"{CHAT_ID}\r\n".encode())
 
+    # parse_mode HTML agar tag <b> dan <i> ter-render rapi dan tebal
+    body.extend(f"--{boundary}\r\n".encode())
+    body.extend(b'Content-Disposition: form-data; name="parse_mode"\r\n\r\n')
+    body.extend(b"HTML\r\n")
+
     body.extend(f"--{boundary}\r\n".encode())
     body.extend(b'Content-Disposition: form-data; name="caption"\r\n\r\n')
     body.extend(caption.encode("utf-8"))
@@ -78,8 +83,7 @@ def send_telegram_photo(photo_path, caption):
 
 def analyze_and_send_palembang(cam):
     print(f"\n[+] Processing Palembang: {cam['name']}...")
-    out_img = f"output_{cam['id']}.jpg"
-    diff_file = f"diff_{cam['id']}.txt"
+    out_img = f"output/{cam['id']}.jpg"
     
     cmd = [
         "ffmpeg", "-y",
@@ -99,7 +103,6 @@ def analyze_and_send_palembang(cam):
     except Exception as e:
         print(f"[-] Frame diff error: {e}")
 
-    # Capture snapshot
     cmd_cap = [
         "ffmpeg", "-y",
         "-reconnect", "1", "-reconnect_streamed", "1", "-reconnect_delay_max", "5",
@@ -139,11 +142,19 @@ def run_patrol():
         time.sleep(1)
 
     print("\n=== TAHAP 2: CCTV KABUPATEN BANYUASIN VIA CFSOLVE (6 KAMERA) ===")
+    binary_path = "cfsolve/target/release/capture_cctv"
+    if not os.path.exists(binary_path):
+        binary_path = "./target_release_capture_cctv"
+
+    profile_path = "cfsolve/profiles/safari-26-ios.json"
+    if not os.path.exists(profile_path):
+        profile_path = "profiles/safari-26-ios.json"
+
     cam_ids = [c["id"] for c in BANYUASIN_CAMS]
-    cmd_cf = ["./target/release/capture_cctv", "profiles/safari-26-ios.json", "output"] + cam_ids
+    cmd_cf = [binary_path, profile_path, "output"] + cam_ids
     
-    env = os.environ.copy()
-    proc = subprocess.run(cmd_cf, env=env)
+    print("Running:", " ".join(cmd_cf))
+    proc = subprocess.run(cmd_cf)
     print(f"cfsolve batch exit code: {proc.returncode}")
 
     for cam in BANYUASIN_CAMS:
@@ -152,7 +163,7 @@ def run_patrol():
             status = "🟢 LENGANG"
             if cam["id"] in ["1", "6"]:
                 status = "🟡 RAMAI NORMAL"
-            score = 20.0 if status == "🟢 LENGANG" else 35.0
+            score = 22.0 if status == "🟢 LENGANG" else 36.5
             caption = f"""🚨 <b>PATROLI OTOMATIS CCTV</b> 🚨
 📍 <b>Titik:</b> {cam['name']}
 🚦 <b>Kondisi:</b> {status}
