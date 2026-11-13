@@ -16,7 +16,7 @@ on:
 jobs:
   patrol:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
 
     steps:
       - name: Checkout Repository
@@ -25,25 +25,16 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg libclang-dev clang cmake
-
-      - name: Setup Rust Toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Rust Cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: "./cfsolve -> target"
+          sudo apt-get install -y ffmpeg
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Build cfsolve capture engine
-        working-directory: ./cfsolve
+      - name: Ensure Prebuilt Engine Permissions
         run: |
-          cargo build --release --bin capture_cctv
+          chmod +x bin/capture_cctv
 
       - name: Run Full Corridor CCTV Patrol & Telegram Dispatch
         env:
