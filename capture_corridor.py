@@ -162,18 +162,29 @@ def run_patrol():
         if not os.path.exists(profile_path):
             profile_path = "profiles/safari-26-ios.json"
 
+        # Cek jika ada proxy
+        proxy_val = os.environ.get("CF_PROXY", "").strip()
+        if not proxy_val and os.path.exists("proxy_active.txt"):
+            with open("proxy_active.txt") as f:
+                proxy_val = f.read().strip()
+
+        env = os.environ.copy()
+        if proxy_val:
+            print(f"[*] Menjalankan cfsolve dengan Egress Proxy: {proxy_val}")
+            env["CF_PROXY"] = proxy_val
+
         cam_ids = [c["id"] for c in target_banyuasin]
         cmd_cf = [binary_path, profile_path, "output"] + cam_ids
         
-        # Retry loop sampai 3 kali jika Cloudflare meminta interaksi ulang
+        # Eksekusi cfsolve
         max_retries = 3
         for attempt in range(1, max_retries + 1):
             print(f"Attempt {attempt}/{max_retries}: Running cfsolve...")
-            proc = subprocess.run(cmd_cf)
+            proc = subprocess.run(cmd_cf, env=env)
             if proc.returncode == 0:
                 print(f"[✓] cfsolve sukses di attempt {attempt}")
                 break
-            print(f"[-] cfsolve exit code: {proc.returncode}, retrying in 2 seconds...")
+            print(f"[-] cfsolve exit code: {proc.returncode}, retrying...")
             time.sleep(2)
 
         for cam in target_banyuasin:

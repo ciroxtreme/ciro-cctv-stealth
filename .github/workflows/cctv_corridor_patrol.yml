@@ -35,11 +35,14 @@ jobs:
         with:
           workspaces: "./cfsolve -> target"
 
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      - name: Auto-Fetch Verified Public Proxy
+        run: |
+          python3 fetch_proxies.py || echo "Proxy fetch failed, fallback to direct"
 
       - name: Build cfsolve capture engine
         working-directory: ./cfsolve
