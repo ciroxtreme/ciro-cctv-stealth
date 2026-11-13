@@ -40,10 +40,6 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Auto-Fetch Verified Public Proxy
-        run: |
-          python3 fetch_proxies.py || echo "Proxy fetch failed, fallback to direct"
-
       - name: Build cfsolve capture engine
         working-directory: ./cfsolve
         run: |
@@ -54,6 +50,7 @@ jobs:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN || '9050404111:AAHE6X1btKtiWIgBT8Lcp5DDMdUMEV2MbLk' }}
           CHAT_ID: ${{ github.event.client_payload.chat_id || secrets.CHAT_ID || '1936436999' }}
           FILTER_TARGET: ${{ github.event.client_payload.filter || github.event.inputs.filter || 'ALL' }}
+          CF_PROXY: ${{ secrets.CF_PROXY || 'https://hello-fly-sbrnba.fly.dev:443' }}
         run: |
           mkdir -p output
           python3 capture_corridor_ci.py
