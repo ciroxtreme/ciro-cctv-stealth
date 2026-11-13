@@ -51,7 +51,7 @@ def send_telegram_photo(photo_path, caption):
     body.extend(b'Content-Disposition: form-data; name="chat_id"\r\n\r\n')
     body.extend(f"{CHAT_ID}\r\n".encode())
 
-    # parse_mode HTML agar tag <b> dan <i> ter-render rapi dan tebal
+    # parse_mode HTML
     body.extend(f"--{boundary}\r\n".encode())
     body.extend(b'Content-Disposition: form-data; name="parse_mode"\r\n\r\n')
     body.extend(b"HTML\r\n")
@@ -165,9 +165,16 @@ def run_patrol():
         cam_ids = [c["id"] for c in target_banyuasin]
         cmd_cf = [binary_path, profile_path, "output"] + cam_ids
         
-        print("Running:", " ".join(cmd_cf))
-        proc = subprocess.run(cmd_cf)
-        print(f"cfsolve batch exit code: {proc.returncode}")
+        # Retry loop sampai 3 kali jika Cloudflare meminta interaksi ulang
+        max_retries = 3
+        for attempt in range(1, max_retries + 1):
+            print(f"Attempt {attempt}/{max_retries}: Running cfsolve...")
+            proc = subprocess.run(cmd_cf)
+            if proc.returncode == 0:
+                print(f"[✓] cfsolve sukses di attempt {attempt}")
+                break
+            print(f"[-] cfsolve exit code: {proc.returncode}, retrying in 2 seconds...")
+            time.sleep(2)
 
         for cam in target_banyuasin:
             img_path = f"output/banyuasin_{cam['id']}.jpg"
