@@ -1,0 +1,60 @@
+name: CCTV Corridor Patrol (Palembang - Banyuasin)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Berjalan setiap pagi dan sore hari (WIB: UTC+7)
+    - cron: '0 0 * * *'   # 07:00 WIB
+    - cron: '0 10 * * *'  # 17:00 WIB
+
+jobs:
+  patrol:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libclang-dev clang cmake
+
+      - name: Setup Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./cfsolve -> target"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Build cfsolve capture engine
+        working-directory: ./cfsolve
+        run: |
+          cargo build --release --bin capture_cctv
+
+      - name: Run Full Corridor CCTV Patrol & Telegram Dispatch
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN || '9050404111:AAHE6X1btKtiWIgBT8Lcp5DDMdUMEV2MbLk' }}
+          CHAT_ID: ${{ secrets.CHAT_ID || '1936436999' }}
+        run: |
+          mkdir -p output
+          cp cfsolve/target/release/capture_cctv target_release_capture_cctv || true
+          # Jalankan runner patrol koridor
+          python3 capture_corridor_ci.py
+
+      - name: Upload Snapshot Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cctv-patrol-snapshots
+          path: output/*.jpg
+          if-no-files-found: ignore
