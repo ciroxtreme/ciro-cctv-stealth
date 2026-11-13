@@ -32,10 +32,12 @@ jobs:
 
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
+        with:
           workspaces: "./cfsolve -> target"
 
       - name: Setup Python
         uses: actions/setup-python@v5
+        with:
           python-version: '3.11'
 
       - name: Build cfsolve capture engine
@@ -55,6 +57,7 @@ jobs:
       - name: Upload Snapshot Artifacts
         if: always()
         uses: actions/upload-artifact@v4
+        with:
           name: cctv-patrol-snapshots
           path: output/*.jpg
           if-no-files-found: ignore
