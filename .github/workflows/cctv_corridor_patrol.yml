@@ -2,6 +2,13 @@ name: CCTV Corridor Patrol (Palembang - Banyuasin)
 
 on:
   workflow_dispatch:
+    inputs:
+      filter:
+        description: 'Filter kamera (ALL, PALEMBANG, BANYUASIN, atau ID kamera)'
+        required: false
+        default: 'ALL'
+  repository_dispatch:
+    types: [cctv_snapshot]
   schedule:
     # Berjalan otomatis setiap 1 jam sekali (24/7)
     - cron: '0 * * * *'
@@ -43,7 +50,8 @@ jobs:
       - name: Run Full Corridor CCTV Patrol & Telegram Dispatch
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN || '9050404111:AAHE6X1btKtiWIgBT8Lcp5DDMdUMEV2MbLk' }}
-          CHAT_ID: ${{ secrets.CHAT_ID || '1936436999' }}
+          CHAT_ID: ${{ github.event.client_payload.chat_id || secrets.CHAT_ID || '1936436999' }}
+          FILTER_TARGET: ${{ github.event.client_payload.filter || github.event.inputs.filter || 'ALL' }}
         run: |
           mkdir -p output
           python3 capture_corridor_ci.py

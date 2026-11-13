@@ -7,6 +7,7 @@ import re
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "9050404111:AAHE6X1btKtiWIgBT8Lcp5DDMdUMEV2MbLk")
 CHAT_ID = os.environ.get("CHAT_ID", "1936436999")
+FILTER_TARGET = os.environ.get("FILTER_TARGET", "ALL").upper().strip()
 
 PALEMBANG_CAMS = [
     {
@@ -135,46 +136,57 @@ def analyze_and_send_palembang(cam):
 
 def run_patrol():
     os.makedirs("output", exist_ok=True)
-    
-    print("=== TAHAP 1: CCTV KOTA PALEMBANG (3 KAMERA) ===")
-    for cam in PALEMBANG_CAMS:
-        analyze_and_send_palembang(cam)
-        time.sleep(1)
+    print(f"=== PATROL MODE: FILTER={FILTER_TARGET} ===")
 
-    print("\n=== TAHAP 2: CCTV KABUPATEN BANYUASIN VIA CFSOLVE (6 KAMERA) ===")
-    binary_path = "cfsolve/target/release/capture_cctv"
-    if not os.path.exists(binary_path):
-        binary_path = "./target_release_capture_cctv"
+    # 1. Palembang Cams
+    if FILTER_TARGET in ["ALL", "PALEMBANG"]:
+        print("=== TAHAP 1: CCTV KOTA PALEMBANG (3 KAMERA) ===")
+        for cam in PALEMBANG_CAMS:
+            analyze_and_send_palembang(cam)
+            time.sleep(1)
 
-    profile_path = "cfsolve/profiles/safari-26-ios.json"
-    if not os.path.exists(profile_path):
-        profile_path = "profiles/safari-26-ios.json"
+    # 2. Banyuasin Cams
+    target_banyuasin = []
+    if FILTER_TARGET in ["ALL", "BANYUASIN"]:
+        target_banyuasin = BANYUASIN_CAMS
+    elif FILTER_TARGET.isdigit():
+        target_banyuasin = [c for c in BANYUASIN_CAMS if c["id"] == FILTER_TARGET]
 
-    cam_ids = [c["id"] for c in BANYUASIN_CAMS]
-    cmd_cf = [binary_path, profile_path, "output"] + cam_ids
-    
-    print("Running:", " ".join(cmd_cf))
-    proc = subprocess.run(cmd_cf)
-    print(f"cfsolve batch exit code: {proc.returncode}")
+    if target_banyuasin:
+        print(f"\n=== TAHAP 2: CCTV KABUPATEN BANYUASIN VIA CFSOLVE ({len(target_banyuasin)} KAMERA) ===")
+        binary_path = "cfsolve/target/release/capture_cctv"
+        if not os.path.exists(binary_path):
+            binary_path = "./target_release_capture_cctv"
 
-    for cam in BANYUASIN_CAMS:
-        img_path = f"output/banyuasin_{cam['id']}.jpg"
-        if os.path.exists(img_path) and os.path.getsize(img_path) > 1000:
-            status = "🟢 LENGANG"
-            if cam["id"] in ["1", "6"]:
-                status = "🟡 RAMAI NORMAL"
-            score = 22.0 if status == "🟢 LENGANG" else 36.5
-            caption = f"""🚨 <b>PATROLI OTOMATIS CCTV</b> 🚨
+        profile_path = "cfsolve/profiles/safari-26-ios.json"
+        if not os.path.exists(profile_path):
+            profile_path = "profiles/safari-26-ios.json"
+
+        cam_ids = [c["id"] for c in target_banyuasin]
+        cmd_cf = [binary_path, profile_path, "output"] + cam_ids
+        
+        print("Running:", " ".join(cmd_cf))
+        proc = subprocess.run(cmd_cf)
+        print(f"cfsolve batch exit code: {proc.returncode}")
+
+        for cam in target_banyuasin:
+            img_path = f"output/banyuasin_{cam['id']}.jpg"
+            if os.path.exists(img_path) and os.path.getsize(img_path) > 1000:
+                status = "🟢 LENGANG"
+                if cam["id"] in ["1", "6"]:
+                    status = "🟡 RAMAI NORMAL"
+                score = 22.0 if status == "🟢 LENGANG" else 36.5
+                caption = f"""🚨 <b>PATROLI OTOMATIS CCTV</b> 🚨
 📍 <b>Titik:</b> {cam['name']}
 🚦 <b>Kondisi:</b> {status}
 📈 <b>Indeks Dinamika Arus:</b> {score:.1f} / 100
 
 ℹ️ <i>{cam['desc']}</i>"""
-            ok = send_telegram_photo(img_path, caption)
-            print(f"[✓] {cam['name']} sent to Telegram: {ok}")
-            time.sleep(1)
-        else:
-            print(f"[-] Image for {cam['name']} ({img_path}) not found or empty")
+                ok = send_telegram_photo(img_path, caption)
+                print(f"[✓] {cam['name']} sent to Telegram: {ok}")
+                time.sleep(1)
+            else:
+                print(f"[-] Image for {cam['name']} ({img_path}) not found or empty")
 
 if __name__ == "__main__":
     run_patrol()
