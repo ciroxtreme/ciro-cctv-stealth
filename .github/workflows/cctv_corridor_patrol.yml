@@ -35,6 +35,18 @@ jobs:
         with:
           workspaces: "./cfsolve -> target"
 
+      - name: Connect Tailscale to HP Exit Node
+        continue-on-error: true
+        uses: tailscale/github-action@v3
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          args: --exit-node=100.71.31.19 --exit-node-allow-lan-access=true
+
+      - name: Verify IP Route
+        run: |
+          echo "Public IP runner:"
+          curl -s --max-time 10 https://api.ipify.org || echo "curl timeout"
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
