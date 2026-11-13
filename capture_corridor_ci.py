@@ -154,7 +154,9 @@ def run_patrol():
 
     if target_banyuasin:
         print(f"\n=== TAHAP 2: CCTV KABUPATEN BANYUASIN VIA CFSOLVE ({len(target_banyuasin)} KAMERA) ===")
-        binary_path = "cfsolve/target/release/capture_cctv"
+        binary_path = "bin/capture_cctv"
+        if not os.path.exists(binary_path):
+            binary_path = "cfsolve/target/release/capture_cctv"
         if not os.path.exists(binary_path):
             binary_path = "./target_release_capture_cctv"
 
