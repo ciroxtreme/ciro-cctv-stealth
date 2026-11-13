@@ -29,8 +29,12 @@ fn main() -> Result<()> {
     };
 
     let browser = Browser::read(Path::new(fingerprint_path))?;
+    let proxy_env = env::var("CF_PROXY").ok().filter(|s| !s.trim().is_empty());
+    if let Some(ref p) = proxy_env {
+        println!("[*] Menggunakan Proxy: {}", p);
+    }
     let options = Options {
-        proxy: None,
+        proxy: proxy_env,
         trusted_root: None,
         sink: None,
     };
