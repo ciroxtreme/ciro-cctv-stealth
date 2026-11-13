@@ -25,16 +25,25 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg libclang-dev clang cmake
+
+      - name: Setup Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./cfsolve -> target"
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Ensure Prebuilt Engine Permissions
+      - name: Build cfsolve capture engine
+        working-directory: ./cfsolve
         run: |
-          chmod +x bin/capture_cctv
+          cargo build --release --bin capture_cctv
 
       - name: Run Full Corridor CCTV Patrol & Telegram Dispatch
         env:

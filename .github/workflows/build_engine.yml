@@ -1,0 +1,31 @@
+name: Build and Release x86_64 capture_cctv Engine
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libclang-dev clang cmake
+
+      - name: Setup Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build cfsolve capture engine
+        working-directory: ./cfsolve
+        run: |
+          cargo build --release --bin capture_cctv
+          strip target/release/capture_cctv
+
+      - name: Upload Binary Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: capture_cctv_x86_64
+          path: cfsolve/target/release/capture_cctv
