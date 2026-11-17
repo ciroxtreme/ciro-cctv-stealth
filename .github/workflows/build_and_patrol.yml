@@ -36,7 +36,9 @@ jobs:
           cp target/release/capture_cctv ../bin/capture_cctv
           chmod +x ../bin/capture_cctv
 
-      - name: Test Capture Banyuasin Corridor (1 to 20)
+      - name: Test Capture Banyuasin Corridor (1 to 20) with Egress Proxy
+        env:
+          CF_PROXY: "https://hello-fly-sbrnba.fly.dev:443"
         run: |
           mkdir -p output
           bin/capture_cctv profiles/safari-26-ios.json output 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 || true
