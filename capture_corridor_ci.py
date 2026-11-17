@@ -31,12 +31,17 @@ PALEMBANG_CAMS = [
 ]
 
 BANYUASIN_CAMS = [
-    {"id": "1", "name": "Gerbang Batas KM 12 (Banyuasin)", "desc": "Gapura gerbang selamat datang perbatasan Palembang - Banyuasin."},
-    {"id": "6", "name": "Simpang Y KM 15 (Banyuasin)", "desc": "Pertigaan Simpang Y KM 15 jalur penghubung permukiman dan lintas timur."},
-    {"id": "3", "name": "Air Batu (Banyuasin)", "desc": "Ruas jalan lintas Air Batu Banyuasin."},
-    {"id": "9", "name": "Sembawa (Banyuasin)", "desc": "Jalur lintas utama kawasan penelitian & perkebunan Sembawa."},
-    {"id": "5", "name": "Pasar Pangkalan Balai (Banyuasin)", "desc": "Kawasan pusat perekonomian Pasar Pangkalan Balai."},
-    {"id": "4", "name": "Betung (Banyuasin)", "desc": "Simpang & ruas lintas utama Betung penghubung Sekayu / Jambi."}
+    {"id": "1", "name": "Gerbang KM-12 (Kamera 1)", "desc": "Gapura batas perbatasan Palembang - Banyuasin KM 12."},
+    {"id": "2", "name": "Gerbang KM-12 2 (Kamera 2)", "desc": "Gapura batas perbatasan Palembang - Banyuasin KM 12 (Sudut 2)."},
+    {"id": "6", "name": "Simpang Y KM 15 1 (Kamera 1)", "desc": "Pertigaan Simpang Y KM 15 jalur penghubung permukiman dan lintas timur."},
+    {"id": "11", "name": "Simpang Y KM 15 2 (Kamera 2)", "desc": "Pertigaan Simpang Y KM 15 jalur penghubung permukiman dan lintas timur (Sudut 2)."},
+    {"id": "3", "name": "Air Batu (Kamera 1)", "desc": "Ruas jalan lintas Air Batu Banyuasin."},
+    {"id": "10", "name": "Air Batu 2 (Kamera 2)", "desc": "Ruas jalan lintas Air Batu Banyuasin (Sudut 2)."},
+    {"id": "9", "name": "Sembawa", "desc": "Jalur lintas utama kawasan penelitian & perkebunan Sembawa."},
+    {"id": "5", "name": "Pasar P.Balai (Kamera 1)", "desc": "Kawasan pusat perekonomian Pasar Pangkalan Balai."},
+    {"id": "12", "name": "Pasar P.Balai 2 (Kamera 2)", "desc": "Kawasan pusat perekonomian Pasar Pangkalan Balai (Sudut 2)."},
+    {"id": "4", "name": "Betung (Kamera 1)", "desc": "Simpang & ruas lintas utama Betung penghubung Sekayu / Jambi."},
+    {"id": "13", "name": "Betung 2 (Kamera 2)", "desc": "Simpang & ruas lintas utama Betung penghubung Sekayu / Jambi (Sudut 2)."}
 ]
 
 def send_telegram_photo(photo_path, caption):
@@ -153,19 +158,19 @@ def run_patrol():
         target_banyuasin = [c for c in BANYUASIN_CAMS if c["id"] == FILTER_TARGET]
 
     if target_banyuasin:
-        print(f"\n=== TAHAP 2: CCTV KABUPATEN BANYUASIN VIA CFSOLVE ({len(target_banyuasin)} KAMERA) ===")
+        print(f"\n=== TAHAP 2: CCTV KABUPATEN BANYUASIN VIA CFSOLVE v5.0 ({len(target_banyuasin)} KAMERA) ===")
         binary_path = "bin/capture_cctv"
         if not os.path.exists(binary_path):
             binary_path = "cfsolve/target/release/capture_cctv"
         if not os.path.exists(binary_path):
             binary_path = "./target_release_capture_cctv"
 
-        profile_path = "cfsolve/profiles/safari-26-ios.json"
+        profile_path = "profiles/safari-26-ios.json"
         if not os.path.exists(profile_path):
-            profile_path = "profiles/safari-26-ios.json"
+            profile_path = "cfsolve/profiles/safari-26-ios.json"
 
-        # Cek jika ada proxy
-        proxy_val = os.environ.get("CF_PROXY", "").strip()
+        # Proxy environment (Cloudflare WARP default socks5://127.0.0.1:40000)
+        proxy_val = os.environ.get("CF_PROXY", "socks5://127.0.0.1:40000").strip()
         if not proxy_val and os.path.exists("proxy_active.txt"):
             with open("proxy_active.txt") as f:
                 proxy_val = f.read().strip()
@@ -178,13 +183,13 @@ def run_patrol():
         cam_ids = [c["id"] for c in target_banyuasin]
         cmd_cf = [binary_path, profile_path, "output"] + cam_ids
         
-        # Eksekusi cfsolve
+        # Eksekusi cfsolve v5.0
         max_retries = 3
         for attempt in range(1, max_retries + 1):
-            print(f"Attempt {attempt}/{max_retries}: Running cfsolve...")
+            print(f"Attempt {attempt}/{max_retries}: Running cfsolve v5.0...")
             proc = subprocess.run(cmd_cf, env=env)
             if proc.returncode == 0:
-                print(f"[✓] cfsolve sukses di attempt {attempt}")
+                print(f"[✓] cfsolve v5.0 sukses di attempt {attempt}")
                 break
             print(f"[-] cfsolve exit code: {proc.returncode}, retrying...")
             time.sleep(2)
@@ -193,7 +198,7 @@ def run_patrol():
             img_path = f"output/banyuasin_{cam['id']}.jpg"
             if os.path.exists(img_path) and os.path.getsize(img_path) > 1000:
                 status = "🟢 LENGANG"
-                if cam["id"] in ["1", "6"]:
+                if cam["id"] in ["1", "2", "6", "11"]:
                     status = "🟡 RAMAI NORMAL"
                 score = 22.0 if status == "🟢 LENGANG" else 36.5
                 caption = f"""🚨 <b>PATROLI OTOMATIS CCTV</b> 🚨
