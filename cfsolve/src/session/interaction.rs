@@ -127,7 +127,7 @@ pub(crate) async fn collect(
     // with the marker returned by the getter observation.
     fields.extend(plan.diagnostics.collect(stack));
     fields.insert(plan.ui.output.clone(), plan.ui.collect(&observed.ui));
-    let launch_ms = click_ms + plan.click_delay_ms as i64;
+    let launch_ms = click_ms + (plan.click_delay_ms / 2).max(60) as i64;
     // Proof hashing consumes its full time budget. Run it on a blocking thread with copies
     // prepared before the timer fires.
     let (proof, proof_options, costs) = (
@@ -163,7 +163,7 @@ pub(crate) async fn collect(
 }
 
 /// How long a tapping finger rests on the screen.
-const TAP_REST: Duration = Duration::from_millis(100);
+const TAP_REST: Duration = Duration::from_millis(40);
 
 /// Moves a mouse pointer from the iframe corner to `target` over `delay`, as the pointer and
 /// mouse movement events report it.
@@ -204,7 +204,7 @@ async fn move_pointer(
         if progress >= 1.0 {
             break;
         }
-        time::sleep((delay - elapsed).min(Duration::from_millis(16))).await;
+        time::sleep((delay - elapsed).min(Duration::from_millis(8))).await;
     }
     input_events
 }
