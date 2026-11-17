@@ -36,6 +36,11 @@ jobs:
           cp target/release/capture_cctv ../bin/capture_cctv
           chmod +x ../bin/capture_cctv
 
+      - name: Run Discovery of all CCTV IDs via cfsolve v5.0
+        working-directory: ./cfsolve
+        run: |
+          cargo run --release --example discover_banyuasin || true
+
       - name: Test Capture Banyuasin Corridor (1 to 20)
         run: |
           mkdir -p output
