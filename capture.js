@@ -3,7 +3,7 @@ const FormData = require('form-data');
 const fetch = require('node-fetch');
 const fs = require('fs');
 
-const BOT_TOKEN = process.env.BOT_TOKEN || '8899978543:AAHlrCjXZbiJwcI_OZIzXrGdpKC5_BCGCEs';
+const BOT_TOKEN = process.env.BOT_TOKEN || '9050404111:AAFwst8zy9vGOv0FRktKHzebvWcbWcaHeL4';
 const CHAT_ID = process.env.CHAT_ID || '1936436999';
 
 async function sendPhotoToTelegram(photoPath, caption) {
