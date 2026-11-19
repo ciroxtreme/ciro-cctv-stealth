@@ -37,13 +37,15 @@ import subprocess
 import sys
 
 # --- Konfigurasi -----------------------------------------------------------
-# TUNING 2026-11-20 (validasi run #61 vs foto: 1/14 cocok penuh, 7 miss):
-# yolov8n terlalu kecil buat foto malam/inframerah — truk besar, motor,
-# dan kendaraan silau/jauh kelewat. Naik ke yolo11x (paling akurat di
-# keluarga YOLO11, ~56 MB, mAP ~55% vs ~37% di yolov8n), conf turun
-# 0.35 -> 0.25 biar deteksi samar tetap kehitung, imgsz 640 -> 1280
-# biar kendaraan jauh/kecil kebaca. Estimasi run total ~6,5 menit di
-# runner CPU GitHub — timeout workflow dinaikkan 8 -> 15 menit.
+# YOLO DIMATIKAN 2026-11-20 atas permintaan Ciro: "yg penting dia cepet
+# ngirim ke telegram". YOLO11x di runner CPU GitHub bikin patroli lama
+# (pip install torch + ultralytics ~menit, download model, inferensi
+# imgsz 1280 per foto) dan hasilnya juga sering miss di foto malam/IR.
+# Mode cepat: TIDAK ada instalasi ML, TIDAK ada inferensi — foto
+# langsung dikirim ke Telegram, skor jadi TIDAK DINILAI, yang menilai
+# ya mata yang lihat foto. Buat nyalain lagi: set env
+# TRAFFIC_YOLO_ENABLED=1 (di workflow / dispatch).
+YOLO_ENABLED = os.environ.get("TRAFFIC_YOLO_ENABLED", "0") == "1"
 YOLO_MODEL = os.environ.get("TRAFFIC_YOLO_MODEL", "yolo11x.pt")
 YOLO_CONF = float(os.environ.get("TRAFFIC_YOLO_CONF", "0.25"))
 YOLO_IMGSZ = int(os.environ.get("TRAFFIC_YOLO_IMGSZ", "1280"))
@@ -83,6 +85,9 @@ def ensure_deps():
     if _DEPS_TRIED:
         return False
     _DEPS_TRIED = True
+    if not YOLO_ENABLED:
+        # Mode cepat: YOLO dimatikan, jangan pip install torch/ultralytics.
+        return False
     if os.environ.get("GITHUB_ACTIONS") != "true":
         return False
     try:
@@ -220,6 +225,15 @@ def analyze_snapshot(image_path):
                 "method": "empty-file", "detail": "file <= 1000 byte",
                 "vehicles": {}}
 
+    if not YOLO_ENABLED:
+        # Mode cepat (default sejak 2026-11-20): tanpa YOLO, tanpa skor.
+        # Foto langsung dikirim — yang menilai ya yang lihat fotonya.
+        return {"score": None, "status": "⚪ TIDAK DINILAI",
+                "method": "yolo-disabled",
+                "detail": ("YOLO dimatikan biar patroli cepat — "
+                           "nilai keramaian dari foto langsung"),
+                "vehicles": {}}
+
     blurry, var = check_blur(image_path)
     if blurry:
         return {"score": None, "status": "⚪ TIDAK DINILAI",
@@ -262,7 +276,13 @@ def reconcile_with_motion(yolo_result, diff_score):
         return yolo_result
     # Fallback kalau YOLO gagal: diff median (lihat capture_corridor.py),
     # tapi skornya ditandai sebagai estimasi gerak, bukan hitungan kendaraan.
+    # CATATAN mode cepat: kalau YOLO memang dimatikan (bukan gagal),
+    # kembalikan hasil yolo-disabled apa adanya — JANGAN pakai diff,
+    # karena diff tanpa cross-check YOLO itu yang dulu bikin KM 12
+    # kosong dapat 100.0 PADAT MERAYAP (noise malam).
     if diff_score is None:
+        if yolo_result.get("method") == "yolo-disabled":
+            return yolo_result
         return {"score": None, "status": "⚪ TIDAK DINILAI",
                 "method": "motion-fallback-failed", "detail": "YOLO + diff gagal",
                 "vehicles": {}}
