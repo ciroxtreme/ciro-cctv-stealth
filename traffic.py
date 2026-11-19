@@ -29,7 +29,7 @@ Dependensi baru:
   ensure_deps() di bawah): kalau ultralytics/cv2 belum ada, pip install
   sendiri sekali per run. Di luar Actions (mis. tes lokal) bootstrap
   ini tidak jalan — di sana hasilnya "TIDAK DINILAI" kalau deps hilang.
-  Model yolov8n.pt (~6 MB) diunduh sekali oleh ultralytics.
+  Model yolo11x.pt (~56 MB) diunduh sekali oleh ultralytics.
 """
 
 import os
@@ -37,8 +37,16 @@ import subprocess
 import sys
 
 # --- Konfigurasi -----------------------------------------------------------
-YOLO_MODEL = os.environ.get("TRAFFIC_YOLO_MODEL", "yolov8n.pt")
-YOLO_CONF = float(os.environ.get("TRAFFIC_YOLO_CONF", "0.35"))
+# TUNING 2026-11-20 (validasi run #61 vs foto: 1/14 cocok penuh, 7 miss):
+# yolov8n terlalu kecil buat foto malam/inframerah — truk besar, motor,
+# dan kendaraan silau/jauh kelewat. Naik ke yolo11x (paling akurat di
+# keluarga YOLO11, ~56 MB, mAP ~55% vs ~37% di yolov8n), conf turun
+# 0.35 -> 0.25 biar deteksi samar tetap kehitung, imgsz 640 -> 1280
+# biar kendaraan jauh/kecil kebaca. Estimasi run total ~6,5 menit di
+# runner CPU GitHub — timeout workflow dinaikkan 8 -> 15 menit.
+YOLO_MODEL = os.environ.get("TRAFFIC_YOLO_MODEL", "yolo11x.pt")
+YOLO_CONF = float(os.environ.get("TRAFFIC_YOLO_CONF", "0.25"))
+YOLO_IMGSZ = int(os.environ.get("TRAFFIC_YOLO_IMGSZ", "1280"))
 # Laplacian variance di bawah ini = foto terlalu buram / berkabut.
 # Nilai ini tebakan awal — kalibrasi dari foto Pasar P. Balai (1) yang buram.
 BLUR_THRESHOLD = float(os.environ.get("TRAFFIC_BLUR_THRESHOLD", "25.0"))
@@ -166,7 +174,8 @@ def count_vehicles(image_path):
         except ImportError as e:
             raise RuntimeError(f"ultralytics tidak terinstal: {e}")
     model = YOLO(YOLO_MODEL)  # unduh otomatis sekali, lalu cache
-    results = model.predict(image_path, conf=YOLO_CONF, verbose=False)
+    results = model.predict(image_path, conf=YOLO_CONF, imgsz=YOLO_IMGSZ,
+                            verbose=False)
     if not results:
         return {"weighted": 0.0, "count": 0, "by_type": {}, "occupancy": 0.0}
 
@@ -227,7 +236,7 @@ def analyze_snapshot(image_path):
 
     score = score_from_weighted_count(v["weighted"], v["occupancy"])
     return {"score": score, "status": status_from_score(score),
-            "method": "yolo-yolov8n",
+            "method": f"yolo-{YOLO_MODEL.replace('.pt', '')}",
             "detail": (f"{v['count']} kendaraan (bobot {v['weighted']}), "
                        f"{v['by_type']}, okupansi {v['occupancy']:.0%}, "
                        f"blur var={var}"),
