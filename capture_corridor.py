@@ -5,7 +5,7 @@ import json
 import urllib.request
 import re
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "9050404111:AAFwst8zy9vGOv0FRktKHzebvWcbWcaHeL4")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 CHAT_ID = os.environ.get("CHAT_ID", "1936436999")
 FILTER_TARGET = os.environ.get("FILTER_TARGET", "ALL").upper().strip()
 

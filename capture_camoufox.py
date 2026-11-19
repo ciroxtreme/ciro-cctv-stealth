@@ -3,7 +3,7 @@ import sys
 import time
 from camoufox.sync_api import Camoufox
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "8899978543:AAHlrCjXZbiJwcI_OZIzXrGdpKC5_BCGCEs")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 CHAT_ID = os.environ.get("CHAT_ID", "1936436999")
 CAM_TARGET = os.environ.get("CAM_TARGET", "pasar p.balai").lower()
 
