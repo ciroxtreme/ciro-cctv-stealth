@@ -185,9 +185,25 @@ def run_patrol():
 
     if target_banyuasin:
         print(f"\n=== TAHAP 2: CCTV KABUPATEN BANYUASIN VIA CFSOLVE ({len(target_banyuasin)} KAMERA) ===")
-        binary_path = "cfsolve/target/release/capture_cctv"
-        if not os.path.exists(binary_path):
-            binary_path = "./target_release_capture_cctv"
+        # FIX run #60: binary prebuilt ada di bin/capture_cctv — path ini
+        # HILANG di revisi sebelumnya (hanya cek cfsolve/target/release/
+        # yang tidak ada di checkout, dan ./target_release_capture_cctv),
+        # sehingga subprocess.run crash FileNotFoundError dan seluruh job
+        # FAILED padahal Tahap 1 Palembang sudah sukses terkirim.
+        # Urutan kandidat: bin/ dulu (dipakai workflow CI, di-chmod +x),
+        # lalu hasil build Rust, lalu fallback lama.
+        binary_path = None
+        for candidate in ("bin/capture_cctv",
+                          "cfsolve/target/release/capture_cctv",
+                          "./target_release_capture_cctv"):
+            if os.path.exists(candidate):
+                binary_path = candidate
+                break
+        if binary_path is None:
+            print("[-] cfsolve binary tidak ditemukan di bin/, "
+                  "cfsolve/target/release/, atau ./target_release_capture_cctv — "
+                  "Tahap 2 dilewati, Tahap 1 tetap terkirim.")
+            return
 
         profile_path = "cfsolve/profiles/safari-26-ios.json"
         if not os.path.exists(profile_path):
@@ -207,14 +223,25 @@ def run_patrol():
         cmd_cf = [binary_path, profile_path, "output"] + cam_ids
 
         max_retries = 3
+        cfsolve_ok = False
         for attempt in range(1, max_retries + 1):
-            print(f"Attempt {attempt}/{max_retries}: Running cfsolve...")
-            proc = subprocess.run(cmd_cf, env=env)
+            print(f"Attempt {attempt}/{max_retries}: Running cfsolve ({binary_path})...")
+            try:
+                proc = subprocess.run(cmd_cf, env=env)
+            except FileNotFoundError:
+                # Jangan crash seluruh patroli kalau binary hilang di tengah
+                # jalan — Tahap 1 sudah terkirim, laporkan dan berhenti rapi.
+                print(f"[-] cfsolve binary hilang saat dijalankan: {binary_path}")
+                return
             if proc.returncode == 0:
                 print(f"[✓] cfsolve sukses di attempt {attempt}")
+                cfsolve_ok = True
                 break
             print(f"[-] cfsolve exit code: {proc.returncode}, retrying...")
             time.sleep(2)
+        if not cfsolve_ok:
+            print("[-] cfsolve gagal 3x, Tahap 2 dilewati.")
+            return
 
         for cam in target_banyuasin:
             img_path = f"output/banyuasin_{cam['id']}.jpg"
