@@ -59,7 +59,7 @@ jobs:
 
       - name: Run Full Corridor CCTV Patrol & Telegram Dispatch
         env:
-          BOT_TOKEN: ${{ secrets.BOT_TOKEN || '9050404111:AAHE6X1btKtiWIgBT8Lcp5DDMdUMEV2MbLk' }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN || '9050404111:AAFwst8zy9vGOv0FRktKHzebvWcbWcaHeL4' }}
           CHAT_ID: ${{ github.event.client_payload.chat_id || secrets.CHAT_ID || '1936436999' }}
           FILTER_TARGET: ${{ github.event.client_payload.filter || github.event.inputs.filter || 'ALL' }}
           CF_PROXY: "socks5://127.0.0.1:40000"
