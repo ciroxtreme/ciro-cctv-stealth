@@ -143,14 +143,9 @@ def _median_diff(cam, samples=3):
 
 
 def _caption(cam, result):
-    score_txt = f"{result['score']:.1f} / 100" if result["score"] is not None else "tidak dinilai"
-    return f"""🚨 <b>PATROLI OTOMATIS CCTV</b> 🚨
-📍 <b>Titik:</b> {cam['name']}
-🚦 <b>Kondisi:</b> {result['status']}
-📈 <b>Indeks Dinamika Arus:</b> {score_txt}
-
-ℹ️ <i>{cam['desc']}</i>
-🔍 <i>{result['detail']}</i>"""
+    # 2026-11-20 atas permintaan Ciro: caption HANYA titik lokasi.
+    # Status/skor/deskripsi/detail dihapus — yang menilai ya yang lihat foto.
+    return f"📍 <b>Titik:</b> {cam['name']}"
 
 
 def analyze_and_send_palembang(cam):
