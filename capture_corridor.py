@@ -91,6 +91,21 @@ def send_telegram_photo(photo_path, caption):
         return False
 
 
+def send_telegram_text(text):
+    """Kirim satu pesan teks (dipakai ringkasan lalin di akhir patroli)."""
+    import urllib.parse
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    data = urllib.parse.urlencode(
+        {"chat_id": CHAT_ID, "text": text, "parse_mode": "HTML"}).encode()
+    try:
+        with urllib.request.urlopen(url, data=data, timeout=20) as resp:
+            res = json.loads(resp.read().decode())
+            return res.get("ok", False)
+    except Exception as e:
+        print(f"[-] Telegram text error: {e}")
+        return False
+
+
 def _one_diff_sample(cam):
     """Satu sampel frame-diff 4 detik. Return skor 0..100 atau None."""
     cmd = [
@@ -173,7 +188,7 @@ def analyze_and_send_palembang(cam):
     print(f"[✓] {cam['name']} sent to Telegram: {ok}")
 
 
-def run_patrol():
+def _patrol_once():
     os.makedirs("output", exist_ok=True)
     print(f"=== PATROL MODE: FILTER={FILTER_TARGET} ===")
 
@@ -261,6 +276,27 @@ def run_patrol():
             ok = send_telegram_photo(img_path, _caption(cam, result))
             print(f"[✓] {cam['name']} sent to Telegram: {ok}")
             time.sleep(1)
+
+
+def run_patrol():
+    """Patroli lengkap + 1 pesan ringkasan lalin di bawah semua foto.
+
+    Ringkasan lalin (lalin.py) JANGAN PERNAH menggagalkan patroli:
+    kalau deteksinya error / tidak ada data, patroli tetap sukses
+    terkirim, cuma pesannya yang tidak muncul.
+    """
+    _patrol_once()
+    try:
+        from lalin import build_lalin_message
+        msg = build_lalin_message()
+        if msg and BOT_TOKEN and CHAT_ID:
+            ok = send_telegram_text(msg)
+            print(f"[✓] lalin summary sent to Telegram: {ok}")
+        elif msg:
+            print("[-] lalin: BOT_TOKEN/CHAT_ID kosong, pesan tidak dikirim")
+            print(msg)
+    except Exception as e:
+        print(f"[-] lalin gagal (patroli tetap terkirim): {e}")
 
 
 if __name__ == "__main__":
