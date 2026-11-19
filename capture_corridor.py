@@ -17,7 +17,7 @@ import urllib.request
 import re
 import statistics
 
-from traffic import analyze_snapshot, reconcile_with_motion
+from traffic import analyze_snapshot, reconcile_with_motion, YOLO_ENABLED
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 CHAT_ID = os.environ.get("CHAT_ID", "")
@@ -142,7 +142,11 @@ def analyze_and_send_palembang(cam):
     print(f"\n[+] Processing Palembang: {cam['name']}...")
     out_img = f"output/{cam['id']}.jpg"
 
-    diff_score = _median_diff(cam, samples=3)
+    # MODE CEPAT (YOLO dimatikan 2026-11-20): skip frame-diff juga.
+    # Diff tanpa cross-check YOLO itu yang dulu bikin KM 12 kosong
+    # dapat 100.0 PADAT — dan 3x sampel 4 detik cuma buang waktu.
+    # Langsung capture foto -> kirim. Yang menilai ya yang lihat foto.
+    diff_score = _median_diff(cam, samples=3) if YOLO_ENABLED else None
 
     cmd_cap = [
         "ffmpeg", "-y",
@@ -159,6 +163,8 @@ def analyze_and_send_palembang(cam):
         return
 
     # Penilai utama = YOLO di foto; diff hanya cross-check (KM 12 fix).
+    # MODE CEPAT: YOLO mati -> analyze_snapshot kembalikan yolo-disabled
+    # (TIDAK DINILAI), reconcile teruskan apa adanya, foto tetap terkirim.
     yolo = analyze_snapshot(out_img)
     result = reconcile_with_motion(yolo, diff_score)
     print(f"[*] {cam['name']}: {result}")
