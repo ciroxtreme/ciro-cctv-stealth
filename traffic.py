@@ -19,12 +19,22 @@ Prinsip baru:
     Kalau diff >= 80 tapi YOLO cuma lihat <= 1 kendaraan, itu sinyal
     noise -> pakai skor YOLO + catat warning di log.
 
-Dependensi baru (hanya di GitHub Actions, lihat patrol.yml.patch):
-  pip install ultralytics opencv-python-headless
-  Model yolov8n.pt (~6 MB) diunduh sekali, di-cache di runner.
+Dependensi baru:
+  ultralytics + opencv-python-headless.
+  WORKAROUND 2026-11-20: file workflow (.github/workflows/*.yml) TIDAK
+  bisa diubah lewat GitHub API Muse — token App-nya tidak punya izin
+  "Workflows" (403), dan izin itu tidak bisa ditambah dari menu Settings.
+  Jadi dependensi TIDAK diinstal lewat workflow, melainkan di-bootstrap
+  sendiri oleh kode ini saat jalan di GitHub Actions (lihat
+  ensure_deps() di bawah): kalau ultralytics/cv2 belum ada, pip install
+  sendiri sekali per run. Di luar Actions (mis. tes lokal) bootstrap
+  ini tidak jalan — di sana hasilnya "TIDAK DINILAI" kalau deps hilang.
+  Model yolov8n.pt (~6 MB) diunduh sekali oleh ultralytics.
 """
 
 import os
+import subprocess
+import sys
 
 # --- Konfigurasi -----------------------------------------------------------
 YOLO_MODEL = os.environ.get("TRAFFIC_YOLO_MODEL", "yolov8n.pt")
@@ -49,6 +59,41 @@ VEHICLE_NAMES = {2: "mobil", 3: "motor", 5: "bus", 7: "truk"}
 # 6 kendaraan -> ~72 Padat Merayap
 _SCORE_POINTS = [(0, 5.0), (1, 18.0), (2, 30.0), (3, 45.0),
                  (4, 54.0), (6, 72.0), (8, 85.0), (10, 96.0)]
+
+
+_DEPS_TRIED = False
+
+
+def ensure_deps():
+    """Install ultralytics + opencv kalau belum ada — HANYA di GitHub Actions.
+
+    Dipanggil sekali sebelum YOLO pertama dipakai. Kalau pip install gagal
+    (mis. timeout), jangan crash: kembalikan False dan pemanggil akan
+    menghasilkan TIDAK DINILAI seperti biasa.
+    """
+    global _DEPS_TRIED
+    if _DEPS_TRIED:
+        return False
+    _DEPS_TRIED = True
+    if os.environ.get("GITHUB_ACTIONS") != "true":
+        return False
+    try:
+        import ultralytics  # noqa: F401
+        import cv2  # noqa: F401
+        return True
+    except ImportError:
+        pass
+    print("[*] traffic: dependensi YOLO belum ada, pip install...")
+    try:
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "--quiet",
+             "ultralytics", "opencv-python-headless"],
+            check=True, timeout=300)
+        print("[✓] traffic: pip install selesai")
+        return True
+    except Exception as e:
+        print(f"[-] traffic: pip install gagal: {e}")
+        return False
 
 
 def status_from_score(score):
@@ -93,7 +138,11 @@ def check_blur(image_path):
     try:
         import cv2
     except ImportError:
-        return None, None
+        ensure_deps()
+        try:
+            import cv2
+        except ImportError:
+            return None, None
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     if img is None:
         return None, None
@@ -110,8 +159,12 @@ def count_vehicles(image_path):
     """
     try:
         from ultralytics import YOLO
-    except ImportError as e:
-        raise RuntimeError(f"ultralytics tidak terinstal: {e}")
+    except ImportError:
+        ensure_deps()
+        try:
+            from ultralytics import YOLO
+        except ImportError as e:
+            raise RuntimeError(f"ultralytics tidak terinstal: {e}")
     model = YOLO(YOLO_MODEL)  # unduh otomatis sekali, lalu cache
     results = model.predict(image_path, conf=YOLO_CONF, verbose=False)
     if not results:
