@@ -26,6 +26,15 @@ YOLO dimatikan 2026-11-20 supaya patroli cepat).
 Dipakai oleh capture_corridor.run_patrol(): SETELAH semua foto
 terkirim ke Telegram, satu pesan teks ringkasan dikirim di bawahnya.
 
+v2 (2026-11-20): selain label per ruas, modul ini juga mendeteksi
+CLUSTER macet — deretan sampel berurutan yang warnanya kuning/oranye/
+merah/merah-gelap — lalu menyebut landmark terdekat dari daftar
+LANDMARKS (28 titik berkoordinat: SPBU, sekolah, toko, rumah makan,
+pasar, simpang, plus 2 gerbang tol perkiraan) beserta panjang cluster.
+Kalau tidak ada landmark dalam 5 km, fallback ke nama desa via
+Nominatim reverse-geocode, lalu ke nama ruas. Contoh baris:
+  "🔴 Macet parah ±1,8 km, sekitar 400 m sebelum SPBU Betung"
+
 Env:
   LALIN_ENABLED=0  -> matikan deteksi (default 1, nyala)
   LALIN_ZOOM       -> zoom tile (default 14)
@@ -34,6 +43,7 @@ Env:
 import math
 import os
 import struct
+import time
 import urllib.request
 import zlib
 from concurrent.futures import ThreadPoolExecutor
@@ -65,6 +75,49 @@ LEVELS = [
     ("macet sedang", "🟠"),
     ("macet parah", "🔴"),
     ("tidak ada data", "⚪"),
+]
+
+# Landmark koridor Sungai Lilin -> Palembang, dikumpulkan 2026-11-20 dari
+# Nominatim/OSM + data place Google Maps/Meta/Instagram. Daftar lengkap
+# + sumbernya ada di workspace/cctv-patch-draft/LANDMARKS.md.
+# Format: (nama, jenis, lat, lon, catatan).
+LANDMARKS = [
+    # Ruas 1 — Sungai Lilin -> Betung
+    ("SPBU Sungai Lilin", "SPBU", -2.451401, 103.95214, "Sri Gunung"),
+    ("Alfamart Sungai Lilin", "toko", -2.521399, 104.093609, ""),
+    ("SD Negeri 1 Sungai Lilin", "sekolah", -2.5821410, 104.1073210, "Pasar Sungai Lilin"),
+    ("SMA Negeri 1 Sungai Lilin", "sekolah", -2.5616379, 104.1086160, "Pasar Sungai Lilin"),
+    ("RM Musi Indah", "rumah makan", -2.810801, 104.185693, "Betung"),
+    ("SPBU Betung", "SPBU", -2.838019, 104.222845, "KM 67, 24 jam"),
+    ("Alfamart Betung", "toko", -2.838127, 104.222471, "Sedompo"),
+    ("RM Sederhana Betung", "rumah makan", -2.849597, 104.230914, "Betung"),
+    # Ruas 2 — Betung -> Pangkalan Balai
+    ("Alfamart Suak Tapeh", "toko", -2.856505, 104.335713, ""),
+    ("Simpang Pulau Rimau", "simpang", -2.8551297, 104.3486603, "KM 53; alias Simpang Lubuk Lancang/Biyuku"),
+    ("SMAN 1 Suak Tapeh", "sekolah", -2.8552441, 104.3556073, "Seterio"),
+    ("SPBU Suak Tapeh", "SPBU", -2.863336, 104.365481, "record 'SPBU Betung - Palembang', nama belum pasti"),
+    ("Indomaret Pangkalan Balai 48", "toko", -2.88523, 104.390088, ""),
+    ("Pasar Pangkalan Balai", "pasar", -2.8905499, 104.3932686, "Jl. Pasar Lamo"),
+    ("ACC Super Sambal Pangkalan Balai", "rumah makan", -2.894065, 104.402, "KM 47"),
+    ("SPBU Pangkalan Balai", "SPBU", -2.89782, 104.40699, "24.307.83"),
+    ("RM Magelang", "rumah makan", -2.924328, 104.434897, "perbatasan ruas 2/3"),
+    # Ruas 3 — Pangkalan Balai -> Gerbang KM 12
+    ("SMP Negeri 2 Banyuasin III", "sekolah", -2.9246673, 104.4288341, "Kayuara Kuning"),
+    ("RM Tahu Sumedang Renyah", "rumah makan", -2.924155, 104.448301, "KM 41"),
+    ("RM Sederhana Minang", "rumah makan", -2.923982, 104.452207, ""),
+    ("Qodratullah / Langkan", "sekolah", -2.9225621, 104.4846070, "KM 35, kompleks pesantren"),
+    ("SPBU Sembawa", "SPBU", -2.92123, 104.532661, ""),
+    ("SPBU Rejodadi", "SPBU", -2.9281217, 104.5556038, "24.307.132, Sembawa"),
+    ("Rest Area Tol Palembang-Jambi", "rest area", -2.902189, 104.56105, "Rejodadi, Sembawa; di jalan tol (bukan Lintas Timur), status tutup sementara; satu-satunya landmark Sembawa kata Ciro"),
+    # Ruas 4 — Gerbang KM 12 -> Palembang
+    ("Alfamart Talang Kelapa", "toko", -2.91275, 104.616307, ""),
+    ("Alfamart Sukomoro", "toko", -2.915492, 104.639244, "P452"),
+    ("RM Masakan Padang", "rumah makan", -2.913212, 104.655108, "KM 16"),
+    ("KITA Coffee and Eatery", "kafe", -2.914253, 104.643581, "KM 17.5, Sukamoro"),
+    ("Alfamart KM 13 Sukajadi", "toko", -2.913732, 104.677716, "KM 13"),
+    # Gerbang tol (koordinat PERKIRAAN dari titik desa — lihat LANDMARKS.md)
+    ("Gerbang Tol Kramasan", "tol", -3.032, 104.745, "perkiraan, beroperasi"),
+    ("Gerbang Tol Pangkalan Balai", "tol", -2.862, 104.361, "perkiraan, dibangun"),
 ]
 
 
@@ -296,7 +349,12 @@ def _points_along(pts, step_m=300.0):
 
 
 def check_route():
-    """Cek semua ruas. Return list [(nama_ruas, label, emoji, counts)]."""
+    """Cek semua ruas.
+
+    Return list [(nama_ruas, label, emoji, counts, samples)] dengan
+    samples = [(lat, lon, kategori_atau_None), ...] urut sepanjang jalan
+    (buat deteksi cluster macet).
+    """
     if not LALIN_ENABLED:
         return []
     # Kumpulkan tile unik yang dibutuhkan semua ruas.
@@ -310,7 +368,7 @@ def check_route():
             tx, ty = int(gx // 256), int(gy // 256)
             px, py = int(gx % 256), int(gy % 256)
             needed[(tx, ty)] = True
-            sp.append((tx, ty, px, py))
+            sp.append((lat, lon, tx, ty, px, py))
         seg_pixels.append((name, sp))
 
     tiles = {}
@@ -328,24 +386,121 @@ def check_route():
     results = []
     for name, pts in seg_pixels:
         counts = {}
-        for tx, ty, px, py in pts:
+        samples = []
+        for lat, lon, tx, ty, px, py in pts:
             t = tiles.get((tx, ty))
-            if t is None:
-                continue
-            w, h, rgb = t
-            if not (0 <= px < w and 0 <= py < h):
-                continue
-            cat = _nearest_classified(rgb, w, h, px, py)
+            cat = None
+            if t is not None:
+                w, h, rgb = t
+                if 0 <= px < w and 0 <= py < h:
+                    cat = _nearest_classified(rgb, w, h, px, py)
             if cat:
                 counts[cat] = counts.get(cat, 0) + 1
+            samples.append((lat, lon, cat))
         label, emoji = level_from_counts(counts)
         print(f"[*] lalin {name}: {counts} -> {label}")
-        results.append((name, label, emoji, counts))
+        results.append((name, label, emoji, counts, samples))
     return results
 
 
+# --- Cluster macet + landmark ------------------------------------------------
+# Satu sampel ~300 m. Satu pixel kuning/oranye nyasar bisa jadi label jalan,
+# jadi cluster minimal 2 sampel berurutan (~600 m) baru dianggap macet beneran.
+BAD_RANK = {"yellow": 1, "orange": 1, "red": 2, "darkred": 3}
+
+
+def find_clusters(samples, min_run=2):
+    """Deretan sampel macet berurutan -> cluster.
+
+    Return list [{"rank": 1..3, "length_m": float, "mid": (lat, lon),
+    "n": jumlah_sampel}]. rank 1 ringan, 2 sedang, 3 parah.
+    """
+    clusters = []
+
+    def flush(run):
+        if len(run) < min_run:
+            return
+        rank = max(BAD_RANK[c] for _, _, c in run)
+        first = run[0][:2]
+        last = run[-1][:2]
+        length = _haversine_m(first, last) + 300.0
+        mid = run[len(run) // 2][:2]
+        clusters.append({"rank": rank, "length_m": length,
+                         "mid": mid, "n": len(run)})
+
+    run = []
+    for s in samples:
+        if s[2] in BAD_RANK:
+            run.append(s)
+        else:
+            flush(run)
+            run = []
+    flush(run)
+    return clusters
+
+
+def nearest_landmark(pt, max_km=5.0):
+    """Landmark terdekat dari LANDMARKS, atau (None, None) kalau > max_km."""
+    best = None
+    best_d = None
+    for lm in LANDMARKS:
+        d = _haversine_m(pt, (lm[2], lm[3]))
+        if best_d is None or d < best_d:
+            best, best_d = lm, d
+    if best is not None and best_d <= max_km * 1000:
+        return best, best_d
+    return None, None
+
+
+def _reverse_geocode(pt, timeout=10):
+    """Nama desa/kecamatan di titik pt via Nominatim (gratis, tanpa key).
+
+    Dipakai cuma kalau tidak ada landmark dalam 5 km. Return misal
+    "Suka Mulya, Betung", atau None kalau gagal.
+    """
+    import json
+    url = ("https://nominatim.openstreetmap.org/reverse?format=jsonv2"
+           f"&lat={pt[0]}&lon={pt[1]}&zoom=14")
+    try:
+        time.sleep(1.1)  # kebijakan Nominatim: maks ~1 req/detik
+        req = urllib.request.Request(url, headers={"User-Agent": "jolly-lalin/1.0"})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            d = json.load(r)
+        a = d.get("address", {})
+        parts = [a.get(k) for k in ("village", "town", "suburb",
+                                    "municipality", "county")]
+        parts = [p for p in parts if p]
+        return ", ".join(parts[:2]) if parts else None
+    except Exception as e:
+        print(f"[-] lalin: reverse-geocode gagal: {e}")
+        return None
+
+
+def _format_cluster(c):
+    label, emoji = LEVELS[c["rank"]]
+    km = c["length_m"] / 1000.0
+    mid = c["mid"]
+    lm, dist = nearest_landmark(mid)
+    if lm:
+        if dist < 100:
+            where = f"tepat di {lm[0]}"
+        else:
+            # Rute jalan barat -> timur: landmark di timur titik macet
+            # berarti titik macetnya "sebelum" landmark (arah ke Palembang).
+            arah = "sebelum" if lm[3] > mid[1] else "sesudah"
+            where = f"sekitar {int(round(dist))} m {arah} {lm[0]}"
+    else:
+        village = _reverse_geocode(mid)
+        if village:
+            where = f"di sekitar {village}"
+        else:
+            where = f"di ruas {c['ruas']}"
+    return f"{emoji} {label} ±{km:.1f} km, {where}"
+
+
 def build_lalin_message():
-    """Pesan Telegram: satu daftar macet per ruas, di bawah foto patroli."""
+    """Pesan Telegram: satu daftar macet per ruas + titik macet detail,
+    di bawah foto patroli."""
     try:
         results = check_route()
     except Exception as e:
@@ -354,8 +509,18 @@ def build_lalin_message():
     if not results:
         return None
     lines = ["🚦 <b>LALIN: SUNGAI LILIN → PALEMBANG</b>", ""]
-    for i, (name, label, emoji, _counts) in enumerate(results, 1):
+    for i, (name, label, emoji, _counts, _samples) in enumerate(results, 1):
         lines.append(f"{emoji} {i}. {name}: <b>{label}</b>")
+    clusters = []
+    for name, _label, _emoji, _counts, samples in results:
+        for c in find_clusters(samples):
+            c["ruas"] = name
+            clusters.append(c)
+    if clusters:
+        lines.append("")
+        lines.append("📍 <b>Titik macet:</b>")
+        for c in clusters:
+            lines.append(_format_cluster(c))
     lines.append("")
     lines.append("ℹ️ <i>Dari warna traffic Google Maps — hijau lancar,"
                  " kuning/oranye ringan, merah sedang, merah gelap parah."
