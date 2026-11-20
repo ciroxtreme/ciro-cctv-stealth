@@ -82,7 +82,7 @@ LEVELS = [
 # + sumbernya ada di workspace/cctv-patch-draft/LANDMARKS.md.
 # Format: (nama, jenis, lat, lon, catatan).
 LANDMARKS = [
-    # Ruas 1 — Sungai Lilin -> Betung (Interval Bersih ~3.5 KM)
+    # Ruas 1 — Sungai Lilin -> Betung (Interval ~3.5 KM)
     ("Pasar Sungai Lilin", "pasar", -2.603166, 104.108999, "Pusat Pasar & Keramaian Sungai Lilin"),
     ("Simpang Talang Siku", "simpang", -2.626333, 104.104018, "Simpang Talang Siku Sungai Lilin"),
     ("Rumah Makan Pagi Sore", "rumah makan", -2.673204, 104.065760, "RM Pagi Sore Lintas"),
@@ -94,14 +94,17 @@ LANDMARKS = [
     ("Simpang 3 Betung (Patung Polwan)", "simpang", -2.847769, 104.226151, "Pusat persimpangan Betung - Jambi - Sekayu"),
 
     # Ruas 2 — Betung -> Pangkalan Balai
+    ("Polsek Betung / Masjid Al Muttaqin", "polsek", -2.851424, 104.258173, "Polsek Betung / Masjid Al Muttaqin"),
     ("Simpang Pulau Rimau", "simpang", -2.855130, 104.348660, "KM 53, Suak Tapeh"),
     ("Pintu 2 Perkantoran Pemkab (Alfamart)", "perkantoran", -2.864819, 104.368346, "Akses Pintu 2 Pemkab Banyuasin"),
+    ("Pasar Pangkalan Balai", "pasar", -2.889309, 104.395780, "Pusat Pasar Pangkalan Balai"),
     ("Pintu 1 Perkantoran Pemkab (Masjid)", "perkantoran", -2.918233, 104.421944, "Akses Pintu 1 Pemkab / Masjid Agung Banyuasin"),
 
     # Ruas 3 — Pangkalan Balai -> Batas KM 12
     ("RM Pincuran / Tahu Sumedang (KM 41)", "rumah makan", -2.924401, 104.446769, "Sentra kuliner KM 41"),
     ("Qodratullah / Langkan", "sekolah", -2.922562, 104.484607, "KM 35, Ponpes Langkan"),
-    ("SPBU Sembawa", "SPBU", -2.921230, 104.532661, "SPBU Sembawa"),
+    ("SPBU Pulau Harapan", "SPBU", -2.921153, 104.533214, "SPBU Pulau Harapan Sembawa"),
+    ("SPBU Rejodadi KM 28", "SPBU", -2.928502, 104.555584, "SPBU Rejodadi KM 28 Sembawa"),
     ("Simpang Akses Tol Musi Landas", "tol", -2.917287, 104.605135, "Simpang keluar-masuk Tol Musi Landas Jalintim"),
     ("Sukamoro / KM 16", "wilayah", -2.915492, 104.639244, "Kawasan Industri / Pergudangan Sukamoro"),
     ("Gerbang Batas Kota KM 12", "batas", -2.913557, 104.681847, "Batas Wilayah Banyuasin - Palembang"),
