@@ -108,7 +108,8 @@ LANDMARKS = [
     ("Qodratullah / Langkan", "sekolah", -2.9225621, 104.4846070, "KM 35, kompleks pesantren"),
     ("SPBU Sembawa", "SPBU", -2.92123, 104.532661, ""),
     ("SPBU Rejodadi", "SPBU", -2.9281217, 104.5556038, "24.307.132, Sembawa"),
-    ("Rest Area Tol Palembang-Jambi", "rest area", -2.902189, 104.56105, "Rejodadi, Sembawa; di jalan tol (bukan Lintas Timur), status tutup sementara; satu-satunya landmark Sembawa kata Ciro"),
+    ("Simpang Akses Tol Musi Landas", "tol", -2.917287, 104.605135, "Simpang keluar-masuk Tol Musi Landas Jalintim"),
+    ("Rest Area Tol Palembang-Jambi", "rest area", -2.902189, 104.56105, "Rejodadi, Sembawa; di jalan tol (bukan Lintas Timur), status tutup sementara"),
     # Ruas 4 — Gerbang KM 12 -> Palembang
     ("Alfamart Talang Kelapa", "toko", -2.91275, 104.616307, ""),
     ("Alfamart Sukomoro", "toko", -2.915492, 104.639244, "P452"),
