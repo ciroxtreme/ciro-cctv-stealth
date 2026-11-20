@@ -82,10 +82,16 @@ LEVELS = [
 # + sumbernya ada di workspace/cctv-patch-draft/LANDMARKS.md.
 # Format: (nama, jenis, lat, lon, catatan).
 LANDMARKS = [
-    # Ruas 1 — Sungai Lilin -> Betung
-    ("Pasar Sungai Lilin", "pasar", -2.603166, 104.108999, "Pusat Pasar Sungai Lilin"),
-    ("RM Musi Indah", "rumah makan", -2.810801, 104.185693, "Betung KM 75, langganan bus AKAP"),
-    ("Simpang 3 Tugu Polwan Betung", "simpang", -2.847902, 104.226833, "Pusat persimpangan Betung - Jambi - Sekayu"),
+    # Ruas 1 — Sungai Lilin -> Betung (Interval Bersih ~3.5 KM)
+    ("Pasar Sungai Lilin", "pasar", -2.603166, 104.108999, "Pusat Pasar & Keramaian Sungai Lilin"),
+    ("Simpang Talang Siku", "simpang", -2.626333, 104.104018, "Simpang Talang Siku Sungai Lilin"),
+    ("Rumah Makan Pagi Sore", "rumah makan", -2.673204, 104.065760, "RM Pagi Sore Lintas"),
+    ("Simpang 4 Babat Supat", "simpang", -2.779020, 104.089510, "Pusat Persimpangan 4 Babat Supat"),
+    ("SPBU Bintang 5", "SPBU", -2.788654, 104.110651, "SPBU Bintang 5 Babat Supat"),
+    ("Polsek Babat Supat", "polsek", -2.801273, 104.138602, "Kantor Polsek Babat Supat"),
+    ("SDN 1 Gajah Mati", "sekolah", -2.806933, 104.170439, "SDN 1 Gajah Mati"),
+    ("SPN Betung Polda Sumsel", "instansi", -2.809957, 104.198354, "Sekolah Polisi Negara Polda Sumsel"),
+    ("Simpang 3 Betung (Patung Polwan)", "simpang", -2.847769, 104.226151, "Pusat persimpangan Betung - Jambi - Sekayu"),
 
     # Ruas 2 — Betung -> Pangkalan Balai
     ("Simpang Pulau Rimau", "simpang", -2.855130, 104.348660, "KM 53, Suak Tapeh"),
