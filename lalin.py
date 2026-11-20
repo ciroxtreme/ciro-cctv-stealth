@@ -306,7 +306,15 @@ def _nearest_classified(rgb, w, h, px, py, max_r=3):
         if found:
             break
     if found in ("orange", "yellow"):
-        for r in range(max_r + 1):
+        # Radius cek hijau 6 px (~60 m), BUKAN 3 px: garis OSRM bisa
+        # meleset sampai ~6 px dari jalan yang digambar Google (kasus
+        # RM Musi Indah 2026-11-20: hijau terdekat 6 px dari sampel,
+        # radius 3 px tidak sampai sehingga sampel oranye dari huruf
+        # label lolos dan sempat membentuk cluster ringan ±0,6 km di
+        # run #67). Merah/darkred tidak dicek hijau, jadi pelebaran
+        # ini tidak menghapus macet asli — paling-paling sampel
+        # oranye di ujung ruas ikut hijau.
+        for r in range(7):
             for dx in range(-r, r + 1):
                 for dy in range(-r, r + 1):
                     if max(abs(dx), abs(dy)) != r:
