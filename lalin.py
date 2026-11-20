@@ -59,14 +59,14 @@ TILE_URL = "https://mt{sub}.google.com/vt/lyrs=m@221097413,traffic&x={x}&y={y}&z
 # Koordinat kota dari geocode 2026-11-20; titik tengah Gerbang KM 12
 # interpolasi di koridor (sampel yang meleset dari jalan diabaikan).
 SEGMENTS = [
-    ("Jl. Lintas Timur (Sungai Lilin - Betung)",
-     (-2.51016, 104.02861), (-2.84538, 104.22034)),
-    ("Jl. Lintas Timur (Betung - Pangkalan Balai)",
-     (-2.84538, 104.22034), (-2.8986, 104.40829)),
-    ("Jl. Lintas Timur (Pangkalan Balai - Gerbang KM 12)",
-     (-2.8986, 104.40829), (-2.96000, 104.60000)),
-    ("Jl. Lintas Timur (Gerbang KM 12 - Palembang)",
-     (-2.96000, 104.60000), (-2.98475, 104.75158)),
+    ("Sungai Lilin ➔ Betung",
+     (-2.589730, 104.111254), (-2.847892, 104.226489)),
+    ("Betung ➔ P. Balai",
+     (-2.847892, 104.226489), (-2.888168, 104.394287)),
+    ("P. Balai ➔ Batas KM 12",
+     (-2.888168, 104.394287), (-2.913557, 104.681847)),
+    ("Batas KM 12 ➔ Palembang",
+     (-2.913557, 104.681847), (-2.984750, 104.751580)),
 ]
 
 LEVELS = [
@@ -109,6 +109,7 @@ LANDMARKS = [
     ("SPBU Sembawa", "SPBU", -2.92123, 104.532661, ""),
     ("SPBU Rejodadi", "SPBU", -2.9281217, 104.5556038, "24.307.132, Sembawa"),
     ("Simpang Akses Tol Musi Landas", "tol", -2.917287, 104.605135, "Simpang keluar-masuk Tol Musi Landas Jalintim"),
+    ("Gerbang Batas Kota KM 12", "batas", -2.913557, 104.681847, "Batas Wilayah Banyuasin - Palembang"),
     ("Rest Area Tol Palembang-Jambi", "rest area", -2.902189, 104.56105, "Rejodadi, Sembawa; di jalan tol (bukan Lintas Timur), status tutup sementara"),
     # Ruas 4 — Gerbang KM 12 -> Palembang
     ("Alfamart Talang Kelapa", "toko", -2.91275, 104.616307, ""),
@@ -531,31 +532,33 @@ def _reverse_geocode(pt, timeout=10):
     return None
 
 
-def _format_cluster(c):
+def _format_cluster_box(idx, c):
     label, emoji = LEVELS[c["rank"]]
     km = c["length_m"] / 1000.0
     mid = c["mid"]
     lm, dist = nearest_landmark(mid)
     if lm:
+        lokasi = lm[0]
         if dist < 100:
-            where = f"tepat di {lm[0]}"
+            pos = "tepat di lokasi"
         else:
-            # Rute jalan barat -> timur: landmark di timur titik macet
-            # berarti titik macetnya "sebelum" landmark (arah ke Palembang).
             arah = "sebelum" if lm[3] > mid[1] else "sesudah"
-            where = f"sekitar {int(round(dist))} m {arah} {lm[0]}"
+            pos = f"{int(round(dist))} m {arah} lokasi"
     else:
         village = _reverse_geocode(mid)
-        if village:
-            where = f"di sekitar {village}"
-        else:
-            where = f"di ruas {c['ruas']}"
-    return f"{emoji} {label} ±{km:.1f} km, {where}"
+        lokasi = village if village else c['ruas']
+        pos = "di sekitar area"
+    
+    panjang_str = f"{km:.1f} KM" if km >= 1.0 else f"{int(round(c['length_m']))} M"
+    return [
+        f"{emoji} [{idx}] PANJANG MACET: {panjang_str} ({label.upper()})",
+        f"   📍 Patokan : {lokasi}",
+        f"   📏 Posisi  : Sekitar {pos}"
+    ]
 
 
 def build_lalin_message():
-    """Pesan Telegram: satu daftar macet per ruas + titik macet detail,
-    di bawah foto patroli."""
+    """Pesan Telegram: format Code Card Box cantik dengan detail panjang kilometer macet."""
     try:
         results = check_route()
     except Exception as e:
@@ -563,21 +566,35 @@ def build_lalin_message():
         return None
     if not results:
         return None
-    lines = ["🚦 <b>LALIN: SUNGAI LILIN → PALEMBANG</b>", ""]
-    for i, (name, label, emoji, _counts, _samples) in enumerate(results, 1):
-        lines.append(f"{emoji} {i}. {name}: <b>{label}</b>")
+
+    card = [
+        "╔═══════════════════════════════════════════╗",
+        "   🚦 KORIDOR LINTAS TIMUR (SUMATERA)",
+        "   Rute: Sungai Lilin ➔ Palembang",
+        "╚═══════════════════════════════════════════╝",
+    ]
+
+    for name, label, emoji, _counts, _samples in results:
+        card.append(f"{emoji} {name:<23}: {label.title()}")
+
     clusters = []
     for name, _label, _emoji, _counts, samples in results:
         for c in find_clusters(samples):
             c["ruas"] = name
             clusters.append(c)
+
     if clusters:
-        lines.append("")
-        lines.append("📍 <b>Titik macet:</b>")
-        for c in clusters:
-            lines.append(_format_cluster(c))
-    lines.append("")
-    lines.append("ℹ️ <i>Dari warna traffic Google Maps — hijau lancar,"
-                 " kuning/oranye ringan, merah sedang, merah gelap parah."
-                 " Cek foto CCTV di atas buat bukti visualnya.</i>")
-    return "\n".join(lines)
+        total_m = sum(c["length_m"] for c in clusters)
+        total_km = total_m / 1000.0
+        total_str = f"{total_km:.1f} KM" if total_km >= 1.0 else f"{int(round(total_m))} M"
+
+        card.append("───────────────────────────────────────────")
+        card.append(f"⚠️ DETAIL KEMACETAN (TOTAL ANTREAN: {total_str})")
+        card.append("───────────────────────────────────────────")
+        for i, c in enumerate(clusters, 1):
+            card.extend(_format_cluster_box(i, c))
+    else:
+        card.append("───────────────────────────────────────────")
+        card.append("✅ Seluruh jalur terpantau lancar!")
+
+    return f"<pre>\n" + "\n".join(card) + "\n</pre>" 
