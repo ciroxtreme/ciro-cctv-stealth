@@ -1,1 +1,574 @@
-IiIibGFsaW4ucHkg4oCUIERldGVrc2kga2VtYWNldGFuIFN1bmdhaSBMaWxpbiAtPiBQYWxlbWJhbmcgZGFyaSB0aWxlIHRyYWZmaWMgR29vZ2xlLgoKQ2FyYSBrZXJqYSAodGFucGEgQVBJIGtleSwgdGFucGEga2FydHUga3JlZGl0KToKICBHb29nbGUgTWFwcyB3ZWIgbWVuZ2FtYmlsIHdhcm5hIG1hY2V0IGRhcmkgdGlsZSBnYW1iYXIgYmlhc2EKICAoMjU2eDI1NiBweCBwZXIgeC95L3opLiBNb2R1bCBpbmkgbWVuZ3VuZHVoIHRpbGUtdGlsZSBkaSBzZXBhbmphbmcKICBydXRlLCBtZW1iYWNhIHdhcm5hIHBpeGVsIHRlcGF0IGRpIGF0YXMgamFsYW4sIGxhbHUgbWVuZ2tsYXNpZmlrYXNpOgogICAgaGlqYXUgICAgICAgLT4gbGFuY2FyCiAgICBrdW5pbmcgICAgICAtPiBtYWNldCByaW5nYW4KICAgIG9yYW55ZSAgICAgIC0+IG1hY2V0IHJpbmdhbiAobGViaWggcGFkYXQgZGFyaSBrdW5pbmcpCiAgICBtZXJhaCAgICAgICAtPiBtYWNldCBzZWRhbmcKICAgIG1lcmFoIGdlbGFwIC0+IG1hY2V0IHBhcmFoCiAgV2FybmEgbGFpbiAoYXNwYWwgYWJ1LWFidSwgc2F3YWgsIHN1bmdhaSwgbGFiZWwpIGRpYWJhaWthbi4KCiAgS2FsaWJyYXNpIHdhcm5hIGRhcmkgdGlsZSBhc2xpIFBhbGVtYmFuZyAyMDI2LTExLTIwOgogICAgaGlqYXUgdHJhZmZpYyAgPSAoMjIsIDIyNCwgMTUyKSAgLS0gYmVkYSBkYXJpIGhpamF1IHNhd2FoICgyMTEsMjQ4LDIyNikKICAgIG1lcmFoIHRyYWZmaWMgID0gKDIzNSwgMjcsIDI3KQogIEt1bmluZy9vcmFueWUvbWVyYWgtZ2VsYXAgYmVsdW0gdGVybGloYXQgZGkgdGlsZSBrYWxpYnJhc2kgKHBhZ2kgYnV0YQogIGphbGFubnlhIHNlcGkpIGphZGkgYW1iYW5nIGJhdGFzbnlhIHRlYmFrYW4gZGFyaSBwYWxldCBzdGFuZGFyIEdvb2dsZTsKICBsaWhhdCBjbGFzc2lmeV9waXhlbCgpIGRhbiBMRVZFTF9SVUxFUyBkaSBiYXdhaC4KCkRlcGVuZGVuc2k6IFNURExJQiBTQUpBICh1cmxsaWIgKyB6bGliICsgc3RydWN0KS4gVGlsZSBQTkcgZGktZGVjb2RlCnNlbmRpcmkga2FyZW5hIHJ1bm5lciBHaXRIdWIgQWN0aW9ucyB0aWRhayBwdW55YSBQSUwg4oCUIGRhbiBtZW1hbmcKdGlkYWsgYm9sZWggcGlwIGluc3RhbGwgYXBhLWFwYSBsYWdpIGRpIG1vZGUgY2VwYXQgKGxpaGF0IHRyYWZmaWMucHk6CllPTE8gZGltYXRpa2FuIDIwMjYtMTEtMjAgc3VwYXlhIHBhdHJvbGkgY2VwYXQpLgoKRGlwYWthaSBvbGVoIGNhcHR1cmVfY29ycmlkb3IucnVuX3BhdHJvbCgpOiBTRVRFTEFIIHNlbXVhIGZvdG8KdGVya2lyaW0ga2UgVGVsZWdyYW0sIHNhdHUgcGVzYW4gdGVrcyByaW5na2FzYW4gZGlraXJpbSBkaSBiYXdhaG55YS4KCnYyICgyMDI2LTExLTIwKTogc2VsYWluIGxhYmVsIHBlciBydWFzLCBtb2R1bCBpbmkganVnYSBtZW5kZXRla3NpCkNMVVNURVIgbWFjZXQg4oCUIGRlcmV0YW4gc2FtcGVsIGJlcnVydXRhbiB5YW5nIHdhcm5hbnlhIGt1bmluZy9vcmFueWUvCm1lcmFoL21lcmFoLWdlbGFwIOKAlCBsYWx1IG1lbnllYnV0IGxhbmRtYXJrIHRlcmRla2F0IGRhcmkgZGFmdGFyCkxBTkRNQVJLUyAoMjggdGl0aWsgYmVya29vcmRpbmF0OiBTUEJVLCBzZWtvbGFoLCB0b2tvLCBydW1haCBtYWthbiwKcGFzYXIsIHNpbXBhbmcsIHBsdXMgMiBnZXJiYW5nIHRvbCBwZXJraXJhYW4pIGJlc2VydGEgcGFuamFuZyBjbHVzdGVyLgpLYWxhdSB0aWRhayBhZGEgbGFuZG1hcmsgZGFsYW0gNSBrbSwgZmFsbGJhY2sga2UgbmFtYSBkZXNhIHZpYQpOb21pbmF0aW0gcmV2ZXJzZS1nZW9jb2RlLCBsYWx1IGtlIG5hbWEgcnVhcy4gQ29udG9oIGJhcmlzOgogICLwn5S0IE1hY2V0IHBhcmFoIMKxMSw4IGttLCBzZWtpdGFyIDQwMCBtIHNlYmVsdW0gU1BCVSBCZXR1bmciCgpFbnY6CiAgTEFMSU5fRU5BQkxFRD0wICAtPiBtYXRpa2FuIGRldGVrc2kgKGRlZmF1bHQgMSwgbnlhbGEpCiAgTEFMSU5fWk9PTSAgICAgICAtPiB6b29tIHRpbGUgKGRlZmF1bHQgMTQpCiIiIgoKaW1wb3J0IG1hdGgKaW1wb3J0IG9zCmltcG9ydCBzdHJ1Y3QKaW1wb3J0IHRpbWUKaW1wb3J0IHVybGxpYi5yZXF1ZXN0CmltcG9ydCB6bGliCmZyb20gY29uY3VycmVudC5mdXR1cmVzIGltcG9ydCBUaHJlYWRQb29sRXhlY3V0b3IKCkxBTElOX0VOQUJMRUQgPSBvcy5lbnZpcm9uLmdldCgiTEFMSU5fRU5BQkxFRCIsICIxIikgIT0gIjAiClpPT00gPSBpbnQob3MuZW52aXJvbi5nZXQoIkxBTElOX1pPT00iLCAiMTQiKSkKCiMgTm9tb3IgdmVyc2kgc3R5bGUgR29vZ2xlIOKAlCBrYWxhdSBzdWF0dSBoYXJpIHRpbGUgYmxhbmssIGtlbXVuZ2tpbmFuCiMgYmVzYXIgYW5na2EgaW5pIGJlcnViYWguIENlayB0aWxlIHRlcmJhcnUgZGkgYnJvd3NlciBkYW4gdXBkYXRlLgpUSUxFX1VSTCA9ICJodHRwczovL210e3N1Yn0uZ29vZ2xlLmNvbS92dC9seXJzPW1AMjIxMDk3NDEzLHRyYWZmaWMmeD17eH0meT17eX0mej17en0iCgojIFJ1YXMgamFsYW4gU3VuZ2FpIExpbGluIC0+IFBhbGVtYmFuZyAoYmFyYXQgLT4gdGltdXIpLCBKbC4gTGludGFzIFRpbXVyLgojIEtvb3JkaW5hdCBrb3RhIGRhcmkgZ2VvY29kZSAyMDI2LTExLTIwOyB0aXRpayB0ZW5nYWggR2VyYmFuZyBLTSAxMgojIGludGVycG9sYXNpIGRpIGtvcmlkb3IgKHNhbXBlbCB5YW5nIG1lbGVzZXQgZGFyaSBqYWxhbiBkaWFiYWlrYW4pLgpTRUdNRU5UUyA9IFsKICAgICgiSmwuIExpbnRhcyBUaW11ciAoU3VuZ2FpIExpbGluIC0gQmV0dW5nKSIsCiAgICAgKC0yLjUxMDE2LCAxMDQuMDI4NjEpLCAoLTIuODQ1MzgsIDEwNC4yMjAzNCkpLAogICAgKCJKbC4gTGludGFzIFRpbXVyIChCZXR1bmcgLSBQYW5na2FsYW4gQmFsYWkpIiwKICAgICAoLTIuODQ1MzgsIDEwNC4yMjAzNCksICgtMi44OTg2LCAxMDQuNDA4MjkpKSwKICAgICgiSmwuIExpbnRhcyBUaW11ciAoUGFuZ2thbGFuIEJhbGFpIC0gR2VyYmFuZyBLTSAxMikiLAogICAgICgtMi44OTg2LCAxMDQuNDA4MjkpLCAoLTIuOTYwMDAsIDEwNC42MDAwMCkpLAogICAgKCJKbC4gTGludGFzIFRpbXVyIChHZXJiYW5nIEtNIDEyIC0gUGFsZW1iYW5nKSIsCiAgICAgKC0yLjk2MDAwLCAxMDQuNjAwMDApLCAoLTIuOTg0NzUsIDEwNC43NTE1OCkpLApdCgpMRVZFTFMgPSBbCiAgICAoImxhbmNhciIsICLwn5+iIiksCiAgICAoIm1hY2V0IHJpbmdhbiIsICLwn5+hIiksCiAgICAoIm1hY2V0IHNlZGFuZyIsICLwn5+gIiksCiAgICAoIm1hY2V0IHBhcmFoIiwgIvCflLQiKSwKICAgICgidGlkYWsgYWRhIGRhdGEiLCAi4pqqIiksCl0KCiMgTGFuZG1hcmsga29yaWRvciBTdW5nYWkgTGlsaW4gLT4gUGFsZW1iYW5nLCBkaWt1bXB1bGthbiAyMDI2LTExLTIwIGRhcmkKIyBOb21pbmF0aW0vT1NNICsgZGF0YSBwbGFjZSBHb29nbGUgTWFwcy9NZXRhL0luc3RhZ3JhbS4gRGFmdGFyIGxlbmdrYXAKIyArIHN1bWJlcm55YSBhZGEgZGkgd29ya3NwYWNlL2NjdHYtcGF0Y2gtZHJhZnQvTEFORE1BUktTLm1kLgojIEZvcm1hdDogKG5hbWEsIGplbmlzLCBsYXQsIGxvbiwgY2F0YXRhbikuCkxBTkRNQVJLUyA9IFsKICAgICMgUnVhcyAxIOKAlCBTdW5nYWkgTGlsaW4gLT4gQmV0dW5nCiAgICAoIlNQQlUgU3VuZ2FpIExpbGluIiwgIlNQQlUiLCAtMi40NTE0MDEsIDEwMy45NTIxNCwgIlNyaSBHdW51bmciKSwKICAgICgiQWxmYW1hcnQgU3VuZ2FpIExpbGluIiwgInRva28iLCAtMi41MjEzOTksIDEwNC4wOTM2MDksICIiKSwKICAgICgiU0QgTmVnZXJpIDEgU3VuZ2FpIExpbGluIiwgInNla29sYWgiLCAtMi41ODIxNDEwLCAxMDQuMTA3MzIxMCwgIlBhc2FyIFN1bmdhaSBMaWxpbiIpLAogICAgKCJTTUEgTmVnZXJpIDEgU3VuZ2FpIExpbGluIiwgInNla29sYWgiLCAtMi41NjE2Mzc5LCAxMDQuMTA4NjE2MCwgIlBhc2FyIFN1bmdhaSBMaWxpbiIpLAogICAgKCJSTSBNdXNpIEluZGFoIiwgInJ1bWFoIG1ha2FuIiwgLTIuODEwODAxLCAxMDQuMTg1NjkzLCAiQmV0dW5nLCBLTSA3NSwgbGFuZ2dhbmFuIGJ1cyBBS0FQIiksCiAgICAoIlNQQlUgQmV0dW5nIiwgIlNQQlUiLCAtMi44MzgwMTksIDEwNC4yMjI4NDUsICJLTSA2NywgMjQgamFtIiksCiAgICAoIkFsZmFtYXJ0IEJldHVuZyIsICJ0b2tvIiwgLTIuODM4MTI3LCAxMDQuMjIyNDcxLCAiU2Vkb21wbyIpLAogICAgKCJSTSBTZWRlcmhhbmEgQmV0dW5nIiwgInJ1bWFoIG1ha2FuIiwgLTIuODQ5NTk3LCAxMDQuMjMwOTE0LCAiQmV0dW5nIiksCiAgICAjIFJ1YXMgMiDigJQgQmV0dW5nIC0+IFBhbmdrYWxhbiBCYWxhaQogICAgKCJBbGZhbWFydCBTdWFrIFRhcGVoIiwgInRva28iLCAtMi44NTY1MDUsIDEwNC4zMzU3MTMsICIiKSwKICAgICgiU2ltcGFuZyBQdWxhdSBSaW1hdSIsICJzaW1wYW5nIiwgLTIuODU1MTI5NywgMTA0LjM0ODY2MDMsICJLTSA1MzsgYWxpYXMgU2ltcGFuZyBMdWJ1ayBMYW5jYW5nL0JpeXVrdSIpLAogICAgKCJTTUFOIDEgU3VhayBUYXBlaCIsICJzZWtvbGFoIiwgLTIuODU1MjQ0MSwgMTA0LjM1NTYwNzMsICJTZXRlcmlvIiksCiAgICAoIlNQQlUgU3VhayBUYXBlaCIsICJTUEJVIiwgLTIuODYzMzM2LCAxMDQuMzY1NDgxLCAicmVjb3JkICdTUEJVIEJldHVuZyAtIFBhbGVtYmFuZycsIG5hbWEgYmVsdW0gcGFzdGkiKSwKICAgICgiSW5kb21hcmV0IFBhbmdrYWxhbiBCYWxhaSA0OCIsICJ0b2tvIiwgLTIuODg1MjMsIDEwNC4zOTAwODgsICIiKSwKICAgICgiUGFzYXIgUGFuZ2thbGFuIEJhbGFpIiwgInBhc2FyIiwgLTIuODkwNTQ5OSwgMTA0LjM5MzI2ODYsICJKbC4gUGFzYXIgTGFtbyIpLAogICAgKCJBQ0MgU3VwZXIgU2FtYmFsIFBhbmdrYWxhbiBCYWxhaSIsICJydW1haCBtYWthbiIsIC0yLjg5NDA2NSwgMTA0LjQwMiwgIktNIDQ3IiksCiAgICAoIlNQQlUgUGFuZ2thbGFuIEJhbGFpIiwgIlNQQlUiLCAtMi44OTc4MiwgMTA0LjQwNjk5LCAiMjQuMzA3LjgzIiksCiAgICAoIlJNIE1hZ2VsYW5nIiwgInJ1bWFoIG1ha2FuIiwgLTIuOTI0MzI4LCAxMDQuNDM0ODk3LCAicGVyYmF0YXNhbiBydWFzIDIvMyIpLAogICAgIyBSdWFzIDMg4oCUIFBhbmdrYWxhbiBCYWxhaSAtPiBHZXJiYW5nIEtNIDEyCiAgICAoIlNNUCBOZWdlcmkgMiBCYW55dWFzaW4gSUlJIiwgInNla29sYWgiLCAtMi45MjQ2NjczLCAxMDQuNDI4ODM0MSwgIktheXVhcmEgS3VuaW5nIiksCiAgICAoIlJNIFRhaHUgU3VtZWRhbmcgUmVueWFoIiwgInJ1bWFoIG1ha2FuIiwgLTIuOTI0MTU1LCAxMDQuNDQ4MzAxLCAiS00gNDEiKSwKICAgICgiUk0gU2VkZXJoYW5hIE1pbmFuZyIsICJydW1haCBtYWthbiIsIC0yLjkyMzk4MiwgMTA0LjQ1MjIwNywgIiIpLAogICAgKCJRb2RyYXR1bGxhaCAvIExhbmdrYW4iLCAic2Vrb2xhaCIsIC0yLjkyMjU2MjEsIDEwNC40ODQ2MDcwLCAiS00gMzUsIGtvbXBsZWtzIHBlc2FudHJlbiIpLAogICAgKCJTUEJVIFNlbWJhd2EiLCAiU1BCVSIsIC0yLjkyMTIzLCAxMDQuNTMyNjYxLCAiIiksCiAgICAoIlNQQlUgUmVqb2RhZGkiLCAiU1BCVSIsIC0yLjkyODEyMTcsIDEwNC41NTU2MDM4LCAiMjQuMzA3LjEzMiwgU2VtYmF3YSIpLAogICAgKCJSZXN0IEFyZWEgVG9sIFBhbGVtYmFuZy1KYW1iaSIsICJyZXN0IGFyZWEiLCAtMi45MDIxODksIDEwNC41NjEwNSwgIlJlam9kYWRpLCBTZW1iYXdhOyBkaSBqYWxhbiB0b2wgKGJ1a2FuIExpbnRhcyBUaW11ciksIHN0YXR1cyB0dXR1cCBzZW1lbnRhcmE7IHNhdHUtc2F0dW55YSBsYW5kbWFyayBTZW1iYXdhIGthdGEgQ2lybyIpLAogICAgIyBSdWFzIDQg4oCUIEdlcmJhbmcgS00gMTIgLT4gUGFsZW1iYW5nCiAgICAoIkFsZmFtYXJ0IFRhbGFuZyBLZWxhcGEiLCAidG9rbyIsIC0yLjkxMjc1LCAxMDQuNjE2MzA3LCAiIiksCiAgICAoIkFsZmFtYXJ0IFN1a29tb3JvIiwgInRva28iLCAtMi45MTU0OTIsIDEwNC42MzkyNDQsICJQNDUyIiksCiAgICAoIlJNIE1hc2FrYW4gUGFkYW5nIiwgInJ1bWFoIG1ha2FuIiwgLTIuOTEzMjEyLCAxMDQuNjU1MTA4LCAiS00gMTYiKSwKICAgICgiS0lUQSBDb2ZmZWUgYW5kIEVhdGVyeSIsICJrYWZlIiwgLTIuOTE0MjUzLCAxMDQuNjQzNTgxLCAiS00gMTcuNSwgU3VrYW1vcm8iKSwKICAgICgiQWxmYW1hcnQgS00gMTMgU3VrYWphZGkiLCAidG9rbyIsIC0yLjkxMzczMiwgMTA0LjY3NzcxNiwgIktNIDEzIiksCiAgICAjIEdlcmJhbmcgdG9sIChrb29yZGluYXQgUEVSS0lSQUFOIGRhcmkgdGl0aWsgZGVzYSDigJQgbGloYXQgTEFORE1BUktTLm1kKQogICAgKCJHZXJiYW5nIFRvbCBLcmFtYXNhbiIsICJ0b2wiLCAtMy4wMzIsIDEwNC43NDUsICJwZXJraXJhYW4sIGJlcm9wZXJhc2kiKSwKICAgICgiR2VyYmFuZyBUb2wgUGFuZ2thbGFuIEJhbGFpIiwgInRvbCIsIC0yLjg2MiwgMTA0LjM2MSwgInBlcmtpcmFhbiwgZGliYW5ndW4iKSwKXQoKCiMgLS0tIFBORyBkZWNvZGVyIChzdGRsaWIpIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpkZWYgX3BhZXRoKGEsIGIsIGMpOgogICAgcCA9IGEgKyBiIC0gYwogICAgcGEsIHBiLCBwYyA9IGFicyhwIC0gYSksIGFicyhwIC0gYiksIGFicyhwIC0gYykKICAgIGlmIHBhIDw9IHBiIGFuZCBwYSA8PSBwYzoKICAgICAgICByZXR1cm4gYQogICAgaWYgcGIgPD0gcGM6CiAgICAgICAgcmV0dXJuIGIKICAgIHJldHVybiBjCgoKZGVmIGRlY29kZV9wbmcoZGF0YSk6CiAgICAiIiJSZXR1cm4gKHdpZHRoLCBoZWlnaHQsIHJnYl9ieXRlcykgdW50dWsgUE5HIDgtYml0LgoKICAgIE1lbmR1a3VuZyBjb2xvciB0eXBlIDAgKGdyYXkpLCAyIChSR0IpLCAzIChwYWxldHRlKSwgNCAoZ3JheSthbHBoYSksCiAgICA2IChSR0JBKS4gVGlsZSBHb29nbGUgeWFuZyBkaWNlazogdHlwZSAzIChjb2xvcm1hcCkgZGFuIHR5cGUgNi4KICAgICIiIgogICAgaWYgZGF0YVs6OF0gIT0gYiJceDg5UE5HXHJcblx4MWFcbiI6CiAgICAgICAgcmFpc2UgVmFsdWVFcnJvcigiYnVrYW4gUE5HIikKICAgIHBvcyA9IDgKICAgIHdpZHRoID0gaGVpZ2h0ID0gMAogICAgYml0ZGVwdGggPSBjb2xvcnR5cGUgPSBOb25lCiAgICBwYWxldHRlID0gTm9uZQogICAgaWRhdCA9IGJ5dGVhcnJheSgpCiAgICB3aGlsZSBwb3MgPCBsZW4oZGF0YSk6CiAgICAgICAgKGxlbmd0aCwpID0gc3RydWN0LnVucGFjaygiPkkiLCBkYXRhW3Bvczpwb3MgKyA0XSkKICAgICAgICBjdHlwZSA9IGRhdGFbcG9zICsgNDpwb3MgKyA4XQogICAgICAgIGNodW5rID0gZGF0YVtwb3MgKyA4OnBvcyArIDggKyBsZW5ndGhdCiAgICAgICAgaWYgY3R5cGUgPT0gYiJJSERSIjoKICAgICAgICAgICAgd2lkdGgsIGhlaWdodCwgYml0ZGVwdGgsIGNvbG9ydHlwZSA9IHN0cnVjdC51bnBhY2soIj5JSUJCIiwgY2h1bmtbOjEwXSkKICAgICAgICAgICAgaWYgYml0ZGVwdGggIT0gODoKICAgICAgICAgICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoZiJiaXRkZXB0aCB7Yml0ZGVwdGh9IHRpZGFrIGRpZHVrdW5nIikKICAgICAgICBlbGlmIGN0eXBlID09IGIiUExURSI6CiAgICAgICAgICAgIHBhbGV0dGUgPSBjaHVuawogICAgICAgIGVsaWYgY3R5cGUgPT0gYiJJREFUIjoKICAgICAgICAgICAgaWRhdCArPSBjaHVuawogICAgICAgIGVsaWYgY3R5cGUgPT0gYiJJRU5EIjoKICAgICAgICAgICAgYnJlYWsKICAgICAgICBwb3MgKz0gMTIgKyBsZW5ndGgKICAgIGlmIGNvbG9ydHlwZSA9PSAwOgogICAgICAgIGNoYW5uZWxzLCBicHAgPSAxLCAxCiAgICBlbGlmIGNvbG9ydHlwZSA9PSAyOgogICAgICAgIGNoYW5uZWxzLCBicHAgPSAzLCAzCiAgICBlbGlmIGNvbG9ydHlwZSA9PSAzOgogICAgICAgIGNoYW5uZWxzLCBicHAgPSAxLCAxCiAgICBlbGlmIGNvbG9ydHlwZSA9PSA0OgogICAgICAgIGNoYW5uZWxzLCBicHAgPSAyLCAyCiAgICBlbGlmIGNvbG9ydHlwZSA9PSA2OgogICAgICAgIGNoYW5uZWxzLCBicHAgPSA0LCA0CiAgICBlbHNlOgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoZiJjb2xvciB0eXBlIHtjb2xvcnR5cGV9IHRpZGFrIGRpZHVrdW5nIikKICAgIHJhdyA9IHpsaWIuZGVjb21wcmVzcyhieXRlcyhpZGF0KSkKICAgIHN0cmlkZSA9IHdpZHRoICogYnBwCiAgICBvdXQgPSBieXRlYXJyYXkod2lkdGggKiBoZWlnaHQgKiAzKQogICAgcHJldiA9IGJ5dGVhcnJheShzdHJpZGUpCiAgICBwID0gMAogICAgZm9yIHkgaW4gcmFuZ2UoaGVpZ2h0KToKICAgICAgICBmID0gcmF3W3BdCiAgICAgICAgcCArPSAxCiAgICAgICAgbGluZSA9IGJ5dGVhcnJheShyYXdbcDpwICsgc3RyaWRlXSkKICAgICAgICBwICs9IHN0cmlkZQogICAgICAgIGZvciBpIGluIHJhbmdlKGxlbihsaW5lKSk6CiAgICAgICAgICAgIGEgPSBsaW5lW2kgLSBicHBdIGlmIGkgPj0gYnBwIGVsc2UgMAogICAgICAgICAgICBiID0gcHJldltpXQogICAgICAgICAgICBjID0gcHJldltpIC0gYnBwXSBpZiBpID49IGJwcCBlbHNlIDAKICAgICAgICAgICAgaWYgZiA9PSAxOgogICAgICAgICAgICAgICAgbGluZVtpXSA9IChsaW5lW2ldICsgYSkgJiAweEZGCiAgICAgICAgICAgIGVsaWYgZiA9PSAyOgogICAgICAgICAgICAgICAgbGluZVtpXSA9IChsaW5lW2ldICsgYikgJiAweEZGCiAgICAgICAgICAgIGVsaWYgZiA9PSAzOgogICAgICAgICAgICAgICAgbGluZVtpXSA9IChsaW5lW2ldICsgKGEgKyBiKSAvLyAyKSAmIDB4RkYKICAgICAgICAgICAgZWxpZiBmID09IDQ6CiAgICAgICAgICAgICAgICBsaW5lW2ldID0gKGxpbmVbaV0gKyBfcGFldGgoYSwgYiwgYykpICYgMHhGRgogICAgICAgICAgICBlbGlmIGYgIT0gMDoKICAgICAgICAgICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoZiJmaWx0ZXIge2Z9IHRpZGFrIGRpZHVrdW5nIikKICAgICAgICBmb3IgeCBpbiByYW5nZSh3aWR0aCk6CiAgICAgICAgICAgIG8gPSAoeSAqIHdpZHRoICsgeCkgKiAzCiAgICAgICAgICAgIHB4ID0gbGluZVt4ICogYnBwOih4ICsgMSkgKiBicHBdCiAgICAgICAgICAgIGlmIGNvbG9ydHlwZSA9PSAzOgogICAgICAgICAgICAgICAgaWR4ID0gcHhbMF0gKiAzCiAgICAgICAgICAgICAgICBvdXRbbzpvICsgM10gPSBwYWxldHRlW2lkeDppZHggKyAzXQogICAgICAgICAgICBlbGlmIGNvbG9ydHlwZSA9PSAyOgogICAgICAgICAgICAgICAgb3V0W286byArIDNdID0gcHhbMDozXQogICAgICAgICAgICBlbGlmIGNvbG9ydHlwZSA9PSA2OgogICAgICAgICAgICAgICAgb3V0W286byArIDNdID0gcHhbMDozXQogICAgICAgICAgICBlbGlmIGNvbG9ydHlwZSA9PSAwOgogICAgICAgICAgICAgICAgb3V0W29dID0gb3V0W28gKyAxXSA9IG91dFtvICsgMl0gPSBweFswXQogICAgICAgICAgICBlbGlmIGNvbG9ydHlwZSA9PSA0OgogICAgICAgICAgICAgICAgb3V0W29dID0gb3V0W28gKyAxXSA9IG91dFtvICsgMl0gPSBweFswXQogICAgICAgIHByZXYgPSBsaW5lCiAgICByZXR1cm4gd2lkdGgsIGhlaWdodCwgYnl0ZXMob3V0KQoKCiMgLS0tIFRpbGUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpkZWYgX2ZldGNoX3RpbGUodHgsIHR5LCB6KToKICAgIHVybCA9IFRJTEVfVVJMLmZvcm1hdChzdWI9KHR4ICsgdHkpICUgNCwgeD10eCwgeT10eSwgej16KQogICAgcmVxID0gdXJsbGliLnJlcXVlc3QuUmVxdWVzdCh1cmwsIGhlYWRlcnM9eyJVc2VyLUFnZW50IjogIk1vemlsbGEvNS4wIn0pCiAgICB3aXRoIHVybGxpYi5yZXF1ZXN0LnVybG9wZW4ocmVxLCB0aW1lb3V0PTIwKSBhcyByOgogICAgICAgIHJldHVybiBkZWNvZGVfcG5nKHIucmVhZCgpKQoKCmRlZiBsYXRsb25fdG9fZ2xvYmFsX3B4KGxhdCwgbG9uLCB6KToKICAgIG4gPSAyLjAgKiogegogICAgZ3ggPSAobG9uICsgMTgwLjApIC8gMzYwLjAgKiBuICogMjU2LjAKICAgIHMgPSBtYXRoLnNpbihtYXRoLnJhZGlhbnMobGF0KSkKICAgIGd5ID0gKDAuNSAtIG1hdGgubG9nKCgxICsgcykgLyAoMSAtIHMpKSAvICg0ICogbWF0aC5waSkpICogbiAqIDI1Ni4wCiAgICByZXR1cm4gZ3gsIGd5CgoKZGVmIF9oYXZlcnNpbmVfbShhLCBiKToKICAgIHIgPSA2MzcxMDAwLjAKICAgIHAxLCBwMiA9IG1hdGgucmFkaWFucyhhWzBdKSwgbWF0aC5yYWRpYW5zKGJbMF0pCiAgICBkcGhpID0gbWF0aC5yYWRpYW5zKGJbMF0gLSBhWzBdKQogICAgZGxtYiA9IG1hdGgucmFkaWFucyhiWzFdIC0gYVsxXSkKICAgIGggPSAobWF0aC5zaW4oZHBoaSAvIDIpICoqIDIKICAgICAgICAgKyBtYXRoLmNvcyhwMSkgKiBtYXRoLmNvcyhwMikgKiBtYXRoLnNpbihkbG1iIC8gMikgKiogMikKICAgIHJldHVybiAyICogciAqIG1hdGguYXNpbihtYXRoLnNxcnQoaCkpCgoKZGVmIGNsYXNzaWZ5X3BpeGVsKHIsIGcsIGIpOgogICAgIiIiV2FybmEgcGl4ZWwgLT4ga2F0ZWdvcmkgdHJhZmZpYywgYXRhdSBOb25lIGthbGF1IGJ1a2FuIGphbGFuIG1hY2V0LgoKICAgIEhpamF1IHNhd2FoL2xhcGFuZ2FuICgyMTEsMjQ4LDIyNikgbG9sb3MgZGFyaSBydWxlIGhpamF1IGthcmVuYSBSLW55YQogICAgdGluZ2dpOyBhaXIgKDE0NCwyMTgsMjM4KSBqdWdhIGxvbG9zLiBZYW5nIGtlaGl0dW5nIGhhbnlhIHdhcm5hCiAgICB0cmFmZmljIHlhbmcgcGVrYXQuCgogICAgUGVsYWphcmFuIDIwMjYtMTEtMjAgKFJNIE11c2kgSW5kYWgpOiBsYWJlbCBuYW1hIHRlbXBhdCBkaSBwZXRhCiAgICBkaXR1bGlzIGRlbmdhbiB0ZWtzIE9SQU5ZRSAoMjE0LDg5LDApIHlhbmcgbWVuaW1wYSBqYWxhbi4gV2FybmEgaXR1CiAgICBCVUtBTiBtZXJhaCB0cmFmZmljICgyMzUsMjcsMjcpIOKAlCBqYWRpIHJ1bGUgbWVyYWggZGliYXRhc2kgZzw2MCwKICAgIGRhbiAoMjE0LDg5LDApIHNlbmdhamEgdGlkYWsgbWFzdWsgb3JhbnllIGp1Z2E6IGthbGF1IHBpeGVsIGl0dQogICAgc2F0dS1zYXR1bnlhIHlhbmcga2V0ZW11LCBzYW1wZWwgZGlhbmdnYXAgdGlkYWsgYWRhIHN1YXJhLCBidWthbgogICAgbWFjZXQuIFdhcm5hIHRyYWZmaWMgb3JhbnllIGFzbGkgR29vZ2xlIHRldGFwIGtldGFuZ2thcCBydWxlIG9yYW55ZS4KICAgICIiIgogICAgaWYgZyA+PSAxODAgYW5kIHIgPCAxMjAgYW5kIDgwIDw9IGIgPCAyMjAgYW5kIGcgPiByICsgNjA6CiAgICAgICAgcmV0dXJuICJncmVlbiIKICAgIGlmIHIgPj0gMjAwIGFuZCBnID49IDE3MCBhbmQgYiA8IDEyMDoKICAgICAgICByZXR1cm4gInllbGxvdyIKICAgIGlmIHIgPj0gMjIwIGFuZCA5MCA8PSBnIDwgMTcwIGFuZCBiIDwgMTAwOgogICAgICAgIHJldHVybiAib3JhbmdlIgogICAgaWYgciA+PSAyMDAgYW5kIGcgPCA2MCBhbmQgYiA8IDkwOgogICAgICAgIHJldHVybiAicmVkIgogICAgaWYgMTAwIDw9IHIgPCAyMDAgYW5kIGcgPCA3MCBhbmQgYiA8IDcwOgogICAgICAgIHJldHVybiAiZGFya3JlZCIKICAgIHJldHVybiBOb25lCgoKZGVmIF9uZWFyZXN0X2NsYXNzaWZpZWQocmdiLCB3LCBoLCBweCwgcHksIG1heF9yPTMpOgogICAgIiIiUGl4ZWwgdHJhZmZpYyB0ZXJkZWthdCBkYXJpIHRpdGlrIHNhbXBlbCAocmFkaXVzIG1heCAzIHB4IH4gMzAgbSkuCgogICAgR2FyaXMgamFsYW4gZGkgdGlsZSBjdW1hIHNlbGViYXIgYmViZXJhcGEgcGl4ZWwgZGFuIHBvbHlsaW5lIE9TUk0KICAgIGJpc2EgbWVsZXNldCBzZWRpa2l0IOKAlCBqYWRpIGNhcmkgZHVsdSBkaSB0aXRpayBwZXJzaXNueWEsIGxhbHUKICAgIG1lbGluZ2thciBrZSBsdWFyIHNhbXBhaSBrZXRlbXUgcGl4ZWwgdHJhZmZpYy4gU2F0dSB0aXRpayBzYW1wZWwKICAgID0gc2F0dSBzdWFyYSwgc3VwYXlhIGxhYmVsIGphbGFuICh0ZWtzIG9yYW55ZS9tZXJhaCkgZGkgZGVrYXQgamFsYW4KICAgIHRpZGFrIG1lbWJhbmppcmkgaGl0dW5nYW4uCgogICAgU0FOSVRZIENIRUNLIEhJSkFVIChwZWxhamFyYW4gMjAyNi0xMS0yMCwgUk0gTXVzaSBJbmRhaCk6IGxhYmVsCiAgICBuYW1hIHRlbXBhdCBkaXR1bGlzIG1lbmltcGEgamFsYW4sIGRhbiBzYXR1IHNhbXBlbCBiaXNhIGphdHVoIHRlcGF0CiAgICBkaSBhdGFzIGh1cnVmIGxhYmVsIHNlaGluZ2dhIHBpeGVsIHBlcnRhbWEgeWFuZyBrZXRlbXUgYWRhbGFoIHdhcm5hCiAgICBsYWJlbCwgYnVrYW4gd2FybmEgamFsYW4uIFdhcm5hIGxhYmVsIHlhbmcgcmF3YW4gYWRhbGFoIG9yYW55ZSAvCiAgICBrdW5pbmcgKHRla3Mgb3JhbnllLCBhbnRpLWFsaWFzaW5nKSDigJQgamFkaSBrYWxhdSBzdWFyYSB0ZXJkZWthdAogICAgYWRhbGFoIG9yYW55ZS9rdW5pbmcsIGRpY2VrIGR1bHU6IGFkYSBwaXhlbCBoaWphdSB0cmFmZmljIGRhbGFtCiAgICByYWRpdXMgMyBweD8gS2FsYXUgYWRhLCBqYWxhbiBkaSB0aXRpayBpdHUgbWVuZ2FsaXIsIGhpamF1IHlhbmcKICAgIGRpcGFrYWkuIE1lcmFoIC8gbWVyYWggZ2VsYXAgVElEQUsgZGljZWsgYmVnaW5pOiBpdHUgc2lueWFsCiAgICB0cmFmZmljIHlhbmcga3VhdCBkYW4gd2FybmEgbGFiZWwgaGFtcGlyIHRpZGFrIHBlcm5haCBzZW1lcmFoIGl0dSwKICAgIGphZGkgamFuZ2FuIHNhbXBhaSBydWFzIHlhbmcgYmVuYXItYmVuYXIgbWFjZXQgaWt1dCB0ZXJoYXB1cy4KICAgICIiIgogICAgZm91bmQgPSBOb25lCiAgICBmb3IgciBpbiByYW5nZShtYXhfciArIDEpOgogICAgICAgIGZvciBkeCBpbiByYW5nZSgtciwgciArIDEpOgogICAgICAgICAgICBmb3IgZHkgaW4gcmFuZ2UoLXIsIHIgKyAxKToKICAgICAgICAgICAgICAgIGlmIG1heChhYnMoZHgpLCBhYnMoZHkpKSAhPSByOgogICAgICAgICAgICAgICAgICAgIGNvbnRpbnVlCiAgICAgICAgICAgICAgICB4LCB5ID0gcHggKyBkeCwgcHkgKyBkeQogICAgICAgICAgICAgICAgaWYgbm90ICgwIDw9IHggPCB3IGFuZCAwIDw9IHkgPCBoKToKICAgICAgICAgICAgICAgICAgICBjb250aW51ZQogICAgICAgICAgICAgICAgbyA9ICh5ICogdyArIHgpICogMwogICAgICAgICAgICAgICAgY2F0ID0gY2xhc3NpZnlfcGl4ZWwocmdiW29dLCByZ2JbbyArIDFdLCByZ2JbbyArIDJdKQogICAgICAgICAgICAgICAgaWYgY2F0OgogICAgICAgICAgICAgICAgICAgIGZvdW5kID0gY2F0CiAgICAgICAgICAgICAgICAgICAgYnJlYWsKICAgICAgICAgICAgaWYgZm91bmQ6CiAgICAgICAgICAgICAgICBicmVhawogICAgICAgIGlmIGZvdW5kOgogICAgICAgICAgICBicmVhawogICAgaWYgZm91bmQgaW4gKCJvcmFuZ2UiLCAieWVsbG93Iik6CiAgICAgICAgZm9yIHIgaW4gcmFuZ2UobWF4X3IgKyAxKToKICAgICAgICAgICAgZm9yIGR4IGluIHJhbmdlKC1yLCByICsgMSk6CiAgICAgICAgICAgICAgICBmb3IgZHkgaW4gcmFuZ2UoLXIsIHIgKyAxKToKICAgICAgICAgICAgICAgICAgICBpZiBtYXgoYWJzKGR4KSwgYWJzKGR5KSkgIT0gcjoKICAgICAgICAgICAgICAgICAgICAgICAgY29udGludWUKICAgICAgICAgICAgICAgICAgICB4LCB5ID0gcHggKyBkeCwgcHkgKyBkeQogICAgICAgICAgICAgICAgICAgIGlmIG5vdCAoMCA8PSB4IDwgdyBhbmQgMCA8PSB5IDwgaCk6CiAgICAgICAgICAgICAgICAgICAgICAgIGNvbnRpbnVlCiAgICAgICAgICAgICAgICAgICAgbyA9ICh5ICogdyArIHgpICogMwogICAgICAgICAgICAgICAgICAgIGlmIGNsYXNzaWZ5X3BpeGVsKHJnYltvXSwgcmdiW28gKyAxXSwgcmdiW28gKyAyXSkgPT0gImdyZWVuIjoKICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuICJncmVlbiIKICAgIHJldHVybiBmb3VuZAoKCmRlZiBsZXZlbF9mcm9tX2NvdW50cyhjb3VudHMpOgogICAgIiIiY291bnRzOiBkaWN0IGthdGVnb3JpIC0+IGp1bWxhaCBwaXhlbC4gUmV0dXJuIChsYWJlbCwgZW1vamkpLiIiIgogICAgdG90YWwgPSBzdW0oY291bnRzLnZhbHVlcygpKQogICAgaWYgdG90YWwgPCA1OgogICAgICAgIHJldHVybiBMRVZFTFNbNF0KICAgIGZyYWMgPSB7azogdiAvIHRvdGFsIGZvciBrLCB2IGluIGNvdW50cy5pdGVtcygpfQogICAgZGFyayA9IGZyYWMuZ2V0KCJkYXJrcmVkIiwgMC4wKQogICAgcmVkID0gZnJhYy5nZXQoInJlZCIsIDAuMCkKICAgIG9yZyA9IGZyYWMuZ2V0KCJvcmFuZ2UiLCAwLjApCiAgICB5ZWwgPSBmcmFjLmdldCgieWVsbG93IiwgMC4wKQogICAgaWYgZGFyayA+PSAwLjA4IG9yIChyZWQgKyBkYXJrKSA+PSAwLjM1OgogICAgICAgIHJldHVybiBMRVZFTFNbM10KICAgIGlmIHJlZCA+PSAwLjA4IG9yIG9yZyA+PSAwLjI1OgogICAgICAgIHJldHVybiBMRVZFTFNbMl0KICAgIGlmIG9yZyA+PSAwLjA4IG9yIHllbCA+PSAwLjA4OgogICAgICAgIHJldHVybiBMRVZFTFNbMV0KICAgIHJldHVybiBMRVZFTFNbMF0KCgpkZWYgX3JvdXRlX2dlb21ldHJ5KGEsIGIpOgogICAgIiIiR2VvbWV0cmkgamFsYW4gYXNsaSBhLT5iIGRhcmkgT1NSTSAoZ3JhdGlzLCB0YW5wYSBrZXkpLgoKICAgIEdhcmlzIGx1cnVzIGFudGFyIGtvdGEgVElEQUsgYmlzYSBkaXBha2FpIOKAlCBqYWxhbiBMaW50YXMgVGltdXIKICAgIGJlcmJlbG9rLWJlbG9rIGRhbiBnYXJpcyBsdXJ1cyBtYWxhaCBtb3Rvbmcgc2F3YWgvc3VuZ2FpLCBzZWhpbmdnYQogICAgc2FtcGVsbnlhIHRpZGFrIGtlbmEgamFsYW4gc2FtYSBzZWthbGkgKGhhc2lsIHRlcyAyMDI2LTExLTIwOgogICAgMC0xIHBpeGVsIHRyYWZmaWMgcGVyIHJ1YXMpLiBLYWxhdSBPU1JNIGdhZ2FsLCBmYWxsYmFjayBrZSBnYXJpcwogICAgbHVydXMgc3VwYXlhIHRldGFwIGphbGFuLCB3YWxhdSBrdXJhbmcgYWt1cmF0LgogICAgUmV0dXJuIGxpc3QgWyhsYXQsIGxvbiksIC4uLl0uCiAgICAiIiIKICAgIGltcG9ydCBqc29uCiAgICB1cmwgPSAoImh0dHBzOi8vcm91dGVyLnByb2plY3Qtb3NybS5vcmcvcm91dGUvdjEvZHJpdmluZy8iCiAgICAgICAgICAgZiJ7YVsxXX0se2FbMF19O3tiWzFdfSx7YlswXX0iCiAgICAgICAgICAgIj9vdmVydmlldz1mdWxsJmdlb21ldHJpZXM9Z2VvanNvbiIpCiAgICB0cnk6CiAgICAgICAgcmVxID0gdXJsbGliLnJlcXVlc3QuUmVxdWVzdCh1cmwsIGhlYWRlcnM9eyJVc2VyLUFnZW50IjogIk1vemlsbGEvNS4wIn0pCiAgICAgICAgd2l0aCB1cmxsaWIucmVxdWVzdC51cmxvcGVuKHJlcSwgdGltZW91dD0zMCkgYXMgcjoKICAgICAgICAgICAgZCA9IGpzb24ubG9hZChyKQogICAgICAgIGNvb3JkcyA9IGRbInJvdXRlcyJdWzBdWyJnZW9tZXRyeSJdWyJjb29yZGluYXRlcyJdCiAgICAgICAgcHRzID0gWyhsYXQsIGxvbikgZm9yIGxvbiwgbGF0IGluIGNvb3Jkc10KICAgICAgICBwcmludChmIlsqXSBsYWxpbjogT1NSTSB7YX0gLT4ge2J9OiB7bGVuKHB0cyl9IHRpdGlrLCAiCiAgICAgICAgICAgICAgZiJ7ZFsncm91dGVzJ11bMF1bJ2Rpc3RhbmNlJ10gLyAxMDAwOi4xZn0ga20iKQogICAgICAgIHJldHVybiBwdHMKICAgIGV4Y2VwdCBFeGNlcHRpb24gYXMgZToKICAgICAgICBwcmludChmIlstXSBsYWxpbjogT1NSTSBnYWdhbCAoe2V9KSwgcGFrYWkgZ2FyaXMgbHVydXMiKQogICAgICAgIHJldHVybiBfc2FtcGxlX3BvaW50cyhhLCBiKQoKCmRlZiBfcG9pbnRzX2Fsb25nKHB0cywgc3RlcF9tPTMwMC4wKToKICAgICIiIlRpdGlrIHRpYXAgfnN0ZXBfbSBtZXRlciBkaSBzZXBhbmphbmcgcG9seWxpbmUgcHRzLiIiIgogICAgaWYgbGVuKHB0cykgPCAyOgogICAgICAgIHJldHVybiBwdHMKICAgIG91dCA9IFtwdHNbMF1dCiAgICBhY2MgPSAwLjAKICAgIGZvciBhLCBiIGluIHppcChwdHMsIHB0c1sxOl0pOgogICAgICAgIGQgPSBfaGF2ZXJzaW5lX20oYSwgYikKICAgICAgICBhY2MgKz0gZAogICAgICAgIGlmIGFjYyA+PSBzdGVwX206CiAgICAgICAgICAgIG91dC5hcHBlbmQoYikKICAgICAgICAgICAgYWNjID0gMC4wCiAgICBpZiBvdXRbLTFdICE9IHB0c1stMV06CiAgICAgICAgb3V0LmFwcGVuZChwdHNbLTFdKQogICAgcmV0dXJuIG91dAoKCmRlZiBjaGVja19yb3V0ZSgpOgogICAgIiIiQ2VrIHNlbXVhIHJ1YXMuCgogICAgUmV0dXJuIGxpc3QgWyhuYW1hX3J1YXMsIGxhYmVsLCBlbW9qaSwgY291bnRzLCBzYW1wbGVzKV0gZGVuZ2FuCiAgICBzYW1wbGVzID0gWyhsYXQsIGxvbiwga2F0ZWdvcmlfYXRhdV9Ob25lKSwgLi4uXSB1cnV0IHNlcGFuamFuZyBqYWxhbgogICAgKGJ1YXQgZGV0ZWtzaSBjbHVzdGVyIG1hY2V0KS4KICAgICIiIgogICAgaWYgbm90IExBTElOX0VOQUJMRUQ6CiAgICAgICAgcmV0dXJuIFtdCiAgICAjIEt1bXB1bGthbiB0aWxlIHVuaWsgeWFuZyBkaWJ1dHVoa2FuIHNlbXVhIHJ1YXMuCiAgICBuZWVkZWQgPSB7fQogICAgc2VnX3BpeGVscyA9IFtdCiAgICBmb3IgbmFtZSwgYSwgYiBpbiBTRUdNRU5UUzoKICAgICAgICBwdHMgPSBfcG9pbnRzX2Fsb25nKF9yb3V0ZV9nZW9tZXRyeShhLCBiKSkKICAgICAgICBzcCA9IFtdCiAgICAgICAgZm9yIGxhdCwgbG9uIGluIHB0czoKICAgICAgICAgICAgZ3gsIGd5ID0gbGF0bG9uX3RvX2dsb2JhbF9weChsYXQsIGxvbiwgWk9PTSkKICAgICAgICAgICAgdHgsIHR5ID0gaW50KGd4IC8vIDI1NiksIGludChneSAvLyAyNTYpCiAgICAgICAgICAgIHB4LCBweSA9IGludChneCAlIDI1NiksIGludChneSAlIDI1NikKICAgICAgICAgICAgbmVlZGVkWyh0eCwgdHkpXSA9IFRydWUKICAgICAgICAgICAgc3AuYXBwZW5kKChsYXQsIGxvbiwgdHgsIHR5LCBweCwgcHkpKQogICAgICAgIHNlZ19waXhlbHMuYXBwZW5kKChuYW1lLCBzcCkpCgogICAgdGlsZXMgPSB7fQoKICAgIGRlZiBfbG9hZChrZXkpOgogICAgICAgIHR4LCB0eSA9IGtleQogICAgICAgIHRyeToKICAgICAgICAgICAgdGlsZXNba2V5XSA9IF9mZXRjaF90aWxlKHR4LCB0eSwgWk9PTSkKICAgICAgICBleGNlcHQgRXhjZXB0aW9uIGFzIGU6CiAgICAgICAgICAgIHByaW50KGYiWy1dIGxhbGluOiB0aWxlIHt0eH0se3R5fSBnYWdhbDoge2V9IikKCiAgICB3aXRoIFRocmVhZFBvb2xFeGVjdXRvcihtYXhfd29ya2Vycz04KSBhcyBleDoKICAgICAgICBsaXN0KGV4Lm1hcChfbG9hZCwgbGlzdChuZWVkZWQua2V5cygpKSkpCgogICAgcmVzdWx0cyA9IFtdCiAgICBmb3IgbmFtZSwgcHRzIGluIHNlZ19waXhlbHM6CiAgICAgICAgY291bnRzID0ge30KICAgICAgICBzYW1wbGVzID0gW10KICAgICAgICBmb3IgbGF0LCBsb24sIHR4LCB0eSwgcHgsIHB5IGluIHB0czoKICAgICAgICAgICAgdCA9IHRpbGVzLmdldCgodHgsIHR5KSkKICAgICAgICAgICAgY2F0ID0gTm9uZQogICAgICAgICAgICBpZiB0IGlzIG5vdCBOb25lOgogICAgICAgICAgICAgICAgdywgaCwgcmdiID0gdAogICAgICAgICAgICAgICAgaWYgMCA8PSBweCA8IHcgYW5kIDAgPD0gcHkgPCBoOgogICAgICAgICAgICAgICAgICAgIGNhdCA9IF9uZWFyZXN0X2NsYXNzaWZpZWQocmdiLCB3LCBoLCBweCwgcHkpCiAgICAgICAgICAgIGlmIGNhdDoKICAgICAgICAgICAgICAgIGNvdW50c1tjYXRdID0gY291bnRzLmdldChjYXQsIDApICsgMQogICAgICAgICAgICBzYW1wbGVzLmFwcGVuZCgobGF0LCBsb24sIGNhdCkpCiAgICAgICAgbGFiZWwsIGVtb2ppID0gbGV2ZWxfZnJvbV9jb3VudHMoY291bnRzKQogICAgICAgIHByaW50KGYiWypdIGxhbGluIHtuYW1lfToge2NvdW50c30gLT4ge2xhYmVsfSIpCiAgICAgICAgcmVzdWx0cy5hcHBlbmQoKG5hbWUsIGxhYmVsLCBlbW9qaSwgY291bnRzLCBzYW1wbGVzKSkKICAgIHJldHVybiByZXN1bHRzCgoKIyAtLS0gQ2x1c3RlciBtYWNldCArIGxhbmRtYXJrIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQojIFNhdHUgc2FtcGVsIH4zMDAgbS4gU2F0dSBwaXhlbCBrdW5pbmcvb3JhbnllIG55YXNhciBiaXNhIGphZGkgbGFiZWwgamFsYW4sCiMgamFkaSBjbHVzdGVyIG1pbmltYWwgMiBzYW1wZWwgYmVydXJ1dGFuICh+NjAwIG0pIGJhcnUgZGlhbmdnYXAgbWFjZXQgYmVuZXJhbi4KQkFEX1JBTksgPSB7InllbGxvdyI6IDEsICJvcmFuZ2UiOiAxLCAicmVkIjogMiwgImRhcmtyZWQiOiAzfQoKCmRlZiBmaW5kX2NsdXN0ZXJzKHNhbXBsZXMsIG1pbl9ydW49Mik6CiAgICAiIiJEZXJldGFuIHNhbXBlbCBtYWNldCBiZXJ1cnV0YW4gLT4gY2x1c3Rlci4KCiAgICBSZXR1cm4gbGlzdCBbeyJyYW5rIjogMS4uMywgImxlbmd0aF9tIjogZmxvYXQsICJtaWQiOiAobGF0LCBsb24pLAogICAgIm4iOiBqdW1sYWhfc2FtcGVsfV0uIHJhbmsgMSByaW5nYW4sIDIgc2VkYW5nLCAzIHBhcmFoLgogICAgIiIiCiAgICBjbHVzdGVycyA9IFtdCgogICAgZGVmIGZsdXNoKHJ1bik6CiAgICAgICAgaWYgbGVuKHJ1bikgPCBtaW5fcnVuOgogICAgICAgICAgICByZXR1cm4KICAgICAgICByYW5rID0gbWF4KEJBRF9SQU5LW2NdIGZvciBfLCBfLCBjIGluIHJ1bikKICAgICAgICBmaXJzdCA9IHJ1blswXVs6Ml0KICAgICAgICBsYXN0ID0gcnVuWy0xXVs6Ml0KICAgICAgICBsZW5ndGggPSBfaGF2ZXJzaW5lX20oZmlyc3QsIGxhc3QpICsgMzAwLjAKICAgICAgICBtaWQgPSBydW5bbGVuKHJ1bikgLy8gMl1bOjJdCiAgICAgICAgY2x1c3RlcnMuYXBwZW5kKHsicmFuayI6IHJhbmssICJsZW5ndGhfbSI6IGxlbmd0aCwKICAgICAgICAgICAgICAgICAgICAgICAgICJtaWQiOiBtaWQsICJuIjogbGVuKHJ1bil9KQoKICAgIHJ1biA9IFtdCiAgICBmb3IgcyBpbiBzYW1wbGVzOgogICAgICAgIGlmIHNbMl0gaW4gQkFEX1JBTks6CiAgICAgICAgICAgIHJ1bi5hcHBlbmQocykKICAgICAgICBlbHNlOgogICAgICAgICAgICBmbHVzaChydW4pCiAgICAgICAgICAgIHJ1biA9IFtdCiAgICBmbHVzaChydW4pCiAgICByZXR1cm4gY2x1c3RlcnMKCgpkZWYgbmVhcmVzdF9sYW5kbWFyayhwdCwgbWF4X2ttPTUuMCk6CiAgICAiIiJMYW5kbWFyayB0ZXJkZWthdCBkYXJpIExBTkRNQVJLUywgYXRhdSAoTm9uZSwgTm9uZSkga2FsYXUgPiBtYXhfa20uIiIiCiAgICBiZXN0ID0gTm9uZQogICAgYmVzdF9kID0gTm9uZQogICAgZm9yIGxtIGluIExBTkRNQVJLUzoKICAgICAgICBkID0gX2hhdmVyc2luZV9tKHB0LCAobG1bMl0sIGxtWzNdKSkKICAgICAgICBpZiBiZXN0X2QgaXMgTm9uZSBvciBkIDwgYmVzdF9kOgogICAgICAgICAgICBiZXN0LCBiZXN0X2QgPSBsbSwgZAogICAgaWYgYmVzdCBpcyBub3QgTm9uZSBhbmQgYmVzdF9kIDw9IG1heF9rbSAqIDEwMDA6CiAgICAgICAgcmV0dXJuIGJlc3QsIGJlc3RfZAogICAgcmV0dXJuIE5vbmUsIE5vbmUKCgpkZWYgX3JldmVyc2VfZ2VvY29kZShwdCwgdGltZW91dD0xMCk6CiAgICAiIiJOYW1hIGRlc2Eva2VjYW1hdGFuIGRpIHRpdGlrIHB0IHZpYSBOb21pbmF0aW0gKGdyYXRpcywgdGFucGEga2V5KS4KCiAgICBEaXBha2FpIGN1bWEga2FsYXUgdGlkYWsgYWRhIGxhbmRtYXJrIGRhbGFtIDUga20uIFJldHVybiBtaXNhbAogICAgIlN1a2EgTXVseWEsIEJldHVuZyIsIGF0YXUgTm9uZSBrYWxhdSBnYWdhbC4KICAgICIiIgogICAgaW1wb3J0IGpzb24KICAgIHVybCA9ICgiaHR0cHM6Ly9ub21pbmF0aW0ub3BlbnN0cmVldG1hcC5vcmcvcmV2ZXJzZT9mb3JtYXQ9anNvbnYyIgogICAgICAgICAgIGYiJmxhdD17cHRbMF19Jmxvbj17cHRbMV19Jnpvb209MTQiKQogICAgZm9yIGF0dGVtcHQgaW4gcmFuZ2UoMik6CiAgICAgICAgdHJ5OgogICAgICAgICAgICB0aW1lLnNsZWVwKDEuMSkgICMga2ViaWpha2FuIE5vbWluYXRpbTogbWFrcyB+MSByZXEvZGV0aWsKICAgICAgICAgICAgcmVxID0gdXJsbGliLnJlcXVlc3QuUmVxdWVzdCh1cmwsIGhlYWRlcnM9eyJVc2VyLUFnZW50IjogImpvbGx5LWxhbGluLzEuMCJ9KQogICAgICAgICAgICB3aXRoIHVybGxpYi5yZXF1ZXN0LnVybG9wZW4ocmVxLCB0aW1lb3V0PXRpbWVvdXQpIGFzIHI6CiAgICAgICAgICAgICAgICBkID0ganNvbi5sb2FkKHIpCiAgICAgICAgICAgIGEgPSBkLmdldCgiYWRkcmVzcyIsIHt9KQogICAgICAgICAgICAjIERpIGtvdGEsIE5vbWluYXRpbSBtZW5nZW1iYWxpa2FuIGNpdHlfZGlzdHJpY3QvY2l0eSwgYnVrYW4KICAgICAgICAgICAgIyB2aWxsYWdlL3N1YnVyYiDigJQgcGVsYWphcmFuIDIwMjYtMTEtMjA6IEtlbXVuaW5nLCBQYWxlbWJhbmcKICAgICAgICAgICAgIyBzZW1wYXQgZ2FnYWwga2FyZW5hIGR1YSBrZXkgaXR1IHRpZGFrIGFkYSBkaSBkYWZ0YXIuCiAgICAgICAgICAgIHBhcnRzID0gW2EuZ2V0KGspIGZvciBrIGluICgidmlsbGFnZSIsICJ0b3duIiwgInN1YnVyYiIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY2l0eV9kaXN0cmljdCIsICJib3JvdWdoIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJtdW5pY2lwYWxpdHkiLCAiY291bnR5IiwgImNpdHkiKV0KICAgICAgICAgICAgcGFydHMgPSBbcCBmb3IgcCBpbiBwYXJ0cyBpZiBwXQogICAgICAgICAgICBpZiBwYXJ0czoKICAgICAgICAgICAgICAgIHJldHVybiAiLCAiLmpvaW4ocGFydHNbOjJdKQogICAgICAgICAgICAjIEthbGF1IGFkZHJlc3Mga29zb25nLCBwYWthaSBkaXNwbGF5X25hbWUgYXBhIGFkYW55YS4KICAgICAgICAgICAgZGlzcCA9IGQuZ2V0KCJkaXNwbGF5X25hbWUiLCAiIikKICAgICAgICAgICAgcmV0dXJuICIsICIuam9pbihkaXNwLnNwbGl0KCIsICIpWzoyXSkgaWYgZGlzcCBlbHNlIE5vbmUKICAgICAgICBleGNlcHQgRXhjZXB0aW9uIGFzIGU6CiAgICAgICAgICAgIHByaW50KGYiWy1dIGxhbGluOiByZXZlcnNlLWdlb2NvZGUgZ2FnYWwgKHBlcmNvYmFhbiB7YXR0ZW1wdCArIDF9KToge2V9IikKICAgICAgICAgICAgdGltZS5zbGVlcCgyKQogICAgcmV0dXJuIE5vbmUKCgpkZWYgX2Zvcm1hdF9jbHVzdGVyKGMpOgogICAgbGFiZWwsIGVtb2ppID0gTEVWRUxTW2NbInJhbmsiXV0KICAgIGttID0gY1sibGVuZ3RoX20iXSAvIDEwMDAuMAogICAgbWlkID0gY1sibWlkIl0KICAgIGxtLCBkaXN0ID0gbmVhcmVzdF9sYW5kbWFyayhtaWQpCiAgICBpZiBsbToKICAgICAgICBpZiBkaXN0IDwgMTAwOgogICAgICAgICAgICB3aGVyZSA9IGYidGVwYXQgZGkge2xtWzBdfSIKICAgICAgICBlbHNlOgogICAgICAgICAgICAjIFJ1dGUgamFsYW4gYmFyYXQgLT4gdGltdXI6IGxhbmRtYXJrIGRpIHRpbXVyIHRpdGlrIG1hY2V0CiAgICAgICAgICAgICMgYmVyYXJ0aSB0aXRpayBtYWNldG55YSAic2ViZWx1bSIgbGFuZG1hcmsgKGFyYWgga2UgUGFsZW1iYW5nKS4KICAgICAgICAgICAgYXJhaCA9ICJzZWJlbHVtIiBpZiBsbVszXSA+IG1pZFsxXSBlbHNlICJzZXN1ZGFoIgogICAgICAgICAgICB3aGVyZSA9IGYic2VraXRhciB7aW50KHJvdW5kKGRpc3QpKX0gbSB7YXJhaH0ge2xtWzBdfSIKICAgIGVsc2U6CiAgICAgICAgdmlsbGFnZSA9IF9yZXZlcnNlX2dlb2NvZGUobWlkKQogICAgICAgIGlmIHZpbGxhZ2U6CiAgICAgICAgICAgIHdoZXJlID0gZiJkaSBzZWtpdGFyIHt2aWxsYWdlfSIKICAgICAgICBlbHNlOgogICAgICAgICAgICB3aGVyZSA9IGYiZGkgcnVhcyB7Y1sncnVhcyddfSIKICAgIHJldHVybiBmIntlbW9qaX0ge2xhYmVsfSDCsXtrbTouMWZ9IGttLCB7d2hlcmV9IgoKCmRlZiBidWlsZF9sYWxpbl9tZXNzYWdlKCk6CiAgICAiIiJQZXNhbiBUZWxlZ3JhbTogc2F0dSBkYWZ0YXIgbWFjZXQgcGVyIHJ1YXMgKyB0aXRpayBtYWNldCBkZXRhaWwsCiAgICBkaSBiYXdhaCBmb3RvIHBhdHJvbGkuIiIiCiAgICB0cnk6CiAgICAgICAgcmVzdWx0cyA9IGNoZWNrX3JvdXRlKCkKICAgIGV4Y2VwdCBFeGNlcHRpb24gYXMgZToKICAgICAgICBwcmludChmIlstXSBsYWxpbiBnYWdhbCB0b3RhbDoge2V9IikKICAgICAgICByZXR1cm4gTm9uZQogICAgaWYgbm90IHJlc3VsdHM6CiAgICAgICAgcmV0dXJuIE5vbmUKICAgIGxpbmVzID0gWyLwn5qmIDxiPkxBTElOOiBTVU5HQUkgTElMSU4g4oaSIFBBTEVNQkFORzwvYj4iLCAiIl0KICAgIGZvciBpLCAobmFtZSwgbGFiZWwsIGVtb2ppLCBfY291bnRzLCBfc2FtcGxlcykgaW4gZW51bWVyYXRlKHJlc3VsdHMsIDEpOgogICAgICAgIGxpbmVzLmFwcGVuZChmIntlbW9qaX0ge2l9LiB7bmFtZX06IDxiPntsYWJlbH08L2I+IikKICAgIGNsdXN0ZXJzID0gW10KICAgIGZvciBuYW1lLCBfbGFiZWwsIF9lbW9qaSwgX2NvdW50cywgc2FtcGxlcyBpbiByZXN1bHRzOgogICAgICAgIGZvciBjIGluIGZpbmRfY2x1c3RlcnMoc2FtcGxlcyk6CiAgICAgICAgICAgIGNbInJ1YXMiXSA9IG5hbWUKICAgICAgICAgICAgY2x1c3RlcnMuYXBwZW5kKGMpCiAgICBpZiBjbHVzdGVyczoKICAgICAgICBsaW5lcy5hcHBlbmQoIiIpCiAgICAgICAgbGluZXMuYXBwZW5kKCLwn5ONIDxiPlRpdGlrIG1hY2V0OjwvYj4iKQogICAgICAgIGZvciBjIGluIGNsdXN0ZXJzOgogICAgICAgICAgICBsaW5lcy5hcHBlbmQoX2Zvcm1hdF9jbHVzdGVyKGMpKQogICAgbGluZXMuYXBwZW5kKCIiKQogICAgbGluZXMuYXBwZW5kKCLihLnvuI8gPGk+RGFyaSB3YXJuYSB0cmFmZmljIEdvb2dsZSBNYXBzIOKAlCBoaWphdSBsYW5jYXIsIgogICAgICAgICAgICAgICAgICIga3VuaW5nL29yYW55ZSByaW5nYW4sIG1lcmFoIHNlZGFuZywgbWVyYWggZ2VsYXAgcGFyYWguIgogICAgICAgICAgICAgICAgICIgQ2VrIGZvdG8gQ0NUViBkaSBhdGFzIGJ1YXQgYnVrdGkgdmlzdWFsbnlhLjwvaT4iKQogICAgcmV0dXJuICJcbiIuam9pbihsaW5lcykK
+"""lalin.py — Deteksi kemacetan Sungai Lilin -> Palembang dari tile traffic Google.
+
+Cara kerja (tanpa API key, tanpa kartu kredit):
+  Google Maps web mengambil warna macet dari tile gambar biasa
+  (256x256 px per x/y/z). Modul ini mengunduh tile-tile di sepanjang
+  rute, membaca warna pixel tepat di atas jalan, lalu mengklasifikasi:
+    hijau       -> lancar
+    kuning      -> macet ringan
+    oranye      -> macet ringan (lebih padat dari kuning)
+    merah       -> macet sedang
+    merah gelap -> macet parah
+  Warna lain (aspal abu-abu, sawah, sungai, label) diabaikan.
+
+  Kalibrasi warna dari tile asli Palembang 2026-11-20:
+    hijau traffic  = (22, 224, 152)  -- beda dari hijau sawah (211,248,226)
+    merah traffic  = (235, 27, 27)
+  Kuning/oranye/merah-gelap belum terlihat di tile kalibrasi (pagi buta
+  jalannya sepi) jadi ambang batasnya tebakan dari palet standar Google;
+  lihat classify_pixel() dan LEVEL_RULES di bawah.
+
+Dependensi: STDLIB SAJA (urllib + zlib + struct). Tile PNG di-decode
+sendiri karena runner GitHub Actions tidak punya PIL — dan memang
+tidak boleh pip install apa-apa lagi di mode cepat (lihat traffic.py:
+YOLO dimatikan 2026-11-20 supaya patroli cepat).
+
+Dipakai oleh capture_corridor.run_patrol(): SETELAH semua foto
+terkirim ke Telegram, satu pesan teks ringkasan dikirim di bawahnya.
+
+v2 (2026-11-20): selain label per ruas, modul ini juga mendeteksi
+CLUSTER macet — deretan sampel berurutan yang warnanya kuning/oranye/
+merah/merah-gelap — lalu menyebut landmark terdekat dari daftar
+LANDMARKS (28 titik berkoordinat: SPBU, sekolah, toko, rumah makan,
+pasar, simpang, plus 2 gerbang tol perkiraan) beserta panjang cluster.
+Kalau tidak ada landmark dalam 5 km, fallback ke nama desa via
+Nominatim reverse-geocode, lalu ke nama ruas. Contoh baris:
+  "🔴 Macet parah ±1,8 km, sekitar 400 m sebelum SPBU Betung"
+
+Env:
+  LALIN_ENABLED=0  -> matikan deteksi (default 1, nyala)
+  LALIN_ZOOM       -> zoom tile (default 14)
+"""
+
+import math
+import os
+import struct
+import time
+import urllib.request
+import zlib
+from concurrent.futures import ThreadPoolExecutor
+
+LALIN_ENABLED = os.environ.get("LALIN_ENABLED", "1") != "0"
+ZOOM = int(os.environ.get("LALIN_ZOOM", "14"))
+
+# Nomor versi style Google — kalau suatu hari tile blank, kemungkinan
+# besar angka ini berubah. Cek tile terbaru di browser dan update.
+TILE_URL = "https://mt{sub}.google.com/vt/lyrs=m@221097413,traffic&x={x}&y={y}&z={z}"
+
+# Ruas jalan Sungai Lilin -> Palembang (barat -> timur), Jl. Lintas Timur.
+# Koordinat kota dari geocode 2026-11-20; titik tengah Gerbang KM 12
+# interpolasi di koridor (sampel yang meleset dari jalan diabaikan).
+SEGMENTS = [
+    ("Jl. Lintas Timur (Sungai Lilin - Betung)",
+     (-2.51016, 104.02861), (-2.84538, 104.22034)),
+    ("Jl. Lintas Timur (Betung - Pangkalan Balai)",
+     (-2.84538, 104.22034), (-2.8986, 104.40829)),
+    ("Jl. Lintas Timur (Pangkalan Balai - Gerbang KM 12)",
+     (-2.8986, 104.40829), (-2.96000, 104.60000)),
+    ("Jl. Lintas Timur (Gerbang KM 12 - Palembang)",
+     (-2.96000, 104.60000), (-2.98475, 104.75158)),
+]
+
+LEVELS = [
+    ("lancar", "🟢"),
+    ("macet ringan", "🟡"),
+    ("macet sedang", "🟠"),
+    ("macet parah", "🔴"),
+    ("tidak ada data", "⚪"),
+]
+
+# Landmark koridor Sungai Lilin -> Palembang, dikumpulkan 2026-11-20 dari
+# Nominatim/OSM + data place Google Maps/Meta/Instagram. Daftar lengkap
+# + sumbernya ada di workspace/cctv-patch-draft/LANDMARKS.md.
+# Format: (nama, jenis, lat, lon, catatan).
+LANDMARKS = [
+    # Ruas 1 — Sungai Lilin -> Betung
+    ("SPBU Sungai Lilin", "SPBU", -2.451401, 103.95214, "Sri Gunung"),
+    ("Alfamart Sungai Lilin", "toko", -2.521399, 104.093609, ""),
+    ("SD Negeri 1 Sungai Lilin", "sekolah", -2.5821410, 104.1073210, "Pasar Sungai Lilin"),
+    ("SMA Negeri 1 Sungai Lilin", "sekolah", -2.5616379, 104.1086160, "Pasar Sungai Lilin"),
+    ("RM Musi Indah", "rumah makan", -2.810801, 104.185693, "Betung, KM 75, langganan bus AKAP"),
+    ("SPBU Betung", "SPBU", -2.838019, 104.222845, "KM 67, 24 jam"),
+    ("Alfamart Betung", "toko", -2.838127, 104.222471, "Sedompo"),
+    ("RM Sederhana Betung", "rumah makan", -2.849597, 104.230914, "Betung"),
+    # Ruas 2 — Betung -> Pangkalan Balai
+    ("Alfamart Suak Tapeh", "toko", -2.856505, 104.335713, ""),
+    ("Simpang Pulau Rimau", "simpang", -2.8551297, 104.3486603, "KM 53; alias Simpang Lubuk Lancang/Biyuku"),
+    ("SMAN 1 Suak Tapeh", "sekolah", -2.8552441, 104.3556073, "Seterio"),
+    ("SPBU Suak Tapeh", "SPBU", -2.863336, 104.365481, "record 'SPBU Betung - Palembang', nama belum pasti"),
+    ("Indomaret Pangkalan Balai 48", "toko", -2.88523, 104.390088, ""),
+    ("Pasar Pangkalan Balai", "pasar", -2.8905499, 104.3932686, "Jl. Pasar Lamo"),
+    ("ACC Super Sambal Pangkalan Balai", "rumah makan", -2.894065, 104.402, "KM 47"),
+    ("SPBU Pangkalan Balai", "SPBU", -2.89782, 104.40699, "24.307.83"),
+    ("RM Magelang", "rumah makan", -2.924328, 104.434897, "perbatasan ruas 2/3"),
+    # Ruas 3 — Pangkalan Balai -> Gerbang KM 12
+    ("SMP Negeri 2 Banyuasin III", "sekolah", -2.9246673, 104.4288341, "Kayuara Kuning"),
+    ("RM Tahu Sumedang Renyah", "rumah makan", -2.924155, 104.448301, "KM 41"),
+    ("RM Sederhana Minang", "rumah makan", -2.923982, 104.452207, ""),
+    ("Qodratullah / Langkan", "sekolah", -2.9225621, 104.4846070, "KM 35, kompleks pesantren"),
+    ("SPBU Sembawa", "SPBU", -2.92123, 104.532661, ""),
+    ("SPBU Rejodadi", "SPBU", -2.9281217, 104.5556038, "24.307.132, Sembawa"),
+    ("Rest Area Tol Palembang-Jambi", "rest area", -2.902189, 104.56105, "Rejodadi, Sembawa; di jalan tol (bukan Lintas Timur), status tutup sementara; satu-satunya landmark Sembawa kata Ciro"),
+    # Ruas 4 — Gerbang KM 12 -> Palembang
+    ("Alfamart Talang Kelapa", "toko", -2.91275, 104.616307, ""),
+    ("Alfamart Sukomoro", "toko", -2.915492, 104.639244, "P452"),
+    ("RM Masakan Padang", "rumah makan", -2.913212, 104.655108, "KM 16"),
+    ("KITA Coffee and Eatery", "kafe", -2.914253, 104.643581, "KM 17.5, Sukamoro"),
+    ("Alfamart KM 13 Sukajadi", "toko", -2.913732, 104.677716, "KM 13"),
+    # Gerbang tol (koordinat PERKIRAAN dari titik desa — lihat LANDMARKS.md)
+    ("Gerbang Tol Kramasan", "tol", -3.032, 104.745, "perkiraan, beroperasi"),
+    ("Gerbang Tol Pangkalan Balai", "tol", -2.862, 104.361, "perkiraan, dibangun"),
+]
+
+
+# --- PNG decoder (stdlib) ---------------------------------------------------
+def _paeth(a, b, c):
+    p = a + b - c
+    pa, pb, pc = abs(p - a), abs(p - b), abs(p - c)
+    if pa <= pb and pa <= pc:
+        return a
+    if pb <= pc:
+        return b
+    return c
+
+
+def decode_png(data):
+    """Return (width, height, rgb_bytes) untuk PNG 8-bit.
+
+    Mendukung color type 0 (gray), 2 (RGB), 3 (palette), 4 (gray+alpha),
+    6 (RGBA). Tile Google yang dicek: type 3 (colormap) dan type 6.
+    """
+    if data[:8] != b"\x89PNG\r\n\x1a\n":
+        raise ValueError("bukan PNG")
+    pos = 8
+    width = height = 0
+    bitdepth = colortype = None
+    palette = None
+    idat = bytearray()
+    while pos < len(data):
+        (length,) = struct.unpack(">I", data[pos:pos + 4])
+        ctype = data[pos + 4:pos + 8]
+        chunk = data[pos + 8:pos + 8 + length]
+        if ctype == b"IHDR":
+            width, height, bitdepth, colortype = struct.unpack(">IIBB", chunk[:10])
+            if bitdepth != 8:
+                raise ValueError(f"bitdepth {bitdepth} tidak didukung")
+        elif ctype == b"PLTE":
+            palette = chunk
+        elif ctype == b"IDAT":
+            idat += chunk
+        elif ctype == b"IEND":
+            break
+        pos += 12 + length
+    if colortype == 0:
+        channels, bpp = 1, 1
+    elif colortype == 2:
+        channels, bpp = 3, 3
+    elif colortype == 3:
+        channels, bpp = 1, 1
+    elif colortype == 4:
+        channels, bpp = 2, 2
+    elif colortype == 6:
+        channels, bpp = 4, 4
+    else:
+        raise ValueError(f"color type {colortype} tidak didukung")
+    raw = zlib.decompress(bytes(idat))
+    stride = width * bpp
+    out = bytearray(width * height * 3)
+    prev = bytearray(stride)
+    p = 0
+    for y in range(height):
+        f = raw[p]
+        p += 1
+        line = bytearray(raw[p:p + stride])
+        p += stride
+        for i in range(len(line)):
+            a = line[i - bpp] if i >= bpp else 0
+            b = prev[i]
+            c = prev[i - bpp] if i >= bpp else 0
+            if f == 1:
+                line[i] = (line[i] + a) & 0xFF
+            elif f == 2:
+                line[i] = (line[i] + b) & 0xFF
+            elif f == 3:
+                line[i] = (line[i] + (a + b) // 2) & 0xFF
+            elif f == 4:
+                line[i] = (line[i] + _paeth(a, b, c)) & 0xFF
+            elif f != 0:
+                raise ValueError(f"filter {f} tidak didukung")
+        for x in range(width):
+            o = (y * width + x) * 3
+            px = line[x * bpp:(x + 1) * bpp]
+            if colortype == 3:
+                idx = px[0] * 3
+                out[o:o + 3] = palette[idx:idx + 3]
+            elif colortype == 2:
+                out[o:o + 3] = px[0:3]
+            elif colortype == 6:
+                out[o:o + 3] = px[0:3]
+            elif colortype == 0:
+                out[o] = out[o + 1] = out[o + 2] = px[0]
+            elif colortype == 4:
+                out[o] = out[o + 1] = out[o + 2] = px[0]
+        prev = line
+    return width, height, bytes(out)
+
+
+# --- Tile -------------------------------------------------------------------
+def _fetch_tile(tx, ty, z):
+    url = TILE_URL.format(sub=(tx + ty) % 4, x=tx, y=ty, z=z)
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        return decode_png(r.read())
+
+
+def latlon_to_global_px(lat, lon, z):
+    n = 2.0 ** z
+    gx = (lon + 180.0) / 360.0 * n * 256.0
+    s = math.sin(math.radians(lat))
+    gy = (0.5 - math.log((1 + s) / (1 - s)) / (4 * math.pi)) * n * 256.0
+    return gx, gy
+
+
+def _haversine_m(a, b):
+    r = 6371000.0
+    p1, p2 = math.radians(a[0]), math.radians(b[0])
+    dphi = math.radians(b[0] - a[0])
+    dlmb = math.radians(b[1] - a[1])
+    h = (math.sin(dphi / 2) ** 2
+         + math.cos(p1) * math.cos(p2) * math.sin(dlmb / 2) ** 2)
+    return 2 * r * math.asin(math.sqrt(h))
+
+
+def classify_pixel(r, g, b):
+    """Warna pixel -> kategori traffic, atau None kalau bukan jalan macet.
+
+    Hijau sawah/lapangan (211,248,226) lolos dari rule hijau karena R-nya
+    tinggi; air (144,218,238) juga lolos. Yang kehitung hanya warna
+    traffic yang pekat.
+
+    Pelajaran 2026-11-20 (RM Musi Indah): label nama tempat di peta
+    ditulis dengan teks ORANYE (214,89,0) yang menimpa jalan. Warna itu
+    BUKAN merah traffic (235,27,27) — jadi rule merah dibatasi g<60,
+    dan (214,89,0) sengaja tidak masuk oranye juga: kalau pixel itu
+    satu-satunya yang ketemu, sampel dianggap tidak ada suara, bukan
+    macet. Warna traffic oranye asli Google tetap ketangkap rule oranye.
+    """
+    if g >= 180 and r < 120 and 80 <= b < 220 and g > r + 60:
+        return "green"
+    if r >= 200 and g >= 170 and b < 120:
+        return "yellow"
+    if r >= 220 and 90 <= g < 170 and b < 100:
+        return "orange"
+    if r >= 200 and g < 60 and b < 90:
+        return "red"
+    if 100 <= r < 200 and g < 70 and b < 70:
+        return "darkred"
+    return None
+
+
+def _nearest_classified(rgb, w, h, px, py, max_r=3):
+    """Pixel traffic terdekat dari titik sampel (radius max 3 px ~ 30 m).
+
+    Garis jalan di tile cuma selebar beberapa pixel dan polyline OSRM
+    bisa meleset sedikit — jadi cari dulu di titik persisnya, lalu
+    melingkar ke luar sampai ketemu pixel traffic. Satu titik sampel
+    = satu suara, supaya label jalan (teks oranye/merah) di dekat jalan
+    tidak membanjiri hitungan.
+
+    SANITY CHECK HIJAU (pelajaran 2026-11-20, RM Musi Indah): label
+    nama tempat ditulis menimpa jalan, dan satu sampel bisa jatuh tepat
+    di atas huruf label sehingga pixel pertama yang ketemu adalah warna
+    label, bukan warna jalan. Warna label yang rawan adalah oranye /
+    kuning (teks oranye, anti-aliasing) — jadi kalau suara terdekat
+    adalah oranye/kuning, dicek dulu: ada pixel hijau traffic dalam
+    radius 3 px? Kalau ada, jalan di titik itu mengalir, hijau yang
+    dipakai. Merah / merah gelap TIDAK dicek begini: itu sinyal
+    traffic yang kuat dan warna label hampir tidak pernah semerah itu,
+    jadi jangan sampai ruas yang benar-benar macet ikut terhapus.
+    """
+    found = None
+    for r in range(max_r + 1):
+        for dx in range(-r, r + 1):
+            for dy in range(-r, r + 1):
+                if max(abs(dx), abs(dy)) != r:
+                    continue
+                x, y = px + dx, py + dy
+                if not (0 <= x < w and 0 <= y < h):
+                    continue
+                o = (y * w + x) * 3
+                cat = classify_pixel(rgb[o], rgb[o + 1], rgb[o + 2])
+                if cat:
+                    found = cat
+                    break
+            if found:
+                break
+        if found:
+            break
+    if found in ("orange", "yellow"):
+        for r in range(max_r + 1):
+            for dx in range(-r, r + 1):
+                for dy in range(-r, r + 1):
+                    if max(abs(dx), abs(dy)) != r:
+                        continue
+                    x, y = px + dx, py + dy
+                    if not (0 <= x < w and 0 <= y < h):
+                        continue
+                    o = (y * w + x) * 3
+                    if classify_pixel(rgb[o], rgb[o + 1], rgb[o + 2]) == "green":
+                        return "green"
+    return found
+
+
+def level_from_counts(counts):
+    """counts: dict kategori -> jumlah pixel. Return (label, emoji)."""
+    total = sum(counts.values())
+    if total < 5:
+        return LEVELS[4]
+    frac = {k: v / total for k, v in counts.items()}
+    dark = frac.get("darkred", 0.0)
+    red = frac.get("red", 0.0)
+    org = frac.get("orange", 0.0)
+    yel = frac.get("yellow", 0.0)
+    if dark >= 0.08 or (red + dark) >= 0.35:
+        return LEVELS[3]
+    if red >= 0.08 or org >= 0.25:
+        return LEVELS[2]
+    if org >= 0.08 or yel >= 0.08:
+        return LEVELS[1]
+    return LEVELS[0]
+
+
+def _route_geometry(a, b):
+    """Geometri jalan asli a->b dari OSRM (gratis, tanpa key).
+
+    Garis lurus antar kota TIDAK bisa dipakai — jalan Lintas Timur
+    berbelok-belok dan garis lurus malah motong sawah/sungai, sehingga
+    sampelnya tidak kena jalan sama sekali (hasil tes 2026-11-20:
+    0-1 pixel traffic per ruas). Kalau OSRM gagal, fallback ke garis
+    lurus supaya tetap jalan, walau kurang akurat.
+    Return list [(lat, lon), ...].
+    """
+    import json
+    url = ("https://router.project-osrm.org/route/v1/driving/"
+           f"{a[1]},{a[0]};{b[1]},{b[0]}"
+           "?overview=full&geometries=geojson")
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            d = json.load(r)
+        coords = d["routes"][0]["geometry"]["coordinates"]
+        pts = [(lat, lon) for lon, lat in coords]
+        print(f"[*] lalin: OSRM {a} -> {b}: {len(pts)} titik, "
+              f"{d['routes'][0]['distance'] / 1000:.1f} km")
+        return pts
+    except Exception as e:
+        print(f"[-] lalin: OSRM gagal ({e}), pakai garis lurus")
+        return _sample_points(a, b)
+
+
+def _points_along(pts, step_m=300.0):
+    """Titik tiap ~step_m meter di sepanjang polyline pts."""
+    if len(pts) < 2:
+        return pts
+    out = [pts[0]]
+    acc = 0.0
+    for a, b in zip(pts, pts[1:]):
+        d = _haversine_m(a, b)
+        acc += d
+        if acc >= step_m:
+            out.append(b)
+            acc = 0.0
+    if out[-1] != pts[-1]:
+        out.append(pts[-1])
+    return out
+
+
+def check_route():
+    """Cek semua ruas.
+
+    Return list [(nama_ruas, label, emoji, counts, samples)] dengan
+    samples = [(lat, lon, kategori_atau_None), ...] urut sepanjang jalan
+    (buat deteksi cluster macet).
+    """
+    if not LALIN_ENABLED:
+        return []
+    # Kumpulkan tile unik yang dibutuhkan semua ruas.
+    needed = {}
+    seg_pixels = []
+    for name, a, b in SEGMENTS:
+        pts = _points_along(_route_geometry(a, b))
+        sp = []
+        for lat, lon in pts:
+            gx, gy = latlon_to_global_px(lat, lon, ZOOM)
+            tx, ty = int(gx // 256), int(gy // 256)
+            px, py = int(gx % 256), int(gy % 256)
+            needed[(tx, ty)] = True
+            sp.append((lat, lon, tx, ty, px, py))
+        seg_pixels.append((name, sp))
+
+    tiles = {}
+
+    def _load(key):
+        tx, ty = key
+        try:
+            tiles[key] = _fetch_tile(tx, ty, ZOOM)
+        except Exception as e:
+            print(f"[-] lalin: tile {tx},{ty} gagal: {e}")
+
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        list(ex.map(_load, list(needed.keys())))
+
+    results = []
+    for name, pts in seg_pixels:
+        counts = {}
+        samples = []
+        for lat, lon, tx, ty, px, py in pts:
+            t = tiles.get((tx, ty))
+            cat = None
+            if t is not None:
+                w, h, rgb = t
+                if 0 <= px < w and 0 <= py < h:
+                    cat = _nearest_classified(rgb, w, h, px, py)
+            if cat:
+                counts[cat] = counts.get(cat, 0) + 1
+            samples.append((lat, lon, cat))
+        label, emoji = level_from_counts(counts)
+        print(f"[*] lalin {name}: {counts} -> {label}")
+        results.append((name, label, emoji, counts, samples))
+    return results
+
+
+# --- Cluster macet + landmark ------------------------------------------------
+# Satu sampel ~300 m. Satu pixel kuning/oranye nyasar bisa jadi label jalan,
+# jadi cluster minimal 2 sampel berurutan (~600 m) baru dianggap macet beneran.
+BAD_RANK = {"yellow": 1, "orange": 1, "red": 2, "darkred": 3}
+
+
+def find_clusters(samples, min_run=2):
+    """Deretan sampel macet berurutan -> cluster.
+
+    Return list [{"rank": 1..3, "length_m": float, "mid": (lat, lon),
+    "n": jumlah_sampel}]. rank 1 ringan, 2 sedang, 3 parah.
+    """
+    clusters = []
+
+    def flush(run):
+        if len(run) < min_run:
+            return
+        rank = max(BAD_RANK[c] for _, _, c in run)
+        first = run[0][:2]
+        last = run[-1][:2]
+        length = _haversine_m(first, last) + 300.0
+        mid = run[len(run) // 2][:2]
+        clusters.append({"rank": rank, "length_m": length,
+                         "mid": mid, "n": len(run)})
+
+    run = []
+    for s in samples:
+        if s[2] in BAD_RANK:
+            run.append(s)
+        else:
+            flush(run)
+            run = []
+    flush(run)
+    return clusters
+
+
+def nearest_landmark(pt, max_km=5.0):
+    """Landmark terdekat dari LANDMARKS, atau (None, None) kalau > max_km."""
+    best = None
+    best_d = None
+    for lm in LANDMARKS:
+        d = _haversine_m(pt, (lm[2], lm[3]))
+        if best_d is None or d < best_d:
+            best, best_d = lm, d
+    if best is not None and best_d <= max_km * 1000:
+        return best, best_d
+    return None, None
+
+
+def _reverse_geocode(pt, timeout=10):
+    """Nama desa/kecamatan di titik pt via Nominatim (gratis, tanpa key).
+
+    Dipakai cuma kalau tidak ada landmark dalam 5 km. Return misal
+    "Suka Mulya, Betung", atau None kalau gagal.
+    """
+    import json
+    url = ("https://nominatim.openstreetmap.org/reverse?format=jsonv2"
+           f"&lat={pt[0]}&lon={pt[1]}&zoom=14")
+    for attempt in range(2):
+        try:
+            time.sleep(1.1)  # kebijakan Nominatim: maks ~1 req/detik
+            req = urllib.request.Request(url, headers={"User-Agent": "jolly-lalin/1.0"})
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                d = json.load(r)
+            a = d.get("address", {})
+            # Di kota, Nominatim mengembalikan city_district/city, bukan
+            # village/suburb — pelajaran 2026-11-20: Kemuning, Palembang
+            # sempat gagal karena dua key itu tidak ada di daftar.
+            parts = [a.get(k) for k in ("village", "town", "suburb",
+                                        "city_district", "borough",
+                                        "municipality", "county", "city")]
+            parts = [p for p in parts if p]
+            if parts:
+                return ", ".join(parts[:2])
+            # Kalau address kosong, pakai display_name apa adanya.
+            disp = d.get("display_name", "")
+            return ", ".join(disp.split(", ")[:2]) if disp else None
+        except Exception as e:
+            print(f"[-] lalin: reverse-geocode gagal (percobaan {attempt + 1}): {e}")
+            time.sleep(2)
+    return None
+
+
+def _format_cluster(c):
+    label, emoji = LEVELS[c["rank"]]
+    km = c["length_m"] / 1000.0
+    mid = c["mid"]
+    lm, dist = nearest_landmark(mid)
+    if lm:
+        if dist < 100:
+            where = f"tepat di {lm[0]}"
+        else:
+            # Rute jalan barat -> timur: landmark di timur titik macet
+            # berarti titik macetnya "sebelum" landmark (arah ke Palembang).
+            arah = "sebelum" if lm[3] > mid[1] else "sesudah"
+            where = f"sekitar {int(round(dist))} m {arah} {lm[0]}"
+    else:
+        village = _reverse_geocode(mid)
+        if village:
+            where = f"di sekitar {village}"
+        else:
+            where = f"di ruas {c['ruas']}"
+    return f"{emoji} {label} ±{km:.1f} km, {where}"
+
+
+def build_lalin_message():
+    """Pesan Telegram: satu daftar macet per ruas + titik macet detail,
+    di bawah foto patroli."""
+    try:
+        results = check_route()
+    except Exception as e:
+        print(f"[-] lalin gagal total: {e}")
+        return None
+    if not results:
+        return None
+    lines = ["🚦 <b>LALIN: SUNGAI LILIN → PALEMBANG</b>", ""]
+    for i, (name, label, emoji, _counts, _samples) in enumerate(results, 1):
+        lines.append(f"{emoji} {i}. {name}: <b>{label}</b>")
+    clusters = []
+    for name, _label, _emoji, _counts, samples in results:
+        for c in find_clusters(samples):
+            c["ruas"] = name
+            clusters.append(c)
+    if clusters:
+        lines.append("")
+        lines.append("📍 <b>Titik macet:</b>")
+        for c in clusters:
+            lines.append(_format_cluster(c))
+    lines.append("")
+    lines.append("ℹ️ <i>Dari warna traffic Google Maps — hijau lancar,"
+                 " kuning/oranye ringan, merah sedang, merah gelap parah."
+                 " Cek foto CCTV di atas buat bukti visualnya.</i>")
+    return "\n".join(lines)
