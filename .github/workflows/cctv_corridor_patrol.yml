@@ -21,6 +21,15 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        
+      - name: Prepare APT cache dir
+        run: sudo mkdir -p /var/cache/apt/archives/partial && sudo chown -R $USER:$USER /var/cache/apt/archives
+
+      - name: Cache APT packages
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt/archives
+          key: apt-jammy-v1
 
       - name: Install System Dependencies
         run: |
@@ -47,6 +56,9 @@ jobs:
           sleep 3
           echo "✅ Status WARP:"
           warp-cli --accept-tos status
+          
+      - name: Fix APT cache ownership (so cache can be saved)
+        run: sudo chown -R $USER:$USER /var/cache/apt/archives || true
 
       - name: Setup Python
         uses: actions/setup-python@v5
