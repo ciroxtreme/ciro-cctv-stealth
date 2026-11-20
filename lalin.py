@@ -83,43 +83,22 @@ LEVELS = [
 # Format: (nama, jenis, lat, lon, catatan).
 LANDMARKS = [
     # Ruas 1 — Sungai Lilin -> Betung
-    ("SPBU Sungai Lilin", "SPBU", -2.451401, 103.95214, "Sri Gunung"),
-    ("Alfamart Sungai Lilin", "toko", -2.521399, 104.093609, ""),
-    ("SD Negeri 1 Sungai Lilin", "sekolah", -2.5821410, 104.1073210, "Pasar Sungai Lilin"),
-    ("SMA Negeri 1 Sungai Lilin", "sekolah", -2.5616379, 104.1086160, "Pasar Sungai Lilin"),
-    ("RM Musi Indah", "rumah makan", -2.810801, 104.185693, "Betung, KM 75, langganan bus AKAP"),
-    ("SPBU Betung", "SPBU", -2.838019, 104.222845, "KM 67, 24 jam"),
-    ("Alfamart Betung", "toko", -2.838127, 104.222471, "Sedompo"),
-    ("RM Sederhana Betung", "rumah makan", -2.849597, 104.230914, "Betung"),
+    ("Pasar Sungai Lilin", "pasar", -2.603166, 104.108999, "Pusat Pasar Sungai Lilin"),
+    ("RM Musi Indah", "rumah makan", -2.810801, 104.185693, "Betung KM 75, langganan bus AKAP"),
+    ("Simpang 3 Tugu Polwan Betung", "simpang", -2.847902, 104.226833, "Pusat persimpangan Betung - Jambi - Sekayu"),
+
     # Ruas 2 — Betung -> Pangkalan Balai
-    ("Alfamart Suak Tapeh", "toko", -2.856505, 104.335713, ""),
-    ("Simpang Pulau Rimau", "simpang", -2.8551297, 104.3486603, "KM 53; alias Simpang Lubuk Lancang/Biyuku"),
-    ("SMAN 1 Suak Tapeh", "sekolah", -2.8552441, 104.3556073, "Seterio"),
-    ("SPBU Suak Tapeh", "SPBU", -2.863336, 104.365481, "record 'SPBU Betung - Palembang', nama belum pasti"),
-    ("Indomaret Pangkalan Balai 48", "toko", -2.88523, 104.390088, ""),
-    ("Pasar Pangkalan Balai", "pasar", -2.8905499, 104.3932686, "Jl. Pasar Lamo"),
-    ("ACC Super Sambal Pangkalan Balai", "rumah makan", -2.894065, 104.402, "KM 47"),
-    ("SPBU Pangkalan Balai", "SPBU", -2.89782, 104.40699, "24.307.83"),
-    ("RM Magelang", "rumah makan", -2.924328, 104.434897, "perbatasan ruas 2/3"),
-    # Ruas 3 — Pangkalan Balai -> Gerbang KM 12
-    ("SMP Negeri 2 Banyuasin III", "sekolah", -2.9246673, 104.4288341, "Kayuara Kuning"),
-    ("RM Tahu Sumedang Renyah", "rumah makan", -2.924155, 104.448301, "KM 41"),
-    ("RM Sederhana Minang", "rumah makan", -2.923982, 104.452207, ""),
-    ("Qodratullah / Langkan", "sekolah", -2.9225621, 104.4846070, "KM 35, kompleks pesantren"),
-    ("SPBU Sembawa", "SPBU", -2.92123, 104.532661, ""),
-    ("SPBU Rejodadi", "SPBU", -2.9281217, 104.5556038, "24.307.132, Sembawa"),
+    ("Simpang Pulau Rimau", "simpang", -2.855130, 104.348660, "KM 53, Suak Tapeh"),
+    ("Pintu 2 Perkantoran Pemkab (Alfamart)", "perkantoran", -2.864819, 104.368346, "Akses Pintu 2 Pemkab Banyuasin"),
+    ("Pintu 1 Perkantoran Pemkab (Masjid)", "perkantoran", -2.918233, 104.421944, "Akses Pintu 1 Pemkab / Masjid Agung Banyuasin"),
+
+    # Ruas 3 — Pangkalan Balai -> Batas KM 12
+    ("RM Pincuran / Tahu Sumedang (KM 41)", "rumah makan", -2.924401, 104.446769, "Sentra kuliner KM 41"),
+    ("Qodratullah / Langkan", "sekolah", -2.922562, 104.484607, "KM 35, Ponpes Langkan"),
+    ("SPBU Sembawa", "SPBU", -2.921230, 104.532661, "SPBU Sembawa"),
     ("Simpang Akses Tol Musi Landas", "tol", -2.917287, 104.605135, "Simpang keluar-masuk Tol Musi Landas Jalintim"),
+    ("Sukamoro / KM 16", "wilayah", -2.915492, 104.639244, "Kawasan Industri / Pergudangan Sukamoro"),
     ("Gerbang Batas Kota KM 12", "batas", -2.913557, 104.681847, "Batas Wilayah Banyuasin - Palembang"),
-    ("Rest Area Tol Palembang-Jambi", "rest area", -2.902189, 104.56105, "Rejodadi, Sembawa; di jalan tol (bukan Lintas Timur), status tutup sementara"),
-    # Ruas 4 — Gerbang KM 12 -> Palembang
-    ("Alfamart Talang Kelapa", "toko", -2.91275, 104.616307, ""),
-    ("Alfamart Sukomoro", "toko", -2.915492, 104.639244, "P452"),
-    ("RM Masakan Padang", "rumah makan", -2.913212, 104.655108, "KM 16"),
-    ("KITA Coffee and Eatery", "kafe", -2.914253, 104.643581, "KM 17.5, Sukamoro"),
-    ("Alfamart KM 13 Sukajadi", "toko", -2.913732, 104.677716, "KM 13"),
-    # Gerbang tol (koordinat PERKIRAAN dari titik desa — lihat LANDMARKS.md)
-    ("Gerbang Tol Kramasan", "tol", -3.032, 104.745, "perkiraan, beroperasi"),
-    ("Gerbang Tol Pangkalan Balai", "tol", -2.862, 104.361, "perkiraan, dibangun"),
 ]
 
 
