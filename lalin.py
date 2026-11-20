@@ -528,32 +528,33 @@ def _format_cluster_box(idx, c):
     if lm:
         lokasi = lm[0]
         d_m = int(round(dist))
+        d_km = dist / 1000.0
+        # Format jarak manusiawi: jika >= 1000 m gunakan format KM (misal 2.3 KM)
+        jarak_str = f"{d_km:.1f} KM".replace(".", ",") if dist >= 1000 else f"{d_m} M"
         if dist < 100:
             pos = "Tepat di area lokasi"
         else:
             # mid[1] (lon macet) vs lm[3] (lon landmark)
             # Rute barat -> timur (ke arah Palembang).
-            # Jika mid[1] < lm[3], titik macet ada di barat landmark -> jelang landmark (arah Palembang)
-            # Jika mid[1] > lm[3], titik macet ada di timur landmark -> lewat landmark (arah Palembang)
             if mid[1] < lm[3]:
-                pos = f"~{d_m} m jelang lokasi (arah Palembang)"
+                pos = f"~{jarak_str} sebelum lokasi (arah Palembang)"
             else:
-                pos = f"~{d_m} m lewat lokasi (arah Palembang)"
+                pos = f"~{jarak_str} setelah lokasi (arah Palembang)"
     else:
         village = _reverse_geocode(mid)
         lokasi = village if village else c['ruas']
         pos = "Di sekitar area rute"
     
-    panjang_str = f"{km:.1f} KM" if km >= 1.0 else f"{int(round(c['length_m']))} M"
+    panjang_km = f"{km:.1f} KM".replace(".", ",") if km >= 1.0 else f"{int(round(c['length_m']))} M"
     return [
-        f"{emoji} [{idx}] PANJANG MACET: {panjang_str} ({label.upper()})",
+        f"{emoji} [{idx}] PANJANG MACET: {panjang_km} ({label.upper()})",
         f"   📍 Patokan : {lokasi}",
         f"   📏 Posisi  : {pos}"
     ]
 
 
 def build_lalin_message():
-    """Pesan Telegram: format Code Card Box cantik dengan detail panjang kilometer macet."""
+    """Pesan Telegram: format Code Card Box bersih, kokoh & manusiawi."""
     try:
         results = check_route()
     except Exception as e:
@@ -563,10 +564,10 @@ def build_lalin_message():
         return None
 
     card = [
-        "╔═══════════════════════════════════════════╗",
+        "=======================================",
         "   🚦 KORIDOR LINTAS TIMUR (SUMATERA)",
         "   Rute: Sungai Lilin ➔ Palembang",
-        "╚═══════════════════════════════════════════╝",
+        "=======================================",
     ]
 
     for name, label, emoji, _counts, _samples in results:
@@ -581,15 +582,15 @@ def build_lalin_message():
     if clusters:
         total_m = sum(c["length_m"] for c in clusters)
         total_km = total_m / 1000.0
-        total_str = f"{total_km:.1f} KM" if total_km >= 1.0 else f"{int(round(total_m))} M"
+        total_str = f"{total_km:.1f} KM".replace(".", ",") if total_km >= 1.0 else f"{int(round(total_m))} M"
 
-        card.append("───────────────────────────────────────────")
+        card.append("---------------------------------------")
         card.append(f"⚠️ DETAIL KEMACETAN (TOTAL ANTREAN: {total_str})")
-        card.append("───────────────────────────────────────────")
+        card.append("---------------------------------------")
         for i, c in enumerate(clusters, 1):
             card.extend(_format_cluster_box(i, c))
     else:
-        card.append("───────────────────────────────────────────")
+        card.append("---------------------------------------")
         card.append("✅ Seluruh jalur terpantau lancar!")
 
     return f"<pre>\n" + "\n".join(card) + "\n</pre>" 
