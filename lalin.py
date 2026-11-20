@@ -524,21 +524,28 @@ def _format_cluster_box(idx, c):
     lm, dist = nearest_landmark(mid)
     if lm:
         lokasi = lm[0]
+        d_m = int(round(dist))
         if dist < 100:
-            pos = "tepat di lokasi"
+            pos = "Tepat di area lokasi"
         else:
-            arah = "sebelum" if lm[3] > mid[1] else "sesudah"
-            pos = f"{int(round(dist))} m {arah} lokasi"
+            # mid[1] (lon macet) vs lm[3] (lon landmark)
+            # Rute barat -> timur (ke arah Palembang).
+            # Jika mid[1] < lm[3], titik macet ada di barat landmark -> jelang landmark (arah Palembang)
+            # Jika mid[1] > lm[3], titik macet ada di timur landmark -> lewat landmark (arah Palembang)
+            if mid[1] < lm[3]:
+                pos = f"~{d_m} m jelang lokasi (arah Palembang)"
+            else:
+                pos = f"~{d_m} m lewat lokasi (arah Palembang)"
     else:
         village = _reverse_geocode(mid)
         lokasi = village if village else c['ruas']
-        pos = "di sekitar area"
+        pos = "Di sekitar area rute"
     
     panjang_str = f"{km:.1f} KM" if km >= 1.0 else f"{int(round(c['length_m']))} M"
     return [
         f"{emoji} [{idx}] PANJANG MACET: {panjang_str} ({label.upper()})",
         f"   📍 Patokan : {lokasi}",
-        f"   📏 Posisi  : Sekitar {pos}"
+        f"   📏 Posisi  : {pos}"
     ]
 
 
