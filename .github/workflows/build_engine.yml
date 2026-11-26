@@ -23,19 +23,22 @@ jobs:
       - name: Setup Rust Toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Build cfsolve v5.0 capture engine
+      - name: Build cfsolve v5.0 capture engine and challenge CLI
         working-directory: ./cfsolve
         run: |
           cargo build --release --bin capture_cctv
+          cargo build --release --bin challenge
           strip target/release/capture_cctv
+          strip target/release/challenge
           cp target/release/capture_cctv ../bin/capture_cctv
+          cp target/release/challenge ../bin/challenge
 
       - name: Commit Updated Engine Binary
         run: |
           git config --local user.email "ciroxtreme@users.noreply.github.com"
           git config --local user.name "ciroxtreme"
-          git add bin/capture_cctv
-          git diff --staged --quiet || git commit -m "chore(engine): update prebuilt x86_64 capture_cctv v5.0 binary"
+          git add bin/capture_cctv bin/challenge
+          git diff --staged --quiet || git commit -m "chore(engine): update prebuilt x86_64 capture_cctv and challenge CLI v5.0 binaries"
           git push origin main
 
       - name: Upload Binary Artifact
