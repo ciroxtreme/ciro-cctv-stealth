@@ -1,3 +1,4 @@
+import sys
 """capture_corridor.py — DRAFT REVISI (belum di-push).
 Perubahan vs versi main saat ini:
   - Banyuasin: HAPUS hardcoded 22.0 / 36.5. Skor dari traffic.analyze_snapshot()
