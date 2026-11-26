@@ -51,9 +51,9 @@ def capture_banyuasin(output_dir="output", cam_ids=None):
     print(f"🚀 [INIT] Memulai Camoufox Stealth Engine untuk {len(cam_ids)} kamera Banyuasin...")
 
     camoufox_kwargs = {
-        "headless": False,
+        "headless": True,
         "humanize": True,
-        "disable_coop": True,
+        "i_know_what_im_doing": True,
         "window": (1280, 800)
     }
 
@@ -215,6 +215,12 @@ def capture_banyuasin(output_dir="output", cam_ids=None):
         return success_count > 0
 
 if __name__ == "__main__":
-    cams = sys.argv[1:] if len(sys.argv) > 1 else None
-    ok = capture_banyuasin("output", cams)
-    sys.exit(0 if ok else 1)
+    try:
+        cams = sys.argv[1:] if len(sys.argv) > 1 else None
+        ok = capture_banyuasin("output", cams)
+        sys.exit(0 if ok else 1)
+    except Exception as e:
+        import traceback
+        print(f"❌ [CRASH] Fatal Camoufox exception: {e}", file=sys.stderr)
+        traceback.print_exc()
+        sys.exit(1)
