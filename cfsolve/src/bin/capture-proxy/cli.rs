@@ -25,6 +25,8 @@ Options:
                      Where the proxy's CA is kept, generated on first use.
                      Default ./proxy-ca.
   --out <directory>  Where the session logs go. Default ./captures.
+  --stop-file <path> Flush and exit when this file appears. Useful when a
+                     Windows launcher cannot reliably deliver console signals.
   --upstream-proxy <url>
                      Reach the internet through an http://, https://,
                      socks5:// or socks5h:// proxy.
@@ -45,6 +47,8 @@ pub struct ProxyArgs {
     pub mitm_hosts: Vec<String>,
     pub ca_dir: PathBuf,
     pub out_dir: PathBuf,
+    /// Creating this file asks the proxy to flush and exit.
+    pub stop_file: Option<PathBuf>,
     /// The `--upstream-proxy` value used for tunnels and forwarded requests.
     pub upstream_proxy: Option<String>,
 }
@@ -53,6 +57,7 @@ pub struct ProxyArgs {
 pub fn parse(arguments: impl IntoIterator<Item = OsString>) -> Result<Option<ProxyArgs>> {
     let mut arguments = arguments.into_iter();
     let (mut fingerprint, mut listen, mut ca_dir, mut out_dir) = (None, None, None, None);
+    let mut stop_file = None;
     let mut upstream_proxy = None;
     let mut mitm_hosts = vec![CHALLENGE_HOST.to_owned()];
     while let Some(argument) = arguments.next() {
@@ -83,6 +88,7 @@ pub fn parse(arguments: impl IntoIterator<Item = OsString>) -> Result<Option<Pro
             }
             "--ca-dir" => once(&mut ca_dir, name, value(&mut arguments, name)?)?,
             "--out" => once(&mut out_dir, name, value(&mut arguments, name)?)?,
+            "--stop-file" => once(&mut stop_file, name, value(&mut arguments, name)?)?,
             "--upstream-proxy" => once(&mut upstream_proxy, name, text(&mut arguments, name)?)?,
             _ => bail!("unknown option {name}\n\n{USAGE}"),
         }
@@ -95,6 +101,7 @@ pub fn parse(arguments: impl IntoIterator<Item = OsString>) -> Result<Option<Pro
         mitm_hosts,
         ca_dir: ca_dir.unwrap_or_else(|| CA_DIR.into()).into(),
         out_dir: out_dir.unwrap_or_else(|| OUT_DIR.into()).into(),
+        stop_file: stop_file.map(PathBuf::from),
         upstream_proxy,
     }))
 }
@@ -156,10 +163,12 @@ mod tests {
         assert_eq!(defaults.mitm_hosts, [CHALLENGE_HOST]);
         assert_eq!(defaults.ca_dir.to_str(), Some(CA_DIR));
         assert_eq!(defaults.out_dir.to_str(), Some(OUT_DIR));
+        assert_eq!(defaults.stop_file, None);
         assert_eq!(defaults.upstream_proxy, None);
 
         let given = proxy(
             "--listen 0.0.0.0:9000 --ca-dir /tmp/ca --out /tmp/out \
+             --stop-file /tmp/stop \
              --upstream-proxy socks5h://127.0.0.1:1080 --fingerprint f.json \
              --site https://CaptchaTest.Book.BI/path --mitm-host CHALLENGES.cloudflare.com \
              --mitm-host captchatest.book.bi --mitm-host Cdn.CaptchaTest.Book.BI",
@@ -167,6 +176,7 @@ mod tests {
         assert_eq!(given.listen.to_string(), "0.0.0.0:9000");
         assert_eq!(given.ca_dir.to_str(), Some("/tmp/ca"));
         assert_eq!(given.out_dir.to_str(), Some("/tmp/out"));
+        assert_eq!(given.stop_file, Some(PathBuf::from("/tmp/stop")));
         let upstream_proxy = given.upstream_proxy.as_deref();
         assert_eq!(upstream_proxy, Some("socks5h://127.0.0.1:1080"));
         assert_eq!(

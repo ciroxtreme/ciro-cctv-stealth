@@ -12,8 +12,9 @@
 //! pages are intercepted.
 //!
 //! Ctrl-C waits for session extraction to finish and writes the logs. A second Ctrl-C writes
-//! the logs without waiting. On Windows, closing the console also writes the logs without
-//! waiting, because Windows ends the process a few seconds later.
+//! the logs without waiting. Creating the file passed with `--stop-file` also starts a graceful
+//! shutdown. On Windows, closing the console writes the logs without waiting, because Windows
+//! ends the process a few seconds later.
 
 mod cli;
 mod io;
@@ -42,6 +43,7 @@ fn main() -> Result<()> {
         upstream_tls: true,
         upstream_proxy,
         out_dir: arguments.out_dir,
+        stop_file: arguments.stop_file,
     };
     // Check that logs can be written before starting the proxy.
     io::create_dir(&config.out_dir)?;

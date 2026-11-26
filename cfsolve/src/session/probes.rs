@@ -271,20 +271,15 @@ async fn probe_stack(session: &WidgetSession<'_>, plan: &ProbePlan) -> Result<Op
     let cases = fetched.cases.clone();
     let origin = fetched.script_position()?;
     let engine = session.client.engine();
-    let res = task::spawn_blocking(move || {
+    let stack = task::spawn_blocking(move || {
         let resumed = call_stack::Resumption::WorkerMessage;
         let geometry = call_stack::recover_probe(&javascript, &cases, calls, resumed)?;
         anyhow::Ok(geometry.format(&origin, engine))
-    }).await;
-
-    match res {
-        Ok(Ok(stack)) => Ok(Some(stack)),
-        _ => {
-            // Robust Graceful Fallback: stack trace probe failure is non-fatal.
-            // Cloudflare Turnstile verification accepts probe execution without raw stack or with default formatted stack.
-            Ok(None)
-        }
-    }
+    })
+    .await
+    .context("the stack recovery thread failed")?
+    .with_context(|| format!("rebuilding probe {}'s stack", probe.index))?;
+    Ok(Some(stack))
 }
 
 /// Chooses probe durations from completed work, `configured` profile values, stored answers, or

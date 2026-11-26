@@ -20,7 +20,7 @@
 use std::cell::RefCell;
 use std::collections::{BTreeMap, BTreeSet};
 use std::convert::Infallible;
-use std::ops::{ControlFlow, Deref};
+use std::ops::ControlFlow;
 use std::rc::Rc;
 
 use oxc::syntax::operator::{BinaryOperator, LogicalOperator, UnaryOperator};
@@ -54,7 +54,7 @@ pub(super) fn fold(listing: &mut Listing) {
     // Each decoded effect's instruction, path, index and text.
     let mut decoded = Vec::new();
     let mut encoded = BTreeSet::new();
-    for (&pc, instruction) in &program.listing.instructions {
+    for (&pc, instruction) in &listing.instructions {
         let Some(known) = entries.get(&pc) else {
             continue;
         };
@@ -77,7 +77,7 @@ pub(super) fn fold(listing: &mut Listing) {
                     && let [argument] = arguments.as_slice()
                     && let Some(Fact::Text(argument)) = fact(argument)
                 {
-                    encoded.insert(argument.to_string());
+                    encoded.insert(argument);
                     Some(text.clone())
                 } else if let (Term::Cell(_), Some(Fact::Text(text))) = (term, &value) {
                     Some(text.clone())
@@ -87,7 +87,7 @@ pub(super) fn fold(listing: &mut Listing) {
                     None
                 };
                 if let Some(text) = &text {
-                    decoded.push((pc, way, at, text.to_string()));
+                    decoded.push((pc, way, at, text.clone()));
                 }
                 if let Effect::Let(temporary, _) = effect {
                     dataflow::assign(&mut texts, *temporary, text);
@@ -115,24 +115,16 @@ struct Program<'listing> {
     /// Registers every assignment in the program sets to the same constant, such as the method
     /// names the program loads once at its start.
     fixed: BTreeMap<u8, Constant>,
-    /// The facts of the [`Self::fixed`] registers, indexed by register, which hold at every
-    /// instruction dataflow reaches, so [`Facts`] leave them out. NaN is left out here instead:
-    /// it never equals itself, so dataflow forgets it where paths meet.
-    invariant: Vec<Option<Fact<'listing>>>,
-    /// Facts known on entry to every function and handler: the fixed registers left out of
-    /// [`Self::invariant`].
-    start: Facts<'listing>,
     /// The register holding the global object, which the program never assigns.
     global: u8,
     /// The register a called function reads its first argument from.
     argument: u8,
     /// The register a returning function leaves its result in.
     result: u8,
-    scopes: Scopes<'listing>,
+    scopes: Scopes,
     /// Whether each function, run as a decoder factory, makes a decoder.
     factories: RefCell<HashMap<u32, bool>>,
-    /// What each factory's decoders return, by factory.
-    decoded: RefCell<HashMap<u32, Decoded>>,
+    decoded: RefCell<HashMap<(u32, String), Option<String>>>,
 }
 
 impl<'listing> Program<'listing> {
@@ -176,19 +168,6 @@ impl<'listing> Program<'listing> {
             .iter()
             .filter_map(|(&register, constant)| Some((register, (*constant)?.clone())))
             .collect();
-        let mut invariant = vec![None; usize::from(u8::MAX) + 1];
-        let mut start = Facts::new();
-        for (&register, constant) in &assigned {
-            let Some(fact) = (*constant).and_then(Fact::of) else {
-                continue;
-            };
-            #[expect(clippy::eq_op, reason = "NaN is the fact unequal to itself")]
-            if fact == fact {
-                invariant[usize::from(register)] = Some(fact);
-            } else {
-                start.insert(register, fact);
-            }
-        }
         let unassigned = |register: &u8| !assigned.contains_key(register);
         let global = only(global_reads.into_iter().filter(unassigned))?;
         // Every path of each function's entry copies its argument from a register the program
@@ -212,8 +191,6 @@ impl<'listing> Program<'listing> {
         Some(Self {
             listing,
             fixed,
-            invariant,
-            start,
             global,
             argument,
             result: only(results)?,
@@ -226,7 +203,7 @@ impl<'listing> Program<'listing> {
     /// Facts on entry to each instruction the program's functions and handlers reach, which
     /// start with only the fixed registers known. Handlers only fill in instructions nothing
     /// else reaches, so a catch path cannot erase what the normal path knows.
-    fn entries(&self) -> BTreeMap<u32, Facts<'listing>> {
+    fn entries(&self) -> BTreeMap<u32, Facts> {
         let functions = self.listing.functions.iter().map(|function| function.pc);
         let hidden = self.listing.hidden.iter().map(|hidden| hidden.target.pc);
         let mut entries = self.forward(disassemble::exception_entries(self.listing));
@@ -234,8 +211,11 @@ impl<'listing> Program<'listing> {
         entries
     }
 
-    fn forward(&self, entries: impl IntoIterator<Item = u32>) -> BTreeMap<u32, Facts<'listing>> {
-        let entries = entries.into_iter().map(|pc| (pc, self.start.clone()));
+    fn forward(&self, entries: impl IntoIterator<Item = u32>) -> BTreeMap<u32, Facts> {
+        let start: Facts = (self.fixed.iter())
+            .filter_map(|(&register, constant)| Some((register, Fact::of(constant)?)))
+            .collect();
+        let entries = entries.into_iter().map(|pc| (pc, start.clone()));
         let ControlFlow::Continue(incoming) =
             dataflow::forward(self.listing, entries, |pc, path, known| {
                 let function = self.scopes.owner(pc);
@@ -246,12 +226,7 @@ impl<'listing> Program<'listing> {
 
     /// Applies `path` of an instruction in `function` to `known` and returns whether the path
     /// can run. Terms read registers as they were when the instruction started.
-    fn transfer(
-        &self,
-        path: &'listing Path,
-        known: &mut Facts<'listing>,
-        function: Option<u32>,
-    ) -> bool {
+    fn transfer(&self, path: &Path, known: &mut Facts, function: Option<u32>) -> bool {
         let mut temporaries = BTreeMap::new();
         let mut writes = Vec::new();
         for effect in &path.effects {
@@ -260,8 +235,6 @@ impl<'listing> Program<'listing> {
                     let fact = self.fact(term, known, &temporaries, function);
                     dataflow::assign(&mut temporaries, *temporary, fact);
                 }
-                // Writes to invariant registers store the constant they already hold.
-                Effect::Set(register, _) if self.invariant[usize::from(*register)].is_some() => {}
                 Effect::Set(register, term) => {
                     writes.push((*register, self.fact(term, known, &temporaries, function)));
                 }
@@ -281,10 +254,7 @@ impl<'listing> Program<'listing> {
     /// What each function stores in each cell it assigns: a decoder, or text assigned before the
     /// function creates any function that reads the cell. `None` when it stores anything else
     /// there.
-    fn stored(
-        &self,
-        entries: &BTreeMap<u32, Facts<'listing>>,
-    ) -> BTreeMap<(u32, u32), Option<Fact<'listing>>> {
+    fn stored(&self, entries: &BTreeMap<u32, Facts>) -> BTreeMap<(u32, u32), Option<Fact>> {
         let mut stored = BTreeMap::new();
         // Where each function last assigns each cell.
         let mut last_set = BTreeMap::new();
@@ -328,18 +298,15 @@ impl<'listing> Program<'listing> {
     /// What `term` is known to be in `function`.
     fn fact(
         &self,
-        term: &'listing Term,
-        known: &Facts<'listing>,
-        temporaries: &BTreeMap<usize, Fact<'listing>>,
+        term: &Term,
+        known: &Facts,
+        temporaries: &BTreeMap<usize, Fact>,
         function: Option<u32>,
-    ) -> Option<Fact<'listing>> {
+    ) -> Option<Fact> {
         let fact = |term| self.fact(term, known, temporaries, function);
         Some(match term {
             Term::Const(constant) => Fact::of(constant)?,
-            Term::Reg(register) => known
-                .get(register)
-                .or(self.invariant[usize::from(*register)].as_ref())?
-                .clone(),
+            Term::Reg(register) => known.get(register)?.clone(),
             Term::Temp(temporary) => temporaries.get(temporary)?.clone(),
             Term::Cell(cell) => {
                 let (scope, stored) = self.scopes.cell(function?, *cell)?;
@@ -367,13 +334,13 @@ impl<'listing> Program<'listing> {
                     Fact::Decoder(pc)
                 }
                 (Fact::Decoder(pc), [argument]) => match fact(argument)? {
-                    Fact::Text(text) => Fact::Text(Text::Shared(self.decode(pc, &text)?)),
+                    Fact::Text(text) => Fact::Text(self.decode(pc, &text)?),
                     _ => return None,
                 },
                 _ => return None,
             },
             Term::Unary(UnaryOperator::Typeof, argument) => {
-                Fact::Text(Text::Listing(fact(argument)?.type_name()))
+                Fact::Text(fact(argument)?.type_name().into())
             }
             Term::Unary(UnaryOperator::LogicalNot, argument) => Fact::Bool(!truth(fact(argument))?),
             Term::Binary(
@@ -408,21 +375,16 @@ impl<'listing> Program<'listing> {
 
     /// What a decoder from factory `pc` returns for `text`, if a string. Each text gets a fresh
     /// decoder, so its cache cannot answer for an earlier call.
-    fn decode(&self, pc: u32, text: &str) -> Option<Rc<str>> {
-        if let Some(result) = (self.decoded.borrow().get(&pc)).and_then(|texts| texts.get(text)) {
-            return result.clone();
-        }
-        let result = (|| {
+    fn decode(&self, pc: u32, text: &str) -> Option<String> {
+        let mut decoded = self.decoded.borrow_mut();
+        let result = decoded.entry((pc, text.to_owned())).or_insert_with(|| {
             let argument = Value::String(text.encode_utf16().collect());
             match self.call(&*self.decoder(pc)?, argument)? {
-                Value::String(units) => Some(String::from_utf16(&units).ok()?.into()),
+                Value::String(units) => String::from_utf16(&units).ok(),
                 _ => None,
             }
-        })();
-        let mut decoded = self.decoded.borrow_mut();
-        let texts = decoded.entry(pc).or_default();
-        texts.insert(text.to_owned(), result.clone());
-        result
+        });
+        result.clone()
     }
 
     /// Runs `closure` with `argument` until it returns, or gives up.
@@ -440,12 +402,10 @@ impl<'listing> Program<'listing> {
             let paths = instruction.paths.iter();
             let path = only(paths.filter(|path| frame.takes(path) == Some(true)))?;
             let mut temporaries = BTreeMap::new();
-            // Terms read registers as they were when the instruction started, so writes wait
-            // until its effects finish.
-            let mut writes = Vec::new();
+            let start = frame.registers.clone();
             for effect in &path.effects {
                 let evaluation = Evaluation {
-                    registers: &frame.registers,
+                    registers: &start,
                     temporaries: &temporaries,
                     cells: &frame.cells,
                     pure: false,
@@ -456,7 +416,8 @@ impl<'listing> Program<'listing> {
                         temporaries.insert(*temporary, value);
                     }
                     Effect::Set(register, term) => {
-                        writes.push((*register, evaluation.value(term)?));
+                        let value = evaluation.value(term)?;
+                        frame.registers.insert(*register, value);
                     }
                     Effect::SetProperty { object, key, value } => {
                         let object = evaluation.value(object)?;
@@ -474,7 +435,6 @@ impl<'listing> Program<'listing> {
                     Effect::Throw(_) => return None,
                 }
             }
-            frame.registers.extend(writes);
             match path.exit {
                 Exit::Next { pc: next, .. } => pc = next,
                 Exit::Return => return frame.registers.get(&self.result).cloned(),
@@ -516,11 +476,11 @@ fn mentions_temporary(term: &Term) -> bool {
 
 /// What dataflow knows about a register, temporary or cell.
 #[derive(Clone, Debug, PartialEq)]
-enum Fact<'listing> {
+enum Fact {
     Undefined,
     Bool(bool),
     Number(f64),
-    Text(Text<'listing>),
+    Text(String),
     Global,
     /// A program function by entry.
     Closure(u32),
@@ -528,43 +488,15 @@ enum Fact<'listing> {
     Decoder(u32),
 }
 
-type Facts<'listing> = BTreeMap<u8, Fact<'listing>>;
+type Facts = BTreeMap<u8, Fact>;
 
-/// What a decoder returns for each text, if a string.
-type Decoded = HashMap<String, Option<Rc<str>>>;
-
-/// A string fact, which dataflow copies to every instruction it reaches: a listing constant, or
-/// text that evaluation made.
-#[derive(Clone, Debug)]
-enum Text<'listing> {
-    Listing(&'listing str),
-    Shared(Rc<str>),
-}
-
-impl Deref for Text<'_> {
-    type Target = str;
-
-    fn deref(&self) -> &str {
-        match self {
-            Self::Listing(text) => text,
-            Self::Shared(text) => text,
-        }
-    }
-}
-
-impl PartialEq for Text<'_> {
-    fn eq(&self, other: &Self) -> bool {
-        **self == **other
-    }
-}
-
-impl<'listing> Fact<'listing> {
-    fn of(constant: &'listing Constant) -> Option<Self> {
+impl Fact {
+    fn of(constant: &Constant) -> Option<Self> {
         Some(match constant {
             Constant::Undefined => Self::Undefined,
             Constant::Bool(value) => Self::Bool(*value),
             Constant::Number(value) => Self::Number(*value),
-            Constant::String(text) => Self::Text(Text::Listing(text)),
+            Constant::String(text) => Self::Text(text.clone()),
             Constant::Null => return None,
         })
     }
@@ -592,7 +524,7 @@ impl<'listing> Fact<'listing> {
 }
 
 /// A condition's outcome when its fact is a known boolean.
-fn truth(fact: Option<Fact<'_>>) -> Option<bool> {
+fn truth(fact: Option<Fact>) -> Option<bool> {
     match fact {
         Some(Fact::Bool(value)) => Some(value),
         _ => None,
@@ -601,19 +533,19 @@ fn truth(fact: Option<Fact<'_>>) -> Option<bool> {
 
 /// Which function each instruction belongs to, which function creates each function, and what
 /// functions keep in cells.
-struct Scopes<'listing> {
+struct Scopes {
     owners: BTreeMap<u32, Option<u32>>,
     parents: BTreeMap<u32, Option<u32>>,
     declared: BTreeSet<(u32, u32)>,
     /// What a function stores in a cell (see [`Program::stored`]).
-    stored: RefCell<BTreeMap<(u32, u32), Option<Fact<'listing>>>>,
+    stored: RefCell<BTreeMap<(u32, u32), Option<Fact>>>,
     /// Where each function is created, when one instruction creates it.
     created: BTreeMap<u32, Option<u32>>,
     /// The cells each function reads.
     reads: BTreeMap<u32, BTreeSet<u32>>,
 }
 
-impl<'listing> Scopes<'listing> {
+impl Scopes {
     fn new(listing: &Listing) -> Self {
         let mut hidden: BTreeMap<u32, Vec<u32>> = BTreeMap::new();
         for branch in &listing.hidden {
@@ -715,7 +647,7 @@ impl<'listing> Scopes<'listing> {
 
     /// What `cell` holds in `function`, and the nearest enclosing function, which declares
     /// the cell and stores it.
-    fn cell(&self, function: u32, cell: u32) -> Option<(u32, Fact<'listing>)> {
+    fn cell(&self, function: u32, cell: u32) -> Option<(u32, Fact)> {
         let mut scope = function;
         for _ in 0..=self.parents.len() {
             if self.declared.contains(&(scope, cell)) {

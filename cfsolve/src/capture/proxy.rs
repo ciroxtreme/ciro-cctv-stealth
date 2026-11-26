@@ -8,7 +8,7 @@
 use std::convert::Infallible;
 use std::io::Cursor;
 use std::net::SocketAddr;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::pin::pin;
 use std::sync::{Arc, Mutex, MutexGuard};
 
@@ -24,6 +24,7 @@ use hyper_util::rt::{TokioExecutor, TokioIo};
 use rustls::ServerConfig;
 use tokio::io::{AsyncRead, AsyncWrite, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
+use tokio::time::{Duration, sleep};
 use tokio_rustls::TlsAcceptor;
 use url::Url;
 
@@ -64,6 +65,8 @@ pub struct Config {
     pub upstream_proxy: UpstreamProxy,
     /// Parent directory for session captures.
     pub out_dir: PathBuf,
+    /// Creating this file asks the proxy to flush and exit.
+    pub stop_file: Option<PathBuf>,
 }
 
 /// A running proxy with its sessions and capture logs.
@@ -102,10 +105,10 @@ impl CaptureProxy {
         self.traffic.lock().expect("the traffic log lock")
     }
 
-    /// Listens until Ctrl-C or SIGTERM, then waits for extraction and writes session and
-    /// traffic logs. A second stop request skips the wait. When Windows closes the console, the
-    /// proxy skips the wait and writes the logs at once, because Windows ends the process a few
-    /// seconds later.
+    /// Listens until Ctrl-C, SIGTERM, or creation of the configured stop file, then waits for
+    /// extraction and writes session and traffic logs. A second stop request skips the wait. When
+    /// Windows closes the console, the proxy skips the wait and writes the logs at once, because
+    /// Windows ends the process a few seconds later.
     pub async fn run(self) -> Result<()> {
         let proxy = Arc::new(self);
         let listener = TcpListener::bind(proxy.config.listen)
@@ -113,6 +116,7 @@ impl CaptureProxy {
             .with_context(|| format!("binding {}", proxy.config.listen))?;
         eprintln!("capture-proxy listening on {}", proxy.config.listen);
         let mut shutdown = pin!(shutdown_requested());
+        let mut stop_file = pin!(stop_file_created(proxy.config.stop_file.as_deref()));
         let stop = loop {
             tokio::select! {
                 accepted = listener.accept() => match accepted {
@@ -127,6 +131,7 @@ impl CaptureProxy {
                     Err(error) => eprintln!("accepting a client: {error}"),
                 },
                 stop = &mut shutdown => break stop,
+                () = &mut stop_file => break Stop::Asked,
             }
         };
         if stop == Stop::Asked {
@@ -492,6 +497,17 @@ enum Stop {
     /// proxy, so the proxy only has time to write its logs.
     #[cfg(windows)]
     ConsoleClosing,
+}
+
+/// Waits until `path` exists, or forever when no stop file was configured.
+async fn stop_file_created(path: Option<&Path>) {
+    let Some(path) = path else {
+        std::future::pending::<()>().await;
+        return;
+    };
+    while !path.exists() {
+        sleep(Duration::from_millis(100)).await;
+    }
 }
 
 /// Waits for Ctrl-C or SIGTERM so the proxy can write logs before exiting.

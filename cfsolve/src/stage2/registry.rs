@@ -261,6 +261,8 @@ pub const AUDIT_PROBE: usize = Kind::EnvironmentAudit.references()[0];
 pub struct Facts {
     #[serde(default)]
     pub navigator: JsObject,
+    #[serde(default)]
+    pub timezone: Option<String>,
     pub connection: Option<JsObject>,
     /// Recorded media capabilities and connection, which the session refreshes.
     pub media: Option<media::Measurement>,
@@ -371,7 +373,7 @@ impl Operation {
                 observed.page_signals.as_ref(),
                 "the embedding page's signals",
             )?)),
-            Self::DateParsingOffsets(fields) => fields.collect(engine),
+            Self::DateParsingOffsets(fields) => fields.collect(engine, facts.timezone.as_deref()),
             Self::NetworkInformation(fields) => {
                 let connection = facts.connection.as_ref();
                 Ok(project(&fields.properties, connection, Missing::Null))

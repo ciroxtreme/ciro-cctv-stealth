@@ -54,6 +54,7 @@ impl Loopback {
             upstream_tls: false,
             upstream_proxy: UpstreamProxy::Direct,
             out_dir: std::env::temp_dir().join(format!("capture-proxy-{}", std::process::id())),
+            stop_file: None,
         };
         let ca = CertificateAuthority::generate().unwrap();
         let mut roots = RootCertStore::empty();

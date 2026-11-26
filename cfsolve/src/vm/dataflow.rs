@@ -3,13 +3,12 @@
 
 use std::collections::btree_map::Entry;
 use std::collections::{BTreeMap, VecDeque};
-use std::mem;
 use std::ops::ControlFlow;
 
 use super::{Listing, Path};
 
 /// Facts known on entry to an instruction.
-pub(crate) trait Facts: Clone + Default {
+pub(crate) trait Facts: Clone {
     /// Intersects with `other` and returns whether facts were lost. Facts only shrink, which
     /// ensures termination.
     fn meet(&mut self, other: &Self) -> bool;
@@ -37,10 +36,10 @@ pub(crate) fn assign<K: Ord, V>(facts: &mut BTreeMap<K, V>, key: K, value: Optio
 ///
 /// Only recorded exits propagate facts, so function entries and hidden branch targets need
 /// explicit entries. Reaching a position without an instruction ends that path.
-pub(crate) fn forward<'listing, F: Facts, B>(
-    listing: &'listing Listing,
+pub(crate) fn forward<F: Facts, B>(
+    listing: &Listing,
     entries: impl IntoIterator<Item = (u32, F)>,
-    mut transfer: impl FnMut(u32, &'listing Path, &mut F) -> ControlFlow<B, bool>,
+    mut transfer: impl FnMut(u32, &Path, &mut F) -> ControlFlow<B, bool>,
 ) -> ControlFlow<B, BTreeMap<u32, F>> {
     let mut incoming = BTreeMap::new();
     let mut pending = VecDeque::new();
@@ -51,14 +50,9 @@ pub(crate) fn forward<'listing, F: Facts, B>(
         let Some(instruction) = listing.instructions.get(&pc) else {
             continue;
         };
-        let mut entry = incoming[&pc].clone();
-        for (index, path) in instruction.paths.iter().enumerate() {
-            // The last path takes the entry facts rather than a copy.
-            let mut facts = if index + 1 < instruction.paths.len() {
-                entry.clone()
-            } else {
-                mem::take(&mut entry)
-            };
+        let entry = incoming[&pc].clone();
+        for path in &instruction.paths {
+            let mut facts = entry.clone();
             match transfer(pc, path, &mut facts) {
                 ControlFlow::Break(stop) => return ControlFlow::Break(stop),
                 ControlFlow::Continue(false) => continue,

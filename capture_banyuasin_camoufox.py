@@ -3,6 +3,7 @@
 capture_banyuasin_camoufox.py
 Bypass Cloudflare Turnstile di cctv.banyuasinkab.go.id menggunakan Camoufox Stealth Browser
 (Firefox anti-detect engine) dengan auto-solving Turnstile dan unduh snapshot stream kamera Banyuasin.
+Adopsi strategi precision-click dari Theyka/Sophomoresty Turnstile bypass.
 """
 
 import os
@@ -43,6 +44,54 @@ def get_warp_or_proxy():
     print("ℹ️ [DIRECT] Menggunakan koneksi langsung tanpa proxy.")
     return None
 
+def click_turnstile(page):
+    """
+    Precision click mengadopsi teknik Sophomoresty & Theyka:
+    1. Cari frame challenges.cloudflare.com
+    2. Dapatkan bounding box frame / body
+    3. Simulasikan klik natural pada koordinat checkbox (24, h/2)
+    """
+    try:
+        for frame in page.frames:
+            if "challenges.cloudflare.com" in (frame.url or ""):
+                body_info = frame.evaluate("""() => {
+                    const b = document.body;
+                    if (!b) return null;
+                    const r = b.getBoundingClientRect();
+                    return { w: r.width, h: r.height };
+                }""")
+                if body_info and body_info.get("h", 0) > 0:
+                    click_x = 24
+                    click_y = float(body_info["h"]) / 2.0
+                    print(f"🖱️ [*] Precision click Turnstile frame body ({click_x}, {click_y:.0f})...")
+                    frame.click("body", position={"x": click_x, "y": click_y}, timeout=3000)
+                    return True
+                
+                # Fallback: checkbox selector
+                for sel in ("input[type='checkbox']", "#challenge-stage", ".ctp-checkbox-label"):
+                    el = frame.query_selector(sel)
+                    if el:
+                        print(f"🖱️ [*] Fallback click Turnstile selector '{sel}'...")
+                        el.click(timeout=3000)
+                        return True
+    except Exception as e:
+        pass
+
+    # Fallback klik bounding box iframe dari context page
+    try:
+        iframe_el = page.query_selector('iframe[src*="challenges.cloudflare.com"]')
+        if iframe_el:
+            box = iframe_el.bounding_box()
+            if box and box.get("width", 0) > 0:
+                px = box["x"] + 24
+                py = box["y"] + box["height"] / 2
+                print(f"🖱️ [*] Precision click page iframe ({px:.0f}, {py:.0f})...")
+                page.mouse.click(px, py)
+                return True
+    except Exception:
+        pass
+    return False
+
 def capture_banyuasin(output_dir="output", cam_ids=None):
     os.makedirs(output_dir, exist_ok=True)
     if not cam_ids:
@@ -51,7 +100,7 @@ def capture_banyuasin(output_dir="output", cam_ids=None):
     print(f"🚀 [INIT] Memulai Camoufox Stealth Engine untuk {len(cam_ids)} kamera Banyuasin...")
 
     camoufox_kwargs = {
-        "headless": True,
+        "headless": False,  # Berjalan di dalam Xvfb virtual display
         "humanize": True,
         "i_know_what_im_doing": True,
         "window": (1280, 800)
@@ -81,8 +130,9 @@ def capture_banyuasin(output_dir="output", cam_ids=None):
                     print(f"⚠️ Reload error: {e}")
                     page.goto(portal_url, timeout=60000)
 
-            for i in range(20):
-                time.sleep(2)
+            last_click = 0
+            for i in range(25):
+                time.sleep(1.5)
                 try:
                     title = page.title()
                 except Exception:
@@ -93,16 +143,10 @@ def capture_banyuasin(output_dir="output", cam_ids=None):
                     solved = True
                     break
 
-                # Coba klik checkbox Turnstile bila muncul di frame
-                try:
-                    for frame in page.frames:
-                        if "challenges.cloudflare.com" in frame.url:
-                            checkbox = frame.query_selector("input[type='checkbox'], #challenge-stage, .ctp-checkbox-label")
-                            if checkbox:
-                                print("🖱️ [*] Mengklik checkbox Turnstile dengan cursor natural...")
-                                checkbox.click()
-                except Exception:
-                    pass
+                now = time.time()
+                if now - last_click >= 3.0:
+                    if click_turnstile(page):
+                        last_click = now
 
             if solved:
                 break
@@ -149,7 +193,6 @@ def capture_banyuasin(output_dir="output", cam_ids=None):
                         chunks.push(value);
                         totalBytes += value.length;
 
-                        // Cari marker SOI (0xFF, 0xD8) dan EOI (0xFF, 0xD9)
                         let merged = new Uint8Array(totalBytes);
                         let offset = 0;
                         for (const c of chunks) {
@@ -178,7 +221,6 @@ def capture_banyuasin(output_dir="output", cam_ids=None):
                                 clearTimeout(timeoutId);
                                 reader.cancel();
                                 const jpegBytes = merged.slice(soi, eoi);
-                                // Encode ke base64
                                 let binary = '';
                                 const len = jpegBytes.byteLength;
                                 for (let b = 0; b < len; b++) {

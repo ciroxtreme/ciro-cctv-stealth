@@ -86,27 +86,42 @@ impl Measurement {
                 "startTime": start})
         };
         let chromium = engine == Engine::Chromium;
+        let navigation_timing = navigation.measurement();
+        let posted = at(first_post.started_ms as f64);
+        let between = |share: f64| tenth(loaded + (posted - loaded) * share);
         let mut entries = vec![json!({"entryType": "navigation", "name": navigation.url,
-            "type": "navigate", "startTime": 0, "duration": loaded})];
+            "type": "navigate", "startTime": 0, "duration": loaded,
+            "nextHopProtocol": NEXT_HOP_PROTOCOL, "requestStart": 0,
+            "responseStart": tenth(navigation.waiting_ms), "responseEnd": loaded,
+            "transferSize": navigation_timing.transfer_size,
+            "encodedBodySize": navigation_timing.body_size, "workerStart": 0})];
         if chromium {
-            // Chrome captures list the startup's long animation frame, then the first paints,
-            // before the first POST goes out.
-            let posted = at(first_post.started_ms as f64);
-            let between = |share: f64| tenth(loaded + (posted - loaded) * share);
-            let painted = between(0.5);
+            // Chrome records two startup long animation frames before the first POST.
             entries.extend([
                 json!({"entryType": "visibility-state", "name": "visible", "startTime": 0,
                     "duration": 0}),
                 long_animation_frame(between(0.25)),
-                json!({"entryType": "paint", "name": "first-paint", "startTime": painted}),
-                json!({"entryType": "paint", "name": "first-contentful-paint",
-                    "startTime": painted}),
+                long_animation_frame(between(0.5)),
             ]);
         }
         entries.push(resource(first_post, "xmlhttprequest"));
         if chromium {
-            // Running the response's program takes a long animation frame.
-            entries.push(long_animation_frame(at(first_post.ended_ms())));
+            // The first paints follow the POST, then Chromium reports four more animation
+            // frames before the image probe's preload finishes.
+            let painted = between(0.75);
+            entries.extend([
+                json!({"entryType": "paint", "name": "first-paint", "startTime": painted}),
+                json!({"entryType": "paint", "name": "first-contentful-paint",
+                    "startTime": painted}),
+            ]);
+            let image_started = fetches
+                .first()
+                .map_or(at(marked_ms as f64), |fetch| at(fetch.started_ms as f64));
+            for share in [0.2, 0.4, 0.6, 0.8] {
+                entries.push(long_animation_frame(
+                    painted + (image_started - painted) * share,
+                ));
+            }
         }
         // The image probe preloads its image with a link before loading it.
         let image_before = plan.probes().iter().any(|probe| {

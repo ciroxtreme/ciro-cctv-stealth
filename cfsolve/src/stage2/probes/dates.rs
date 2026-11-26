@@ -1,7 +1,8 @@
-//! Calendar operations used by the date-parsing probe, in the host time zone.
+//! Calendar operations used by the date-parsing probe, in the profile's time zone.
 
 use anyhow::{Context, Result};
 use chrono::{DateTime, Local, NaiveDate, NaiveTime, TimeZone, Utc};
+use chrono_tz::Tz;
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 
@@ -20,11 +21,17 @@ pub struct Fields {
 }
 
 impl Fields {
-    /// Collects date-parsing results for the current time in the host time zone, using
-    /// `engine`'s rules.
-    pub fn collect(&self, engine: Engine) -> Result<JsObject> {
-        let name = iana_time_zone::get_timezone().context("reading the host IANA time zone")?;
-        self.collect_in(&Local, &name, Utc::now(), engine)
+    /// Collects date-parsing results in the profile's time zone, falling back to the host zone.
+    pub fn collect(&self, engine: Engine, timezone: Option<&str>) -> Result<JsObject> {
+        if let Some(name) = timezone {
+            let zone: Tz = name
+                .parse()
+                .with_context(|| format!("invalid time zone {name}"))?;
+            self.collect_in(&zone, name, Utc::now(), engine)
+        } else {
+            let name = iana_time_zone::get_timezone().context("reading the host IANA time zone")?;
+            self.collect_in(&Local, &name, Utc::now(), engine)
+        }
     }
 
     /// Collects dates in `zone` at `now`, reporting the zone as `name`.

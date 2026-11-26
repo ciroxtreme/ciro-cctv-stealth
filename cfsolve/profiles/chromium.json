@@ -1,0 +1,769 @@
+{
+  "engine": "chromium",
+  "transport": {
+    "profile": "chrome_149",
+    "platform": "windows",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/158.0.0.0 Safari/537.36",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "sec-ch-ua": "\"Chromium\";v=\"158\", \"Not.A/Brand\";v=\"24\", \"Google Chrome\";v=\"158\"",
+      "sec-ch-ua-mobile": "?0"
+    },
+    "requests": {
+      "headers": {
+        "navigation": [
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "upgrade-insecure-requests: 1",
+          "user-agent",
+          "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/jxl,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+          "sec-fetch-site: none",
+          "sec-fetch-mode: navigate",
+          "sec-fetch-user: ?1",
+          "sec-fetch-dest: document",
+          "accept-encoding: gzip, deflate, br, zstd",
+          "accept-language: pl-PL,pl;q=0.9,en-US;q=0.8,en;q=0.7",
+          "priority: u=0, i"
+        ],
+        "iframe": [
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "upgrade-insecure-requests: 1",
+          "user-agent",
+          "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/jxl,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+          "sec-fetch-site: cross-site",
+          "sec-fetch-mode: navigate",
+          "sec-fetch-user: ?1",
+          "sec-fetch-dest: iframe",
+          "sec-fetch-storage-access: active",
+          "referer",
+          "accept-encoding: gzip, deflate, br, zstd",
+          "accept-language: pl-PL,pl;q=0.9,en-US;q=0.8,en;q=0.7",
+          "priority: u=0, i"
+        ],
+        "script": [
+          "sec-ch-ua-platform",
+          "user-agent",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "accept: */*",
+          "sec-fetch-site: cross-site",
+          "sec-fetch-mode: no-cors",
+          "sec-fetch-dest: script",
+          "sec-fetch-storage-access: active",
+          "referer",
+          "accept-encoding: gzip, deflate, br, zstd",
+          "accept-language: pl-PL,pl;q=0.9,en-US;q=0.8,en;q=0.7"
+        ],
+        "cors_script": [
+          "sec-fetch-dest: script",
+          "user-agent",
+          "accept: */*",
+          "referer",
+          "sec-fetch-site: cross-site",
+          "origin",
+          "sec-fetch-mode: cors",
+          "accept-language: en-US,en;q=0.9",
+          "priority: u=3, i",
+          "accept-encoding: gzip, deflate, br, zstd"
+        ],
+        "websocket": [
+          "upgrade: websocket",
+          "connection: Upgrade",
+          "origin",
+          "pragma: no-cache",
+          "cache-control: no-cache",
+          "sec-websocket-version: 13",
+          "user-agent",
+          "accept-language: en-US,en;q=0.9",
+          "accept-encoding: gzip, deflate, br, zstd"
+        ],
+        "orchestrator": [
+          "sec-fetch-dest: script",
+          "user-agent",
+          "accept: */*",
+          "referer",
+          "sec-fetch-site: same-origin",
+          "sec-fetch-mode: no-cors",
+          "accept-language: en-US,en;q=0.9",
+          "priority: u=1, i",
+          "accept-encoding: gzip, deflate, br, zstd"
+        ],
+        "page_image": [
+          "sec-ch-ua-platform",
+          "user-agent",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "accept: image/jxl,image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+          "sec-fetch-site: same-origin",
+          "sec-fetch-mode: no-cors",
+          "sec-fetch-dest: image",
+          "referer",
+          "accept-encoding: gzip, deflate, br, zstd",
+          "accept-language: pl-PL,pl;q=0.9,en-US;q=0.8,en;q=0.7",
+          "priority: u=1, i"
+        ],
+        "orchestrator_post": [
+          "accept: */*",
+          "content-type: text/plain;charset=UTF-8",
+          "sec-fetch-site: same-origin",
+          "origin",
+          "cf-chl",
+          "content-length",
+          "sec-fetch-mode: cors",
+          "user-agent",
+          "referer",
+          "sec-fetch-dest: empty",
+          "cf-chl-ra: 0",
+          "accept-language: en-US,en;q=0.9",
+          "priority: u=3, i",
+          "accept-encoding: gzip, deflate, br, zstd"
+        ],
+        "challenge_post": [
+          "content-length",
+          "sec-ch-ua-platform",
+          "user-agent",
+          "sec-ch-ua",
+          "content-type: text/plain;charset=UTF-8",
+          "cf-chl",
+          "cf-chl-ra: 0",
+          "sec-ch-ua-mobile",
+          "accept: */*",
+          "origin",
+          "sec-fetch-site: same-origin",
+          "sec-fetch-mode: cors",
+          "sec-fetch-dest: empty",
+          "referer",
+          "accept-encoding: gzip, deflate, br, zstd",
+          "accept-language: pl-PL,pl;q=0.9,en-US;q=0.8,en;q=0.7",
+          "priority: u=1, i"
+        ],
+        "image": [
+          "sec-ch-ua-platform",
+          "user-agent",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "accept: image/jxl,image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+          "sec-fetch-site: same-origin",
+          "sec-fetch-mode: no-cors",
+          "sec-fetch-dest: image",
+          "sec-fetch-storage-access: active",
+          "referer",
+          "accept-encoding: gzip, deflate, br, zstd",
+          "accept-language: pl-PL,pl;q=0.9,en-US;q=0.8,en;q=0.7",
+          "priority: i"
+        ],
+        "worker_fetch": [
+          "cache-control: max-age=0",
+          "user-agent",
+          "accept: */*",
+          "sec-fetch-site",
+          "sec-fetch-mode: cors",
+          "sec-fetch-dest: empty",
+          "accept-encoding: gzip, deflate, br, zstd",
+          "accept-language: pl-PL,pl;q=0.9,en-US;q=0.8,en;q=0.7",
+          "priority: u=1, i"
+        ],
+        "worker_fetch_without_credentials": [
+          "sec-fetch-dest: empty",
+          "user-agent",
+          "accept: */*",
+          "sec-fetch-site",
+          "pragma: no-cache",
+          "cache-control: no-cache",
+          "sec-fetch-mode: cors",
+          "accept-language: en-US,en;q=0.9",
+          "priority: u=3, i",
+          "accept-encoding: gzip, deflate, br, zstd"
+        ],
+        "form": [
+          "accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          "content-type: application/x-www-form-urlencoded",
+          "sec-fetch-site",
+          "origin",
+          "sec-fetch-mode: navigate",
+          "user-agent",
+          "referer",
+          "sec-fetch-dest: document",
+          "content-length",
+          "accept-language: en-US,en;q=0.9",
+          "priority: u=0, i",
+          "accept-encoding: gzip, deflate, br, zstd"
+        ]
+      }
+    },
+    "client_hello": {
+      "advertised_sigalgs_prefix": [
+        2308,
+        2309,
+        2310
+      ],
+      "grease_sigalgs": true,
+      "requested_trust_anchors": "0582df1302010582df1302060582df13020d0582df13020e0582df13020f0582df1302120582df1302130582df13021408839a648c9b2d010708839a648c9b2d010808839a648c9b2d010908839a648c9b2d010a08839a648c9b2d010b08839a648c9b2d010c08839a648c9b2d010d08839a648c9b2d011208839a648c9b2d011304d679090104d679090404d679090504d679090604d679090704d679090804d679090a04d679090b04d679090c04d679090d04d679090f"
+    }
+  },
+  "browser": {
+    "inner_width": 1422,
+    "inner_height": 1784,
+    "challenge_page": {
+      "top": 378,
+      "left": 16,
+      "right": 359
+    },
+    "widget_top": 307.0001220703125,
+    "widget_right": 908.9999389648438
+  },
+  "timeline": {
+    "script_fetch": 90.0,
+    "implicit_render": 1,
+    "render_start": 2,
+    "render_end": 7,
+    "init_start": 350,
+    "params_start": 350,
+    "collect_start": 350,
+    "sent": 355
+  },
+  "intervals": {
+    "initialise": 14,
+    "handoff": 16,
+    "collect": 4912,
+    "send": 4945
+  },
+  "orchestrator": {
+    "intervals": {
+      "initialise": 6,
+      "handoff": 0,
+      "collect": 92,
+      "send": 195
+    },
+    "program_startup_ms": 15,
+    "callback_ms": 30
+  },
+  "interaction": {
+    "width": 300,
+    "height": 65,
+    "checkbox": {
+      "x": 9,
+      "y": 20.5,
+      "width": 168.125,
+      "height": 24
+    },
+    "ready_delay_ms": 1000,
+    "device_pixel_ratio": 2,
+    "touch": false
+  },
+  "resource_timing": {
+    "phases": {
+      "request": 0.07,
+      "response": 0.04
+    },
+    "navigation": {
+      "request": 0,
+      "response": 0.9
+    },
+    "sizes_exposed": false
+  },
+  "second": {
+    "facts": {
+      "worker_fetch_rejected": false,
+      "timezone": "Europe/Warsaw",
+      "navigator": {
+        "hardwareConcurrency": 12
+      },
+      "media": {
+        "outcome": "observed",
+        "preparation": {
+          "receiver": {
+            "outcome": "observed",
+            "calls": [
+              {
+                "outcome": "returned",
+                "value": {
+                  "codecs": [
+                    {
+                      "mimeType": "audio/opus",
+                      "clockRate": 48000,
+                      "sdpFmtpLine": "minptime=10;useinbandfec=1"
+                    },
+                    {
+                      "mimeType": "audio/red",
+                      "clockRate": 48000
+                    },
+                    {
+                      "mimeType": "audio/G722",
+                      "clockRate": 8000
+                    },
+                    {
+                      "mimeType": "audio/PCMU",
+                      "clockRate": 8000
+                    },
+                    {
+                      "mimeType": "audio/PCMA",
+                      "clockRate": 8000
+                    },
+                    {
+                      "mimeType": "audio/CN",
+                      "clockRate": 8000
+                    },
+                    {
+                      "mimeType": "audio/telephone-event",
+                      "clockRate": 48000
+                    },
+                    {
+                      "mimeType": "audio/telephone-event",
+                      "clockRate": 8000
+                    }
+                  ]
+                }
+              },
+              {
+                "outcome": "returned",
+                "value": {
+                  "codecs": [
+                    {
+                      "mimeType": "video/VP8"
+                    },
+                    {
+                      "mimeType": "video/rtx"
+                    },
+                    {
+                      "mimeType": "video/VP9",
+                      "sdpFmtpLine": "profile-id=0"
+                    },
+                    {
+                      "mimeType": "video/VP9",
+                      "sdpFmtpLine": "profile-id=2"
+                    },
+                    {
+                      "mimeType": "video/VP9",
+                      "sdpFmtpLine": "profile-id=1"
+                    },
+                    {
+                      "mimeType": "video/VP9",
+                      "sdpFmtpLine": "profile-id=3"
+                    },
+                    {
+                      "mimeType": "video/H264",
+                      "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f"
+                    },
+                    {
+                      "mimeType": "video/H264",
+                      "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42001f"
+                    },
+                    {
+                      "mimeType": "video/H264",
+                      "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f"
+                    },
+                    {
+                      "mimeType": "video/H264",
+                      "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f"
+                    },
+                    {
+                      "mimeType": "video/H264",
+                      "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=4d001f"
+                    },
+                    {
+                      "mimeType": "video/H264",
+                      "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=4d001f"
+                    },
+                    {
+                      "mimeType": "video/H264",
+                      "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=f4001f"
+                    },
+                    {
+                      "mimeType": "video/H264",
+                      "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=f4001f"
+                    },
+                    {
+                      "mimeType": "video/AV1",
+                      "sdpFmtpLine": "level-idx=5;profile=0;tier=0"
+                    },
+                    {
+                      "mimeType": "video/AV1",
+                      "sdpFmtpLine": "level-idx=5;profile=1;tier=0"
+                    },
+                    {
+                      "mimeType": "video/H264",
+                      "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=64001f"
+                    },
+                    {
+                      "mimeType": "video/H264",
+                      "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=64001f"
+                    },
+                    {
+                      "mimeType": "video/H265",
+                      "sdpFmtpLine": "level-id=180;profile-id=1;tier-flag=0;tx-mode=SRST"
+                    },
+                    {
+                      "mimeType": "video/H265",
+                      "sdpFmtpLine": "level-id=180;profile-id=2;tier-flag=0;tx-mode=SRST"
+                    },
+                    {
+                      "mimeType": "video/red"
+                    },
+                    {
+                      "mimeType": "video/ulpfec"
+                    },
+                    {
+                      "mimeType": "video/flexfec-03",
+                      "sdpFmtpLine": "repair-window=10000000"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "type_support": [
+            true,
+            false,
+            false,
+            true,
+            true,
+            true,
+            false,
+            false,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            false
+          ],
+          "audio_decoding": [
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            },
+            {
+              "outcome": "skipped"
+            },
+            {
+              "outcome": "skipped"
+            },
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            },
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            },
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            },
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            },
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            }
+          ],
+          "video_decoding": [
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            },
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            },
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            },
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            },
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            },
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            },
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": false
+              }
+            },
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            },
+            {
+              "outcome": "resolved",
+              "properties": {
+                "supported": true,
+                "smooth": true,
+                "powerEfficient": true
+              }
+            },
+            {
+              "outcome": "skipped"
+            }
+          ],
+          "message_length": 21
+        },
+        "snapshot": {
+          "connection": {
+            "pub_candidates": [
+              {
+                "candidate": "candidate:2439392763 1 udp 2113937151 42239afa-90d2-488b-b593-f283f48941d1.local 62273 typ host generation 0 ufrag UXeZ network-cost 999",
+                "observed_ms": 1795688620322
+              },
+              {
+                "candidate": "candidate:319242900 1 udp 2113939711 56ba0e02-cbdb-4914-80b0-4d98ef28c175.local 62274 typ host generation 0 ufrag UXeZ network-cost 999",
+                "observed_ms": 1795688620328
+              },
+              {
+                "candidate": "candidate:2439392763 1 udp 2113937151 42239afa-90d2-488b-b593-f283f48941d1.local 62275 typ host generation 0 ufrag UXeZ network-cost 999",
+                "observed_ms": 1795688620335
+              },
+              {
+                "candidate": "candidate:319242900 1 udp 2113939711 56ba0e02-cbdb-4914-80b0-4d98ef28c175.local 62276 typ host generation 0 ufrag UXeZ network-cost 999",
+                "observed_ms": 1795688620341
+              },
+              {
+                "candidate": "candidate:2439392763 1 udp 2113937151 42239afa-90d2-488b-b593-f283f48941d1.local 62277 typ host generation 0 ufrag UXeZ network-cost 999",
+                "observed_ms": 1795688620351
+              },
+              {
+                "candidate": "candidate:319242900 1 udp 2113939711 56ba0e02-cbdb-4914-80b0-4d98ef28c175.local 62278 typ host generation 0 ufrag UXeZ network-cost 999",
+                "observed_ms": 1795688620357
+              }
+            ],
+            "data_channel": true,
+            "sdp": "v=0\r\no=- 8315848081460869553 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0 1 2\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111 63 9 0 8 13 110 126\r\nc=IN IP4 0.0.0.0\r\na=rtcp:9 IN IP4 0.0.0.0\r\na=ice-ufrag:UXeZ\r\na=ice-pwd:wTRJYHJypuGGsm5BPxyf+fu/\r\na=ice-options:trickle\r\na=fingerprint:sha-256 F1:E9:3F:54:3F:4D:8D:25:6B:65:73:F3:2C:C4:A0:EF:4A:EE:56:FF:8B:0E:AC:4A:BB:1D:B3:A5:7E:F3:F3:D1\r\na=setup:actpass\r\na=mid:0\r\na=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level\r\na=extmap:2 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\na=extmap:3 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\na=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid\r\na=recvonly\r\na=rtcp-mux\r\na=rtcp-rsize\r\na=rtcp-xr:rcvr-rtt=all\r\na=rtpmap:111 opus/48000/2\r\na=rtcp-fb:111 transport-cc\r\na=fmtp:111 minptime=10;useinbandfec=1\r\na=rtpmap:63 red/48000/2\r\na=fmtp:63 111/111\r\na=rtpmap:9 G722/8000\r\na=rtpmap:0 PCMU/8000\r\na=rtpmap:8 PCMA/8000\r\na=rtpmap:13 CN/8000\r\na=rtpmap:110 telephone-event/48000\r\na=rtpmap:126 telephone-event/8000\r\nm=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 35 36 37 38 102 103 104 107 108 109 114 115 116 117 39 40 41 42 43 44 45 46 47 48 118 119 120 121 49 50 51 52 122 123 124 53\r\nc=IN IP4 0.0.0.0\r\na=rtcp:9 IN IP4 0.0.0.0\r\na=ice-ufrag:UXeZ\r\na=ice-pwd:wTRJYHJypuGGsm5BPxyf+fu/\r\na=ice-options:trickle\r\na=fingerprint:sha-256 F1:E9:3F:54:3F:4D:8D:25:6B:65:73:F3:2C:C4:A0:EF:4A:EE:56:FF:8B:0E:AC:4A:BB:1D:B3:A5:7E:F3:F3:D1\r\na=setup:actpass\r\na=mid:1\r\na=extmap:14 urn:ietf:params:rtp-hdrext:toffset\r\na=extmap:2 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\na=extmap:13 urn:3gpp:video-orientation\r\na=extmap:3 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\na=extmap:5 http://www.webrtc.org/experiments/rtp-hdrext/playout-delay\r\na=extmap:6 http://www.webrtc.org/experiments/rtp-hdrext/video-content-type\r\na=extmap:7 http://www.webrtc.org/experiments/rtp-hdrext/video-timing\r\na=extmap:8 http://www.webrtc.org/experiments/rtp-hdrext/color-space\r\na=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid\r\na=extmap:10 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id\r\na=extmap:11 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id\r\na=recvonly\r\na=rtcp-mux\r\na=rtcp-rsize\r\na=rtcp-xr:rcvr-rtt=all\r\na=rtpmap:96 VP8/90000\r\na=rtcp-fb:96 goog-remb\r\na=rtcp-fb:96 transport-cc\r\na=rtcp-fb:96 ccm fir\r\na=rtcp-fb:96 nack\r\na=rtcp-fb:96 nack pli\r\na=rtpmap:97 rtx/90000\r\na=fmtp:97 apt=96\r\na=rtpmap:98 VP9/90000\r\na=rtcp-fb:98 goog-remb\r\na=rtcp-fb:98 transport-cc\r\na=rtcp-fb:98 ccm fir\r\na=rtcp-fb:98 nack\r\na=rtcp-fb:98 nack pli\r\na=fmtp:98 profile-id=0\r\na=rtpmap:99 rtx/90000\r\na=fmtp:99 apt=98\r\na=rtpmap:100 VP9/90000\r\na=rtcp-fb:100 goog-remb\r\na=rtcp-fb:100 transport-cc\r\na=rtcp-fb:100 ccm fir\r\na=rtcp-fb:100 nack\r\na=rtcp-fb:100 nack pli\r\na=fmtp:100 profile-id=2\r\na=rtpmap:101 rtx/90000\r\na=fmtp:101 apt=100\r\na=rtpmap:35 VP9/90000\r\na=rtcp-fb:35 goog-remb\r\na=rtcp-fb:35 transport-cc\r\na=rtcp-fb:35 ccm fir\r\na=rtcp-fb:35 nack\r\na=rtcp-fb:35 nack pli\r\na=fmtp:35 profile-id=1\r\na=rtpmap:36 rtx/90000\r\na=fmtp:36 apt=35\r\na=rtpmap:37 VP9/90000\r\na=rtcp-fb:37 goog-remb\r\na=rtcp-fb:37 transport-cc\r\na=rtcp-fb:37 ccm fir\r\na=rtcp-fb:37 nack\r\na=rtcp-fb:37 nack pli\r\na=fmtp:37 profile-id=3\r\na=rtpmap:38 rtx/90000\r\na=fmtp:38 apt=37\r\na=rtpmap:102 H264/90000\r\na=rtcp-fb:102 goog-remb\r\na=rtcp-fb:102 transport-cc\r\na=rtcp-fb:102 ccm fir\r\na=rtcp-fb:102 nack\r\na=rtcp-fb:102 nack pli\r\na=fmtp:102 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f\r\na=rtpmap:103 rtx/90000\r\na=fmtp:103 apt=102\r\na=rtpmap:104 H264/90000\r\na=rtcp-fb:104 goog-remb\r\na=rtcp-fb:104 transport-cc\r\na=rtcp-fb:104 ccm fir\r\na=rtcp-fb:104 nack\r\na=rtcp-fb:104 nack pli\r\na=fmtp:104 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42001f\r\na=rtpmap:107 rtx/90000\r\na=fmtp:107 apt=104\r\na=rtpmap:108 H264/90000\r\na=rtcp-fb:108 goog-remb\r\na=rtcp-fb:108 transport-cc\r\na=rtcp-fb:108 ccm fir\r\na=rtcp-fb:108 nack\r\na=rtcp-fb:108 nack pli\r\na=fmtp:108 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f\r\na=rtpmap:109 rtx/90000\r\na=fmtp:109 apt=108\r\na=rtpmap:114 H264/90000\r\na=rtcp-fb:114 goog-remb\r\na=rtcp-fb:114 transport-cc\r\na=rtcp-fb:114 ccm fir\r\na=rtcp-fb:114 nack\r\na=rtcp-fb:114 nack pli\r\na=fmtp:114 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f\r\na=rtpmap:115 rtx/90000\r\na=fmtp:115 apt=114\r\na=rtpmap:116 H264/90000\r\na=rtcp-fb:116 goog-remb\r\na=rtcp-fb:116 transport-cc\r\na=rtcp-fb:116 ccm fir\r\na=rtcp-fb:116 nack\r\na=rtcp-fb:116 nack pli\r\na=fmtp:116 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=4d001f\r\na=rtpmap:117 rtx/90000\r\na=fmtp:117 apt=116\r\na=rtpmap:39 H264/90000\r\na=rtcp-fb:39 goog-remb\r\na=rtcp-fb:39 transport-cc\r\na=rtcp-fb:39 ccm fir\r\na=rtcp-fb:39 nack\r\na=rtcp-fb:39 nack pli\r\na=fmtp:39 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=4d001f\r\na=rtpmap:40 rtx/90000\r\na=fmtp:40 apt=39\r\na=rtpmap:41 H264/90000\r\na=rtcp-fb:41 goog-remb\r\na=rtcp-fb:41 transport-cc\r\na=rtcp-fb:41 ccm fir\r\na=rtcp-fb:41 nack\r\na=rtcp-fb:41 nack pli\r\na=fmtp:41 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=f4001f\r\na=rtpmap:42 rtx/90000\r\na=fmtp:42 apt=41\r\na=rtpmap:43 H264/90000\r\na=rtcp-fb:43 goog-remb\r\na=rtcp-fb:43 transport-cc\r\na=rtcp-fb:43 ccm fir\r\na=rtcp-fb:43 nack\r\na=rtcp-fb:43 nack pli\r\na=fmtp:43 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=f4001f\r\na=rtpmap:44 rtx/90000\r\na=fmtp:44 apt=43\r\na=rtpmap:45 AV1/90000\r\na=rtcp-fb:45 goog-remb\r\na=rtcp-fb:45 transport-cc\r\na=rtcp-fb:45 ccm fir\r\na=rtcp-fb:45 nack\r\na=rtcp-fb:45 nack pli\r\na=fmtp:45 level-idx=5;profile=0;tier=0\r\na=rtpmap:46 rtx/90000\r\na=fmtp:46 apt=45\r\na=rtpmap:47 AV1/90000\r\na=rtcp-fb:47 goog-remb\r\na=rtcp-fb:47 transport-cc\r\na=rtcp-fb:47 ccm fir\r\na=rtcp-fb:47 nack\r\na=rtcp-fb:47 nack pli\r\na=fmtp:47 level-idx=5;profile=1;tier=0\r\na=rtpmap:48 rtx/90000\r\na=fmtp:48 apt=47\r\na=rtpmap:118 H264/90000\r\na=rtcp-fb:118 goog-remb\r\na=rtcp-fb:118 transport-cc\r\na=rtcp-fb:118 ccm fir\r\na=rtcp-fb:118 nack\r\na=rtcp-fb:118 nack pli\r\na=fmtp:118 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=64001f\r\na=rtpmap:119 rtx/90000\r\na=fmtp:119 apt=118\r\na=rtpmap:120 H264/90000\r\na=rtcp-fb:120 goog-remb\r\na=rtcp-fb:120 transport-cc\r\na=rtcp-fb:120 ccm fir\r\na=rtcp-fb:120 nack\r\na=rtcp-fb:120 nack pli\r\na=fmtp:120 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=64001f\r\na=rtpmap:121 rtx/90000\r\na=fmtp:121 apt=120\r\na=rtpmap:49 H265/90000\r\na=rtcp-fb:49 goog-remb\r\na=rtcp-fb:49 transport-cc\r\na=rtcp-fb:49 ccm fir\r\na=rtcp-fb:49 nack\r\na=rtcp-fb:49 nack pli\r\na=fmtp:49 level-id=180;profile-id=1;tier-flag=0;tx-mode=SRST\r\na=rtpmap:50 rtx/90000\r\na=fmtp:50 apt=49\r\na=rtpmap:51 H265/90000\r\na=rtcp-fb:51 goog-remb\r\na=rtcp-fb:51 transport-cc\r\na=rtcp-fb:51 ccm fir\r\na=rtcp-fb:51 nack\r\na=rtcp-fb:51 nack pli\r\na=fmtp:51 level-id=180;profile-id=2;tier-flag=0;tx-mode=SRST\r\na=rtpmap:52 rtx/90000\r\na=fmtp:52 apt=51\r\na=rtpmap:122 red/90000\r\na=rtpmap:123 rtx/90000\r\na=fmtp:123 apt=122\r\na=rtpmap:124 ulpfec/90000\r\na=rtpmap:53 flexfec-03/90000\r\na=rtcp-fb:53 goog-remb\r\na=rtcp-fb:53 transport-cc\r\na=fmtp:53 repair-window=10000000\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:UXeZ\r\na=ice-pwd:wTRJYHJypuGGsm5BPxyf+fu/\r\na=ice-options:trickle\r\na=fingerprint:sha-256 F1:E9:3F:54:3F:4D:8D:25:6B:65:73:F3:2C:C4:A0:EF:4A:EE:56:FF:8B:0E:AC:4A:BB:1D:B3:A5:7E:F3:F3:D1\r\na=setup:actpass\r\na=mid:2\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n"
+          },
+          "started_ms": 1795688623617,
+          "finished_ms": 1795688623785,
+          "ice_state": "gathering"
+        }
+      },
+      "proof_worker": {
+        "digest_us": [
+          35.7,
+          31.8,
+          36.5
+        ],
+        "startup_ms": [
+          27.5,
+          21.0,
+          28.8
+        ]
+      },
+      "benchmark_worker": {
+        "compile_ms": [
+          11.499999999999993,
+          2.039999999999992,
+          1.1599999999999966,
+          2.0,
+          1.6599999999999682,
+          2.5
+        ],
+        "kernel_ms_per_million": [
+          [
+            1.003,
+            0.93,
+            0.944,
+            1.035,
+            0.972,
+            0.946,
+            1.291,
+            0.962,
+            0.941,
+            1.214,
+            0.971,
+            0.971,
+            1.003,
+            0.935,
+            0.964,
+            1.002,
+            0.953,
+            0.968
+          ],
+          [
+            1.055,
+            0.932,
+            0.946,
+            1.027,
+            0.933,
+            0.944,
+            1.061,
+            0.942,
+            0.947,
+            1.007,
+            1.007,
+            1.007,
+            1.399,
+            0.926,
+            0.941,
+            1.379,
+            0.936,
+            0.946
+          ],
+          [
+            1.222,
+            0.617,
+            0.635,
+            0.801,
+            0.621,
+            0.626,
+            0.665,
+            0.628,
+            0.631,
+            0.645,
+            0.645,
+            0.645,
+            0.746,
+            0.62,
+            0.63,
+            0.656,
+            0.629,
+            0.641
+          ],
+          [
+            5.798,
+            5.567,
+            5.609,
+            5.75,
+            5.574,
+            5.692,
+            5.978,
+            5.707,
+            5.707,
+            5.831,
+            5.831,
+            5.831,
+            5.931,
+            5.554,
+            5.673,
+            5.869,
+            5.693,
+            5.791
+          ]
+        ]
+      },
+      "connection": {
+        "downlink": 9.7,
+        "effectiveType": "4g",
+        "rtt": 50,
+        "saveData": false
+      }
+    },
+    "document": {
+      "shadow_root": "[null,\"closed\",\"<body></body>\",\"\",4,4,37,\"function attachShadow() { [native code] }\"]"
+    },
+    "image": {
+      "effective_type": "4g",
+      "online": true
+    },
+    "durations": {
+      "audio": 109,
+      "behavior": 37,
+      "clock_resolution": 45,
+      "computed_style_hash": 91,
+      "console": 107,
+      "date_parsing_offsets": 8,
+      "document_structure": 11,
+      "document_summary": 38,
+      "dom_mutation": 8,
+      "emoji_color": 46,
+      "empty": 3,
+      "environment": 108,
+      "environment_audit": 143,
+      "error_message_length": 9,
+      "font_enumeration": 432,
+      "graphics": 433,
+      "high_entropy_user_agent": 11,
+      "image": 7,
+      "intl": 61,
+      "isolation": 224,
+      "keyboard_layout": 8,
+      "math": 44,
+      "media": 192,
+      "native_inspection": 387,
+      "network_information": 6,
+      "parent_info": 27,
+      "performance_entries": 17,
+      "private_token": 15,
+      "rects": 122,
+      "stack": 4,
+      "storage": 57,
+      "stylesheets": 20,
+      "summarizer_availability": 13,
+      "svg_geometry": 143,
+      "worker_fetch": 12,
+      "worker_navigator": 85
+    },
+    "startup_ms": 321,
+    "pending_ms": 19
+  },
+  "answers": "chromium/answers.json"
+}

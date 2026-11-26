@@ -230,9 +230,15 @@ def _patrol_once():
                     break
 
             if binary_path is not None:
-                profile_path = "cfsolve/profiles/safari-26-ios.json"
-                if not os.path.exists(profile_path):
-                    profile_path = "profiles/safari-26-ios.json"
+                # Gunakan Chromium Desktop profile (39-probe native in-process solver) jika tersedia
+                profile_path = None
+                for prof in ("profiles/chromium.json", "cfsolve/profiles/chromium.json",
+                             "profiles/safari-26-ios.json", "cfsolve/profiles/safari-26-ios.json"):
+                    if os.path.exists(prof):
+                        profile_path = prof
+                        break
+                if profile_path is None:
+                    profile_path = "profiles/chromium.json"
 
                 proxy_val = os.environ.get("CF_PROXY", "").strip()
                 if not proxy_val and os.path.exists("proxy_active.txt"):

@@ -257,6 +257,10 @@ impl<'answers> Replay<'answers> {
         let partner = self.vocabulary.partner(position).with_context(missing)?;
         let stored = self.answers.probes.get(&partner).with_context(missing)?;
         let mut fields = stored.fields.clone();
+        let mut late = stored.late.clone();
+        if let Some(current) = rename_graphics_fields(&mut fields, stored, probe) {
+            late = current;
+        }
         let measured = &self.answers.stylesheets;
         if !measured.is_empty()
             && let Some(excluded) = stylesheets::excluded_selector(probe)
@@ -264,7 +268,7 @@ impl<'answers> Replay<'answers> {
             stylesheets::patch(session.iframe_html, measured, excluded?, &mut fields)?;
         }
         session.patch(probe, &mut fields, &self.answers.globals)?;
-        let mut arranged = ArrangedFields::split(fields, &stored.late);
+        let mut arranged = ArrangedFields::split(fields, &late);
         for fields in [&mut arranged.early, &mut arranged.late] {
             self.vocabulary.rewrite_to_session(position, fields);
             for (name, value) in &probe.replay_literals {
@@ -275,6 +279,41 @@ impl<'answers> Replay<'answers> {
         }
         Ok(arranged)
     }
+}
+
+/// Graphics output names have no stable string anchors; their late write order is stable.
+fn rename_graphics_fields(
+    fields: &mut JsObject,
+    stored: &Stored,
+    probe: &Probe,
+) -> Option<Vec<String>> {
+    if !probe
+        .operation
+        .as_ref()
+        .is_some_and(|operation| operation.family() == Kind::Graphics)
+        || stored.fields.len() != stored.late.len()
+    {
+        return None;
+    }
+    let current: Vec<String> = probe
+        .writes
+        .late
+        .iter()
+        .filter(|name| vocabulary::is_hex_name(name))
+        .cloned()
+        .collect();
+    if current.len() != stored.late.len()
+        || !stored.late.iter().all(|name| fields.contains_key(name))
+    {
+        return None;
+    }
+    for (old, new) in stored.late.iter().zip(current.iter()) {
+        let value = fields
+            .shift_remove(old)
+            .expect("the stored late fields exist");
+        fields.insert(new.clone(), value);
+    }
+    Some(current)
 }
 
 /// Current-session values needed to refresh stored records.
@@ -536,6 +575,57 @@ mod tests {
     use super::*;
     use crate::challenge::installed::Installed;
     use crate::js;
+    use crate::stage2::records::WriteOrder;
+
+    #[test]
+    fn graphics_fields_follow_the_current_late_write_order() {
+        let stored = Stored {
+            duration: None,
+            fields: js::from_value(json!({
+                "_111111111111111111111111": "renderer",
+                "_222222222222222222222222": [1, 2],
+            }))
+            .unwrap(),
+            late: vec![
+                "_111111111111111111111111".into(),
+                "_222222222222222222222222".into(),
+            ],
+        };
+        let probe = Probe {
+            index: 1,
+            token: "_token".into(),
+            input: JsValue::Null,
+            operation: Some(Operation::Replay { reference: 37 }),
+            features: Vec::new(),
+            writes: WriteOrder {
+                fields: Vec::new(),
+                late: vec![
+                    "width".into(),
+                    "_aaaaaaaaaaaaaaaaaaaaaaaa".into(),
+                    "_bbbbbbbbbbbbbbbbbbbbbbbb".into(),
+                ],
+            },
+            replay_literals: JsObject::new(),
+        };
+        let mut fields = stored.fields.clone();
+        let current = rename_graphics_fields(&mut fields, &stored, &probe).unwrap();
+        assert_eq!(
+            current,
+            [
+                "_aaaaaaaaaaaaaaaaaaaaaaaa".to_owned(),
+                "_bbbbbbbbbbbbbbbbbbbbbbbb".to_owned(),
+            ]
+        );
+        assert_eq!(
+            fields.get("_aaaaaaaaaaaaaaaaaaaaaaaa"),
+            Some(&json!("renderer"))
+        );
+        assert_eq!(
+            fields.get("_bbbbbbbbbbbbbbbbbbbbbbbb"),
+            Some(&json!([1, 2]))
+        );
+        assert!(!fields.contains_key("_111111111111111111111111"));
+    }
 
     #[test]
     fn audit_globals_keep_their_groups_under_current_names() {
