@@ -206,21 +206,20 @@ def _patrol_once():
         banyuasin_ok = False
 
         # Prioritas 1: Gunakan Camoufox Stealth Browser Engine (Byparr/Turnstile Auto-Solver)
-        if os.path.exists("capture_banyuasin_camoufox.py"):
+        try:
+            from capture_banyuasin_camoufox import capture_banyuasin
             print("[*] Menjalankan Camoufox Stealth Engine untuk bypass Turnstile Banyuasin...")
-            cmd_camou = [sys.executable, "-u", "capture_banyuasin_camoufox.py"] + cam_ids
-            try:
-                env_cam = os.environ.copy()
-                proc_c = subprocess.run(cmd_camou, env=env_cam, timeout=300)
-                if proc_c.returncode == 0:
-                    print("[✓] Camoufox sukses mengambil snapshot kamera Banyuasin!")
-                    banyuasin_ok = True
-                else:
-                    print(f"[-] Camoufox exit code: {proc_c.returncode}, beralih ke fallback cfsolve...")
-            except Exception as ec:
-                print(f"[-] Error menjalankan Camoufox: {ec}")
+            banyuasin_ok = capture_banyuasin("output", cam_ids)
+            if banyuasin_ok:
+                print("[✓] Camoufox sukses mengambil snapshot kamera Banyuasin!")
+            else:
+                print("[-] Camoufox gagal menembus Turnstile, beralih ke fallback cfsolve...")
+        except Exception as ec:
+            import traceback
+            print(f"[-] Error menjalankan Camoufox: {ec}")
+            traceback.print_exc()
 
-        # Prioritas 2 (Fallback): Gunakan binary cfsolve jika Camoufox tidak tersedia / gagal
+        # Prioritas 2 (Fallback): Gunakan binary cfsolve jika Camoufox gagal
         if not banyuasin_ok:
             binary_path = None
             for candidate in ("bin/capture_cctv",
