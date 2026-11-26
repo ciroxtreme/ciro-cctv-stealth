@@ -31,10 +31,10 @@ jobs:
           path: /var/cache/apt/archives
           key: apt-jammy-v1
 
-      - name: Install System Dependencies
+      - name: Install System Dependencies & Xvfb
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg curl gpg
+          sudo apt-get install -y --no-install-recommends xvfb libgbm-dev ffmpeg curl gpg
 
       - name: Install & Setup Official Cloudflare WARP SOCKS5 Tunnel
         run: |
@@ -64,10 +64,28 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
+
+      - name: Cache Camoufox Browser Binary
+        uses: actions/cache@v4
+        id: camoufox-cache
+        with:
+          path: ~/.cache/camoufox
+          key: camoufox-browser-v158
+
+      - name: Install Python Dependencies & Camoufox Stealth Browser
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          if [ "${{ steps.camoufox-cache.outputs.cache-hit }}" != "true" ]; then
+            python3 -m camoufox fetch || true
+          fi
 
       - name: Ensure Prebuilt Engine Permissions
         run: |
-          chmod +x bin/capture_cctv
+          chmod +x bin/capture_cctv || true
 
       - name: Run Full Corridor CCTV Patrol & Telegram Dispatch
         env:
@@ -77,7 +95,7 @@ jobs:
           CF_PROXY: "socks5://127.0.0.1:40000"
         run: |
           mkdir -p output
-          python3 capture_corridor_ci.py
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x800x24" python3 capture_corridor_ci.py
 
       - name: Upload Snapshot Artifacts
         if: always()
