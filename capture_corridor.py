@@ -200,63 +200,64 @@ def _patrol_once():
         target_banyuasin = [c for c in BANYUASIN_CAMS if c["id"] == FILTER_TARGET]
 
     if target_banyuasin:
-        print(f"\n=== TAHAP 2: CCTV KABUPATEN BANYUASIN VIA CFSOLVE ({len(target_banyuasin)} KAMERA) ===")
-        # FIX run #60: binary prebuilt ada di bin/capture_cctv — path ini
-        # HILANG di revisi sebelumnya (hanya cek cfsolve/target/release/
-        # yang tidak ada di checkout, dan ./target_release_capture_cctv),
-        # sehingga subprocess.run crash FileNotFoundError dan seluruh job
-        # FAILED padahal Tahap 1 Palembang sudah sukses terkirim.
-        # Urutan kandidat: bin/ dulu (dipakai workflow CI, di-chmod +x),
-        # lalu hasil build Rust, lalu fallback lama.
-        binary_path = None
-        for candidate in ("bin/capture_cctv",
-                          "cfsolve/target/release/capture_cctv",
-                          "./target_release_capture_cctv"):
-            if os.path.exists(candidate):
-                binary_path = candidate
-                break
-        if binary_path is None:
-            print("[-] cfsolve binary tidak ditemukan di bin/, "
-                  "cfsolve/target/release/, atau ./target_release_capture_cctv — "
-                  "Tahap 2 dilewati, Tahap 1 tetap terkirim.")
-            return
-
-        profile_path = "cfsolve/profiles/safari-26-ios.json"
-        if not os.path.exists(profile_path):
-            profile_path = "profiles/safari-26-ios.json"
-
-        proxy_val = os.environ.get("CF_PROXY", "").strip()
-        if not proxy_val and os.path.exists("proxy_active.txt"):
-            with open("proxy_active.txt") as f:
-                proxy_val = f.read().strip()
-
-        env = os.environ.copy()
-        if proxy_val:
-            print(f"[*] Menjalankan cfsolve dengan Egress Proxy: {proxy_val}")
-            env["CF_PROXY"] = proxy_val
-
+        print(f"\n=== TAHAP 2: CCTV KABUPATEN BANYUASIN VIA CAMOUFOX STEALTH ENGINE ({len(target_banyuasin)} KAMERA) ===")
         cam_ids = [c["id"] for c in target_banyuasin]
-        cmd_cf = [binary_path, profile_path, "output"] + cam_ids
+        banyuasin_ok = False
 
-        max_retries = 3
-        cfsolve_ok = False
-        for attempt in range(1, max_retries + 1):
-            print(f"Attempt {attempt}/{max_retries}: Running cfsolve ({binary_path})...")
+        # Prioritas 1: Gunakan Camoufox Stealth Browser Engine (Byparr/Turnstile Auto-Solver)
+        if os.path.exists("capture_banyuasin_camoufox.py"):
+            print("[*] Menjalankan Camoufox Stealth Engine untuk bypass Turnstile Banyuasin...")
+            cmd_camou = [sys.executable, "capture_banyuasin_camoufox.py"] + cam_ids
             try:
-                proc = subprocess.run(cmd_cf, env=env)
-            except FileNotFoundError:
-                # Jangan crash seluruh patroli kalau binary hilang di tengah
-                # jalan — Tahap 1 sudah terkirim, laporkan dan berhenti rapi.
-                print(f"[-] cfsolve binary hilang saat dijalankan: {binary_path}")
-                return
-            if proc.returncode == 0:
-                print(f"[✓] cfsolve sukses di attempt {attempt}")
-                cfsolve_ok = True
-                break
-            print(f"[-] cfsolve exit code: {proc.returncode}, retrying...")
-            time.sleep(2)
-        if not cfsolve_ok:
-            print("[-] cfsolve gagal 3x, Tahap 2 dilewati.")
+                proc_c = subprocess.run(cmd_camou, timeout=300)
+                if proc_c.returncode == 0:
+                    print("[✓] Camoufox sukses mengambil snapshot kamera Banyuasin!")
+                    banyuasin_ok = True
+                else:
+                    print(f"[-] Camoufox exit code: {proc_c.returncode}, beralih ke fallback cfsolve...")
+            except Exception as ec:
+                print(f"[-] Error menjalankan Camoufox: {ec}")
+
+        # Prioritas 2 (Fallback): Gunakan binary cfsolve jika Camoufox tidak tersedia / gagal
+        if not banyuasin_ok:
+            binary_path = None
+            for candidate in ("bin/capture_cctv",
+                              "cfsolve/target/release/capture_cctv",
+                              "./target_release_capture_cctv"):
+                if os.path.exists(candidate):
+                    binary_path = candidate
+                    break
+
+            if binary_path is not None:
+                profile_path = "cfsolve/profiles/safari-26-ios.json"
+                if not os.path.exists(profile_path):
+                    profile_path = "profiles/safari-26-ios.json"
+
+                proxy_val = os.environ.get("CF_PROXY", "").strip()
+                if not proxy_val and os.path.exists("proxy_active.txt"):
+                    with open("proxy_active.txt") as f:
+                        proxy_val = f.read().strip()
+
+                env = os.environ.copy()
+                if proxy_val:
+                    env["CF_PROXY"] = proxy_val
+
+                cmd_cf = [binary_path, profile_path, "output"] + cam_ids
+                for attempt in range(1, 4):
+                    print(f"Attempt {attempt}/3: Running cfsolve ({binary_path})...")
+                    try:
+                        proc = subprocess.run(cmd_cf, env=env)
+                        if proc.returncode == 0:
+                            print(f"[✓] cfsolve sukses di attempt {attempt}")
+                            banyuasin_ok = True
+                            break
+                    except Exception as e:
+                        print(f"[-] cfsolve execution error: {e}")
+                        break
+                    time.sleep(2)
+
+        if not banyuasin_ok:
+            print("[-] Seluruh engine bypass gagal, Tahap 2 dilewati.")
             return
 
         for cam in target_banyuasin:
