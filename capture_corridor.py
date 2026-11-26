@@ -208,9 +208,10 @@ def _patrol_once():
         # Prioritas 1: Gunakan Camoufox Stealth Browser Engine (Byparr/Turnstile Auto-Solver)
         if os.path.exists("capture_banyuasin_camoufox.py"):
             print("[*] Menjalankan Camoufox Stealth Engine untuk bypass Turnstile Banyuasin...")
-            cmd_camou = [sys.executable, "capture_banyuasin_camoufox.py"] + cam_ids
+            cmd_camou = [sys.executable, "-u", "capture_banyuasin_camoufox.py"] + cam_ids
             try:
-                proc_c = subprocess.run(cmd_camou, timeout=300)
+                env_cam = os.environ.copy()
+                proc_c = subprocess.run(cmd_camou, env=env_cam, timeout=300)
                 if proc_c.returncode == 0:
                     print("[✓] Camoufox sukses mengambil snapshot kamera Banyuasin!")
                     banyuasin_ok = True
