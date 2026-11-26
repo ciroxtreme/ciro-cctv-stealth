@@ -26,10 +26,16 @@ FILTER_TARGET = os.environ.get("FILTER_TARGET", "ALL").upper().strip()
 
 PALEMBANG_CAMS = [
     {
-        "id": "palembang_punti_kayu",
-        "name": "Punti Kayu (Palembang)",
-        "url": "https://stream.palembang.go.id/cam14/index.m3u8",
-        "desc": "Kawasan Punti Kayu Jl. Kol. H. Burlian, jalur utama menuju KM 12."
+        "id": "palembang_km12",
+        "name": "KM 12 Palembang",
+        "url": "https://stream.palembang.go.id/cam13/index.m3u8",
+        "desc": "Ujung koridor Palembang menuju gapura perbatasan Kab. Banyuasin KM 12."
+    },
+    {
+        "id": "palembang_sp_soekarno_hatta",
+        "name": "Simpang Soekarno Hatta (Palembang)",
+        "url": "https://stream.palembang.go.id/cam48/index.m3u8",
+        "desc": "Simpang persimpangan Jl. Soekarno Hatta jalur lingkar barat Palembang."
     },
     {
         "id": "palembang_darma_agung",
@@ -38,10 +44,22 @@ PALEMBANG_CAMS = [
         "desc": "Simpang Darma Agung KM 7, koridor arteri tengah kota ke arah Banyuasin."
     },
     {
-        "id": "palembang_km12",
-        "name": "KM 12 Palembang",
-        "url": "https://stream.palembang.go.id/cam13/index.m3u8",
-        "desc": "Ujung koridor Palembang menuju gapura perbatasan Kab. Banyuasin."
+        "id": "palembang_simpang_polda",
+        "name": "Simpang Polda (Palembang)",
+        "url": "https://stream.palembang.go.id/cam3/index.m3u8",
+        "desc": "Simpang flyover Polda Sumsel penghubung Jl. Jend. Sudirman & Kol. H. Burlian."
+    },
+    {
+        "id": "palembang_sp_charitas",
+        "name": "Simpang Charitas (Palembang)",
+        "url": "https://stream.palembang.go.id/cam8/index.m3u8",
+        "desc": "Simpang bundaran Rumah Sakit RK Charitas pusat jantung Kota Palembang."
+    },
+    {
+        "id": "palembang_punti_kayu",
+        "name": "Punti Kayu (Palembang)",
+        "url": "https://stream.palembang.go.id/cam14/index.m3u8",
+        "desc": "Kawasan Taman Wisata Alam Punti Kayu Jl. Kol. H. Burlian."
     }
 ]
 
@@ -189,7 +207,7 @@ def _patrol_once():
     print(f"=== PATROL MODE: FILTER={FILTER_TARGET} ===")
 
     if FILTER_TARGET in ["ALL", "PALEMBANG"]:
-        print("=== TAHAP 1: CCTV KOTA PALEMBANG (3 KAMERA) ===")
+        print("=== TAHAP 1: CCTV KOTA PALEMBANG (6 KAMERA) ===")
         for cam in PALEMBANG_CAMS:
             analyze_and_send_palembang(cam)
             time.sleep(1)
